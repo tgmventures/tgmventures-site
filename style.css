@@ -42,11 +42,20 @@ body {
     position: relative;
 }
 
+.logo-container {
+    background-color: white; /* White background */
+    padding: 20px 20px; /* Adjust padding for rectangle shape */
+    border-radius: 12px; /* Rounded corners */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content; /* Adjust to content width */
+    margin: 0 auto; /* Center horizontally */
+}
+
 .logo img {
     width: 150px;
     height: 150px;
-    max-width: 150px;
-    max-height: 150px;
     object-fit: contain;
     display: block;
 }

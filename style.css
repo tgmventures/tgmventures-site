@@ -44,7 +44,7 @@ body {
 
 .logo-container {
     background-color: white; /* White background */
-    padding: 10px 15px; /* Padding for spacing */
+    padding: 10px 10px; /* Padding for spacing */
     border-radius: 12px; /* Rounded corners */
     display: inline-flex; /* Prevents full-width stretching */
     justify-content: center;
@@ -56,7 +56,7 @@ body {
 }
 
 .logo-container img {
-    max-height: 60px; /* Prevents it from being too large */
+    max-height: 150px; /* Prevents it from being too large */
     width: auto; /* Keeps aspect ratio */
     object-fit: contain;
 }

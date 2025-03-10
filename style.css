@@ -44,15 +44,15 @@ body {
 
 .logo-container {
     background-color: white; /* White background */
-    padding: 20px; /* Equal padding */
+    padding: 20px; /* Even padding all around */
     border-radius: 12px; /* Rounded corners */
-    display: inline-flex; /* Ensures it doesn't stretch */
+    display: flex; /* Ensures proper alignment */
     justify-content: center;
     align-items: center;
-    width: auto; /* Auto width to fit content */
-    height: auto; /* Auto height */
+    width: auto; /* Adjust width to fit content */
+    height: auto; /* Adjust height to fit content */
     margin: 20px auto; /* Centers it */
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Optional subtle shadow */
 }
 
 .logo-container img {

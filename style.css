@@ -85,7 +85,7 @@ body {
 @media (max-width: 768px) {
     .logo-container {
         margin: 30px auto; /* Adds extra spacing on mobile */
-        padding: 25px; /* Increase padding slightly */
+        padding: 20px; /* Increase padding slightly */
         max-width: 80%; /* Prevents it from feeling cramped */
     }
 }

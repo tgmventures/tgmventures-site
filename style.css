@@ -44,18 +44,18 @@ body {
 
 .logo-container {
     background-color: white; /* White background */
-    padding: 20px 20px; /* Adjust padding for rectangle shape */
+    padding: 10px 20px; /* Adjust padding for rectangle shape */
     border-radius: 12px; /* Rounded corners */
     display: flex;
     justify-content: center;
     align-items: center;
-    width: fit-content; /* Adjust to content width */
-    margin: 0 auto; /* Center horizontally */
+    width: fit-content; /* Adjusts to content width */
+    margin: 0 auto; /* Centers it horizontally */
 }
 
 .logo img {
-    width: 150px;
-    height: 150px;
+    max-height: 100px; /* Set max height to 100px */
+    width: auto; /* Maintain aspect ratio */
     object-fit: contain;
     display: block;
 }

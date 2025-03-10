@@ -46,17 +46,18 @@ body {
     background-color: white; /* White background */
     padding: 10px 15px; /* Padding for spacing */
     border-radius: 12px; /* Rounded corners */
-    display: flex;
+    display: inline-flex; /* Prevents full-width stretching */
     justify-content: center;
     align-items: center;
-    width: 120px; /* Set a fixed width */
-    height: 100px; /* Set a fixed height */
-    margin: 0 auto; /* Centers it horizontally */
+    width: 120px; /* Exact width */
+    height: 100px; /* Exact height */
+    margin: 20px auto; /* Centers it properly */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 .logo-container img {
-    max-height: 60px; /* Limits logo height */
-    width: auto; /* Maintains aspect ratio */
+    max-height: 60px; /* Prevents it from being too large */
+    width: auto; /* Keeps aspect ratio */
     object-fit: contain;
 }
 

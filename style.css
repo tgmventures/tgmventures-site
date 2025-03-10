@@ -44,7 +44,7 @@ body {
 
 .logo-container {
     background-color: white; /* White background */
-    padding: 20px; /* Even padding all around */
+    padding: 5px; /* Even padding all around */
     border-radius: 12px; /* Rounded corners */
     display: flex; /* Ensures proper alignment */
     justify-content: center;

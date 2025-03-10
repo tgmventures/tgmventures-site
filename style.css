@@ -63,8 +63,8 @@ body {
 }
 
 .text {
-    font-size: 30px;
+    font-size: 28px;
     font-weight: 600;
     margin-top: 20px;
-    padding: 0 15px; /* Adds 15px padding on left and right */
+    padding: 0 5px; /* Adds 15px padding on left and right */
 }

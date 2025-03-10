@@ -43,7 +43,7 @@ body {
 }
 
 .logo-container {
-    background-color: white; /* White background */
+    background-color: rgba(255, 255, 255, 0.85); /* White with 85% opacity */
     padding: 5px; /* Even padding all around */
     border-radius: 12px; /* Rounded corners */
     display: flex; /* Ensures proper alignment */

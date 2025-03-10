@@ -44,20 +44,20 @@ body {
 
 .logo-container {
     background-color: white; /* White background */
-    padding: 20px; /* Equal padding on all sides */
+    padding: 20px; /* Equal padding */
     border-radius: 12px; /* Rounded corners */
-    display: inline-flex; /* Prevents full-width stretching */
+    display: inline-flex; /* Ensures it doesn't stretch */
     justify-content: center;
     align-items: center;
-    width: 180px; /* Adjusted for larger logo */
-    height: 180px; /* Adjusted for larger logo */
-    margin: 20px auto; /* Centers it properly */
+    width: auto; /* Auto width to fit content */
+    height: auto; /* Auto height */
+    margin: 20px auto; /* Centers it */
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 .logo-container img {
-    max-height: 150px; /* Increased size */
-    width: auto; /* Keeps aspect ratio */
+    max-height: 150px; /* Limits logo height */
+    width: auto; /* Maintains aspect ratio */
     object-fit: contain;
 }
 

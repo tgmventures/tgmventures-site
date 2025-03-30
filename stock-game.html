@@ -114,7 +114,7 @@
         const SIGMA_3_THRESHOLD = 3.0; 
         const HIGH_VOLATILITY_MULTIPLIER = 2.5; 
         const EXTREME_VOLATILITY_MULTIPLIER = 4.5; 
-        const UP_BIAS_PROBABILITY = 0.52; // Changed from 0.60 to 0.52 for 52/48 bias
+        const UP_BIAS_PROBABILITY = 0.55; //
 
         // --- Stock Definitions ---
         const initialStocks = [ 
@@ -163,7 +163,7 @@
         function advanceDay() { if (isLiquidating) return; updateStockPrices(); currentDate.setDate(currentDate.getDate() + 1); const { equity, portfolioVal } = calculateDerivedValues(); const requiredEquity = portfolioVal * MAINTENANCE_MARGIN; if (equity <= 0 && player.loanAmount > 0) { liquidatePositions(); } else { netWorthHistory.push({ date: formatDate(currentDate), value: equity }); renderUI(); flashPriceChanges(); } }
         
         /**
-         * Updates stock prices using standard normal distribution, 52/48 bias,
+         * Updates stock prices using standard normal distribution, 55/45 bias,
          * and sigma-based volatility multipliers.
          */
         function updateStockPrices() { 
@@ -173,11 +173,11 @@
                 let zScore = generateStandardNormal(); 
                 const absZScore = Math.abs(zScore); 
                 
-                // Apply 52/48 Upward Bias
-                if (Math.random() < UP_BIAS_PROBABILITY) { // UP_BIAS_PROBABILITY is now 0.52
-                    zScore = absZScore; // 52% chance to be positive
+                // Apply 55/45 Upward Bias
+                if (Math.random() < UP_BIAS_PROBABILITY) { // UP_BIAS_PROBABILITY is now 0.55
+                    zScore = absZScore; // 55% chance to be positive
                 } else { 
-                    zScore = -absZScore; // 48% chance to be negative
+                    zScore = -absZScore; // 45% chance to be negative
                 }
                 
                 let volatilityMultiplier = 1.0; 

@@ -10,17 +10,26 @@
     <style type="text/tailwindcss">
         @layer utilities {
             .font-inter { font-family: "Inter", sans-serif; }
-            /* Custom animation for price flash */
+            /* Price Flash Animations */
             @keyframes flash-green { 0%, 100% { background-color: transparent; } 50% { background-color: rgba(74, 222, 128, 0.3); } }
             @keyframes flash-red { 0%, 100% { background-color: transparent; } 50% { background-color: rgba(248, 113, 113, 0.3); } }
             .flash-up { animation: flash-green 0.5s ease-out; }
             .flash-down { animation: flash-red 0.5s ease-out; }
-            /* Button styles */
-            .btn { @apply px-1.5 py-0.5 text-xs rounded shadow transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed; }
+            /* Button Styles */
+            .btn { @apply px-1.5 py-0.5 text-xs rounded shadow transition duration-150 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed font-medium; } /* Adjusted base padding */
+            .btn-sm { @apply px-1.5 py-0.5; } /* Modal buttons */
+            .btn-trade { @apply px-2 py-1; } /* Slightly larger trade button */
             .btn-green { @apply bg-green-500 text-white hover:bg-green-600 focus:ring-green-500; }
             .btn-blue { @apply bg-blue-500 text-white hover:bg-blue-600 focus:ring-blue-500; }
             .btn-red { @apply bg-red-500 text-white hover:bg-red-600 focus:ring-red-500; }
-            .btn-gray { @apply bg-gray-400 text-white hover:bg-gray-500 focus:ring-gray-400; }
+            .btn-gray { @apply bg-gray-500 text-white hover:bg-gray-600 focus:ring-gray-500; }
+            .btn-yellow { @apply bg-yellow-500 text-white hover:bg-yellow-600 focus:ring-yellow-500; }
+            /* Modal Styles */
+            .modal-overlay { @apply fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 transition-opacity duration-300; }
+            .modal-content { @apply bg-white rounded-lg shadow-xl p-5 m-4 max-w-sm w-full transform transition-transform duration-300 scale-95; }
+            .modal-hidden { @apply opacity-0 pointer-events-none; }
+            .modal-visible { @apply opacity-100 pointer-events-auto; }
+            .modal-visible .modal-content { @apply scale-100; }
         }
         /* Base styles */
         body { @apply font-inter bg-gray-100 text-gray-800; }
@@ -33,14 +42,17 @@
         #chart-container { @apply bg-white rounded-lg shadow p-4 h-64 md:h-72; } 
         /* Dashboard grid */
         #dashboard { @apply grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 text-center; } 
-        /* Table actions column */
+        /* Table cells */
         .actions-cell { @apply px-2 py-2 whitespace-normal text-xs font-medium text-center align-middle; } 
-        /* Data cell base style */
         .data-cell { @apply px-3 py-2 whitespace-nowrap align-middle; } 
-        /* Action group styling */
+        /* Action group styling (for desktop view) */
         .action-group { @apply flex flex-col items-center space-y-1; } 
         .action-group-label { @apply text-xs font-semibold text-gray-600; }
         .button-row { @apply flex space-x-1 justify-center; }
+        /* Modal action groups */
+        .modal-action-group { @apply mb-3; }
+        .modal-action-label { @apply block text-sm font-semibold text-gray-700 mb-1.5; }
+        .modal-button-row { @apply flex space-x-2 justify-start; }
     </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -99,6 +111,48 @@
 
     </div>
 
+    
+    <div id="trade-modal-overlay" class="modal-overlay modal-hidden" onclick="closeTradeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()"> 
+            
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modal-title" class="text-lg font-semibold text-gray-800">Trade Stock</h3>
+                <button onclick="closeTradeModal()" class="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button> 
+            </div>
+
+            <div id="modal-stock-info" class="mb-4 text-sm text-gray-600">
+                <p>Price: <span id="modal-stock-price" class="font-medium"></span></p>
+                <p>Owned: <span id="modal-stock-owned" class="font-medium"></span></p>
+            </div>
+
+            
+            <div class="modal-action-group">
+                <span class="modal-action-label">Buy Cash</span>
+                <div class="modal-button-row" id="modal-buy-cash-buttons">
+                    
+                </div>
+            </div>
+
+            
+            <div class="modal-action-group">
+                <span class="modal-action-label">Buy Margin</span>
+                 <div class="modal-button-row" id="modal-buy-margin-buttons">
+                    
+                </div>
+            </div>
+            
+            
+            <div class="modal-action-group">
+                <span class="modal-action-label">Sell</span>
+                 <div class="modal-button-row" id="modal-sell-buttons">
+                    
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
     <script>
         // --- Game Configuration ---
         const STARTING_CASH = 1000000;
@@ -109,7 +163,7 @@
         const SIGMA_3_THRESHOLD = 3.0; 
         const HIGH_VOLATILITY_MULTIPLIER = 2.5; 
         const EXTREME_VOLATILITY_MULTIPLIER = 4.5; 
-        const UP_BIAS_PROBABILITY = 0.60; // Changed from 0.55 to 0.60 for 60/40 bias
+        const UP_BIAS_PROBABILITY = 0.60; 
 
         // --- Stock Definitions ---
         const initialStocks = [ 
@@ -117,15 +171,11 @@
         ];
 
         // --- Game State Variables ---
-        let player = { 
-            cash: STARTING_CASH, 
-            portfolio: {}, // { symbol: { quantity: number, totalCost: number } }
-            loanAmount: 0 
-        };
-        let stocks = {}; // { symbol: { name, price, volatility, drift, lastChange } }
+        let player = { cash: STARTING_CASH, portfolio: {}, loanAmount: 0 };
+        let stocks = {}; 
         let gameLoopIntervalId = null;
         let currentDate = new Date();
-        let netWorthHistory = []; // Stores { date: string, value: number (equity) }
+        let netWorthHistory = []; 
         let netWorthChartInstance = null; 
         let spareNormal = null; 
         let isLiquidating = false; 
@@ -140,6 +190,15 @@
         const messageTextEl = document.getElementById('message-text');
         const currentDateEl = document.getElementById('current-date');
         const chartCanvas = document.getElementById('netWorthChart'); 
+        // Modal Elements
+        const modalOverlay = document.getElementById('trade-modal-overlay');
+        const modalTitle = document.getElementById('modal-title');
+        const modalStockPrice = document.getElementById('modal-stock-price');
+        const modalStockOwned = document.getElementById('modal-stock-owned');
+        const modalBuyCashButtons = document.getElementById('modal-buy-cash-buttons');
+        const modalBuyMarginButtons = document.getElementById('modal-buy-margin-buttons');
+        const modalSellButtons = document.getElementById('modal-sell-buttons');
+
 
         // --- Utility Functions ---
         function formatCurrency(amount, signDisplay = 'auto') { const options = { style: 'currency', currency: 'USD', signDisplay: signDisplay }; return amount.toLocaleString('en-US', options); }
@@ -158,63 +217,60 @@
         // --- Core Game Logic Functions ---
         function initializeGame() { player.cash = STARTING_CASH; player.portfolio = {}; player.loanAmount = 0; stocks = {}; currentDate = new Date(); netWorthHistory = []; spareNormal = null; isLiquidating = false; initialStocks.forEach(stock => { stocks[stock.symbol] = { ...stock, lastChange: 0 }; player.portfolio[stock.symbol] = { quantity: 0, totalCost: 0 }; }); const { equity: initialEquity } = calculateDerivedValues(); netWorthHistory.push({ date: formatDate(currentDate), value: initialEquity }); initializeChart(); renderUI(); if (gameLoopIntervalId) clearInterval(gameLoopIntervalId); gameLoopIntervalId = setInterval(advanceDay, UPDATE_INTERVAL_MS); console.log("Game Initialized with Margin Trading & Cost Basis. Each update represents one day."); }
         function advanceDay() { if (isLiquidating) return; updateStockPrices(); currentDate.setDate(currentDate.getDate() + 1); const { equity, portfolioVal } = calculateDerivedValues(); const requiredEquity = portfolioVal * MAINTENANCE_MARGIN; if (equity <= 0 && player.loanAmount > 0) { liquidatePositions(); } else { netWorthHistory.push({ date: formatDate(currentDate), value: equity }); renderUI(); flashPriceChanges(); } }
-        
-        /**
-         * Updates stock prices using standard normal distribution, 60/40 bias,
-         * and sigma-based volatility multipliers.
-         */
-        function updateStockPrices() { 
-            Object.keys(stocks).forEach(symbol => { 
-                const stock = stocks[symbol]; 
-                const oldPrice = stock.price; 
-                let zScore = generateStandardNormal(); 
-                const absZScore = Math.abs(zScore); 
-                
-                // Apply 60/40 Upward Bias to the *direction*
-                if (Math.random() < UP_BIAS_PROBABILITY) { // UP_BIAS_PROBABILITY is now 0.60
-                    zScore = absZScore; // 60% chance to be positive
-                } else { 
-                    zScore = -absZScore; // 40% chance to be negative
-                }
-                
-                let volatilityMultiplier = 1.0; 
-                if (absZScore > SIGMA_3_THRESHOLD) { 
-                    volatilityMultiplier = EXTREME_VOLATILITY_MULTIPLIER; 
-                    console.log(`>>> Extreme Event (${zScore.toFixed(2)}σ) for ${symbol}! Multiplier: ${volatilityMultiplier.toFixed(1)}x`); 
-                } else if (absZScore > SIGMA_2_THRESHOLD) { 
-                    volatilityMultiplier = HIGH_VOLATILITY_MULTIPLIER; 
-                    console.log(`>> High Volatility Event (${zScore.toFixed(2)}σ) for ${symbol}! Multiplier: ${volatilityMultiplier.toFixed(1)}x`); 
-                } 
-                
-                let changePercent = stock.drift + (stock.volatility * zScore * volatilityMultiplier); 
-                let newPrice = oldPrice * (1 + changePercent); 
-                newPrice = Math.max(MIN_PRICE, newPrice); 
-                stock.lastChange = newPrice - oldPrice; 
-                stock.price = newPrice; 
-            }); 
-        }
-        
+        function updateStockPrices() { Object.keys(stocks).forEach(symbol => { const stock = stocks[symbol]; const oldPrice = stock.price; let zScore = generateStandardNormal(); const absZScore = Math.abs(zScore); if (Math.random() < UP_BIAS_PROBABILITY) { zScore = absZScore; } else { zScore = -absZScore; } let volatilityMultiplier = 1.0; if (absZScore > SIGMA_3_THRESHOLD) { volatilityMultiplier = EXTREME_VOLATILITY_MULTIPLIER; console.log(`>>> Extreme Event (${zScore.toFixed(2)}σ) for ${symbol}! Multiplier: ${volatilityMultiplier.toFixed(1)}x`); } else if (absZScore > SIGMA_2_THRESHOLD) { volatilityMultiplier = HIGH_VOLATILITY_MULTIPLIER; console.log(`>> High Volatility Event (${zScore.toFixed(2)}σ) for ${symbol}! Multiplier: ${volatilityMultiplier.toFixed(1)}x`); } let changePercent = stock.drift + (stock.volatility * zScore * volatilityMultiplier); let newPrice = oldPrice * (1 + changePercent); newPrice = Math.max(MIN_PRICE, newPrice); stock.lastChange = newPrice - oldPrice; stock.price = newPrice; }); }
         function buyStock(symbol, quantity, isMargin = false) { if (isLiquidating) { showMessage("Trading locked during liquidation.", "error"); return false; } if (quantity <= 0 || !Number.isInteger(quantity)) { showMessage("Invalid quantity.", "error"); return false; } if (!stocks[symbol] || stocks[symbol].price <= 0) { showMessage("Invalid stock or price.", "error"); return false; } const stock = stocks[symbol]; const cost = stock.price * quantity; const { availableMargin } = calculateDerivedValues(); if (!player.portfolio[symbol]) { player.portfolio[symbol] = { quantity: 0, totalCost: 0 }; } if (isMargin) { if (cost <= availableMargin) { player.portfolio[symbol].quantity += quantity; player.portfolio[symbol].totalCost += cost; player.loanAmount += cost; showMessage(`Day ${formatDate(currentDate)}: Bought ${quantity} ${symbol} on margin @ ${formatCurrency(stock.price)}`, "success"); return true; } else { showMessage("Insufficient available margin.", "error"); return false; } } else { if (cost <= player.cash) { player.portfolio[symbol].quantity += quantity; player.portfolio[symbol].totalCost += cost; player.cash -= cost; showMessage(`Day ${formatDate(currentDate)}: Bought ${quantity} ${symbol} with cash @ ${formatCurrency(stock.price)}`, "success"); return true; } else { showMessage("Insufficient cash.", "error"); return false; } } }
         function sellStock(symbol, quantity) { if (quantity <= 0 || !Number.isInteger(quantity)) { showMessage("Invalid quantity.", "error"); return false; } if (!stocks[symbol]) { showMessage("Invalid stock.", "error"); return false; } const position = player.portfolio[symbol]; const ownedQuantity = position ? position.quantity : 0; if (quantity > ownedQuantity) { showMessage(`Not enough ${symbol} shares. You own ${ownedQuantity}.`, "error"); return false; } const stock = stocks[symbol]; const earnings = stock.price * quantity; let costBasisReduction = 0; if (ownedQuantity > 0 && position.totalCost > 0) { const avgCost = position.totalCost / ownedQuantity; costBasisReduction = avgCost * quantity; } position.quantity -= quantity; position.totalCost -= costBasisReduction; if (position.quantity === 0 || position.totalCost < 0.001) { position.totalCost = 0; } const repayment = Math.min(earnings, player.loanAmount); player.loanAmount -= repayment; player.cash += (earnings - repayment); if (!isLiquidating) { showMessage(`Day ${formatDate(currentDate)}: Sold ${quantity} ${symbol} @ ${formatCurrency(stock.price)}. Repaid ${formatCurrency(repayment)} loan.`, "success"); } return true; }
         function liquidatePositions() { if (isLiquidating) return; isLiquidating = true; console.warn("MARGIN CALL TRIGGERED!"); showMessage("MARGIN CALL! Equity too low. Liquidating positions...", "error", true); setTimeout(() => { let iterations = 0; const maxIterations = Object.keys(player.portfolio).length + 5; while (iterations < maxIterations) { const { equity, portfolioVal } = calculateDerivedValues(); if (equity > 0 || portfolioVal <= 0) { break; } let symbolToSell = null; let maxVal = -1; Object.entries(player.portfolio).forEach(([symbol, position]) => { if (position && position.quantity > 0 && stocks[symbol]) { const value = position.quantity * stocks[symbol].price; if (value > maxVal) { maxVal = value; symbolToSell = symbol; } } }); if (symbolToSell) { const quantityToSell = player.portfolio[symbolToSell].quantity; console.log(`Liquidation: Selling ${quantityToSell} of ${symbolToSell}`); sellStock(symbolToSell, quantityToSell); } else { console.error("Liquidation stuck: Portfolio value > 0 but no stock found to sell."); break; } iterations++; } if (iterations >= maxIterations) { console.error("Liquidation loop exceeded max iterations."); } const { equity: finalEquity } = calculateDerivedValues(); if (finalEquity > 0) { showMessage("Liquidation complete. Margin requirement met.", "success", true); } else { showMessage("Liquidation complete. Unable to meet margin requirements. Account underwater!", "error", true); } isLiquidating = false; renderUI(); flashPriceChanges(); }, 50); }
 
+        // --- Modal Functions ---
+        function openTradeModal(symbol) {
+            if (!stocks[symbol] || isLiquidating) return; 
+            const stock = stocks[symbol];
+            const position = player.portfolio[symbol] || { quantity: 0, totalCost: 0 };
+            const { availableMargin } = calculateDerivedValues();
+            const canAffordOneCash = player.cash >= stock.price && stock.price > 0;
+            const canAffordOneMargin = availableMargin >= stock.price && stock.price > 0;
+            const hasShares = position.quantity > 0;
+
+            modalTitle.textContent = `Trade ${stock.name} (${symbol})`;
+            modalStockPrice.textContent = formatCurrency(stock.price);
+            modalStockOwned.textContent = position.quantity.toLocaleString();
+
+            modalBuyCashButtons.innerHTML = `
+                <button title="Buy 25% Cash" onclick="handleBuyCashPercent('${symbol}', 25); closeTradeModal();" class="btn btn-sm btn-green" ${!canAffordOneCash ? 'disabled' : ''}>25%</button>
+                <button title="Buy 50% Cash" onclick="handleBuyCashPercent('${symbol}', 50); closeTradeModal();" class="btn btn-sm btn-green" ${!canAffordOneCash ? 'disabled' : ''}>50%</button>
+                <button title="Buy 100% Cash" onclick="handleBuyCashPercent('${symbol}', 100); closeTradeModal();" class="btn btn-sm btn-green" ${!canAffordOneCash ? 'disabled' : ''}>100%</button>
+            `;
+            modalBuyMarginButtons.innerHTML = `
+                <button title="Buy 25% Margin" onclick="handleBuyMarginPercent('${symbol}', 25); closeTradeModal();" class="btn btn-sm btn-blue" ${!canAffordOneMargin ? 'disabled' : ''}>25%</button>
+                <button title="Buy 50% Margin" onclick="handleBuyMarginPercent('${symbol}', 50); closeTradeModal();" class="btn btn-sm btn-blue" ${!canAffordOneMargin ? 'disabled' : ''}>50%</button>
+                <button title="Buy 100% Margin" onclick="handleBuyMarginPercent('${symbol}', 100); closeTradeModal();" class="btn btn-sm btn-blue" ${!canAffordOneMargin ? 'disabled' : ''}>100%</button>
+            `;
+            modalSellButtons.innerHTML = `
+                <button title="Sell 25%" onclick="handleSellPercent('${symbol}', 25); closeTradeModal();" class="btn btn-sm btn-red" ${!hasShares ? 'disabled' : ''}>25%</button>
+                <button title="Sell 50%" onclick="handleSellPercent('${symbol}', 50); closeTradeModal();" class="btn btn-sm btn-red" ${!hasShares ? 'disabled' : ''}>50%</button>
+                <button title="Sell Max" onclick="handleSellPercent('${symbol}', 100); closeTradeModal();" class="btn btn-sm btn-red" ${!hasShares ? 'disabled' : ''}>MAX</button>
+            `;
+
+            modalOverlay.classList.remove('modal-hidden');
+            modalOverlay.classList.add('modal-visible');
+        }
+        function closeTradeModal() {
+             modalOverlay.classList.add('modal-hidden');
+             modalOverlay.classList.remove('modal-visible');
+        }
+
+
         // --- UI Rendering Functions ---
         function renderUI() {
-            // Calculate derived values
             const { portfolioVal, assets, equity, maxLoanPossible, availableMargin } = calculateDerivedValues();
-
-            // Update Date Display & Dashboard
             currentDateEl.textContent = `Date: ${formatDate(currentDate)}`;
             cashBalanceEl.textContent = formatCurrency(player.cash);
             portfolioValueEl.textContent = formatCurrency(portfolioVal); 
             loanAmountEl.textContent = formatCurrency(player.loanAmount); 
             equityValueEl.textContent = formatCurrency(equity); 
             availableMarginEl.textContent = formatCurrency(availableMargin); 
-
-            // Update Chart 
             updateChart(); 
-
-            // Update Stock Table
             stockTableBodyEl.innerHTML = '';
             const sortedSymbols = Object.keys(stocks).sort(); 
 
@@ -232,21 +288,17 @@
                 if (oldPrice >= MIN_PRICE) { const percentageChange = (stock.lastChange / oldPrice) * 100; formattedPercentageChange = `${percentageChange >= 0 ? '+' : ''}${percentageChange.toFixed(2)}%`; } else if (stock.price > oldPrice) { formattedPercentageChange = "+∞%"; }
                 let dailyChangeClass = 'text-gray-700';
                 if (stock.lastChange > 0) dailyChangeClass = 'text-green-600'; else if (stock.lastChange < 0) dailyChangeClass = 'text-red-600';
-
-                // Calculate Gain/Loss %
                 let gainLossPercent = 0;
                 let formattedGainLoss = "N/A";
                 let gainLossClass = 'text-gray-700';
                 if (ownedQuantity > 0 && totalCost > 0) { gainLossPercent = ((ownedValue - totalCost) / totalCost) * 100; formattedGainLoss = `${gainLossPercent >= 0 ? '+' : ''}${gainLossPercent.toFixed(2)}%`; if (gainLossPercent > 0) gainLossClass = 'text-green-600'; else if (gainLossPercent < 0) gainLossClass = 'text-red-600'; } 
                 else if (ownedQuantity > 0 && totalCost === 0) { formattedGainLoss = "+∞%"; gainLossClass = 'text-green-600'; }
-
-                // Button Disabling Logic
                 const canAffordOneCash = player.cash >= stock.price && stock.price > 0; 
                 const canAffordOneMargin = availableMargin >= stock.price && stock.price > 0; 
                 const hasShares = ownedQuantity > 0;
                 const tradingDisabled = isLiquidating; 
 
-                // Generate Row HTML
+                // --- Generate Row HTML: Responsive Actions ---
                 row.innerHTML = `
                     <td class="data-cell"><div class="text-sm font-medium text-gray-900">${stock.name}</div><div class="text-xs text-gray-500">${stock.symbol}</div></td>
                     <td class="data-cell text-right"><span class="price-value text-sm font-medium text-gray-800">${formatCurrency(stock.price)}</span></td>
@@ -256,7 +308,13 @@
                     <td class="data-cell text-right"><span class="gain-loss-value text-sm font-medium ${gainLossClass}">${formattedGainLoss}</span></td> 
                     
                     <td class="actions-cell"> 
-                        <div class="flex flex-wrap gap-x-2 gap-y-1 justify-center items-start"> 
+                        
+                        <div class="block md:hidden"> 
+                            <button onclick="openTradeModal('${symbol}')" class="btn btn-trade btn-yellow" ${tradingDisabled ? 'disabled' : ''}>Trade</button>
+                        </div>
+
+                        
+                        <div class="hidden md:flex flex-wrap gap-x-2 gap-y-1.5 justify-center items-start"> 
                             <div class="action-group">
                                 <span class="action-group-label">Buy Cash</span>
                                 <div class="button-row">
@@ -296,7 +354,24 @@
         function handleSellPercent(symbol, percent) { if (!stocks[symbol] || !player.portfolio[symbol]) return; const ownedQuantity = player.portfolio[symbol].quantity; let quantityToSell = 0; if (percent === 100) { quantityToSell = ownedQuantity; } else { quantityToSell = Math.floor(ownedQuantity * (percent / 100)); } if (quantityToSell > 0) { if (sellStock(symbol, quantityToSell)) { if (!isLiquidating) renderUI(); } } else { showMessage(`No shares to sell for ${percent}% of ${symbol}.`, "info"); } }
 
         // --- Game Initialization ---
-        document.addEventListener('DOMContentLoaded', initializeGame);
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeGame();
+            // Event delegation for trade buttons (now only needed for mobile view)
+            stockTableBodyEl.addEventListener('click', function(event) {
+                // Find the closest button ancestor if a click happened inside a button
+                const tradeButton = event.target.closest('button.btn-yellow'); 
+                if (tradeButton && stockTableBodyEl.contains(tradeButton)) {
+                     // Extract symbol from the button's onclick attribute
+                     const onclickAttr = tradeButton.getAttribute('onclick');
+                     const symbolMatch = onclickAttr ? onclickAttr.match(/'([^']+)'/) : null;
+                     const symbol = symbolMatch ? symbolMatch[1] : null;
+                     if (symbol) {
+                        openTradeModal(symbol);
+                     }
+                }
+            });
+        });
+
 
     </script>
 

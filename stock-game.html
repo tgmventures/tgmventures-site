@@ -114,7 +114,7 @@
         const SIGMA_3_THRESHOLD = 3.0; 
         const HIGH_VOLATILITY_MULTIPLIER = 2.5; 
         const EXTREME_VOLATILITY_MULTIPLIER = 4.5; 
-        const UP_BIAS_PROBABILITY = 0.60; 
+        const UP_BIAS_PROBABILITY = 0.52; // Changed from 0.60 to 0.52 for 52/48 bias
 
         // --- Stock Definitions ---
         const initialStocks = [ 
@@ -161,7 +161,42 @@
         // --- Core Game Logic Functions ---
         function initializeGame() { player.cash = STARTING_CASH; player.portfolio = {}; player.loanAmount = 0; stocks = {}; currentDate = new Date(); netWorthHistory = []; spareNormal = null; isLiquidating = false; initialStocks.forEach(stock => { stocks[stock.symbol] = { ...stock, lastChange: 0 }; player.portfolio[stock.symbol] = { quantity: 0, totalCost: 0 }; }); const { equity: initialEquity } = calculateDerivedValues(); netWorthHistory.push({ date: formatDate(currentDate), value: initialEquity }); initializeChart(); renderUI(); if (gameLoopIntervalId) clearInterval(gameLoopIntervalId); gameLoopIntervalId = setInterval(advanceDay, UPDATE_INTERVAL_MS); console.log("Game Initialized with Margin Trading & Cost Basis. Each update represents one day."); }
         function advanceDay() { if (isLiquidating) return; updateStockPrices(); currentDate.setDate(currentDate.getDate() + 1); const { equity, portfolioVal } = calculateDerivedValues(); const requiredEquity = portfolioVal * MAINTENANCE_MARGIN; if (equity <= 0 && player.loanAmount > 0) { liquidatePositions(); } else { netWorthHistory.push({ date: formatDate(currentDate), value: equity }); renderUI(); flashPriceChanges(); } }
-        function updateStockPrices() { Object.keys(stocks).forEach(symbol => { const stock = stocks[symbol]; const oldPrice = stock.price; let zScore = generateStandardNormal(); const absZScore = Math.abs(zScore); if (Math.random() < UP_BIAS_PROBABILITY) { zScore = absZScore; } else { zScore = -absZScore; } let volatilityMultiplier = 1.0; if (absZScore > SIGMA_3_THRESHOLD) { volatilityMultiplier = EXTREME_VOLATILITY_MULTIPLIER; console.log(`>>> Extreme Event (${zScore.toFixed(2)}σ) for ${symbol}! Multiplier: ${volatilityMultiplier.toFixed(1)}x`); } else if (absZScore > SIGMA_2_THRESHOLD) { volatilityMultiplier = HIGH_VOLATILITY_MULTIPLIER; console.log(`>> High Volatility Event (${zScore.toFixed(2)}σ) for ${symbol}! Multiplier: ${volatilityMultiplier.toFixed(1)}x`); } let changePercent = stock.drift + (stock.volatility * zScore * volatilityMultiplier); let newPrice = oldPrice * (1 + changePercent); newPrice = Math.max(MIN_PRICE, newPrice); stock.lastChange = newPrice - oldPrice; stock.price = newPrice; }); }
+        
+        /**
+         * Updates stock prices using standard normal distribution, 52/48 bias,
+         * and sigma-based volatility multipliers.
+         */
+        function updateStockPrices() { 
+            Object.keys(stocks).forEach(symbol => { 
+                const stock = stocks[symbol]; 
+                const oldPrice = stock.price; 
+                let zScore = generateStandardNormal(); 
+                const absZScore = Math.abs(zScore); 
+                
+                // Apply 52/48 Upward Bias
+                if (Math.random() < UP_BIAS_PROBABILITY) { // UP_BIAS_PROBABILITY is now 0.52
+                    zScore = absZScore; // 52% chance to be positive
+                } else { 
+                    zScore = -absZScore; // 48% chance to be negative
+                }
+                
+                let volatilityMultiplier = 1.0; 
+                if (absZScore > SIGMA_3_THRESHOLD) { 
+                    volatilityMultiplier = EXTREME_VOLATILITY_MULTIPLIER; 
+                    console.log(`>>> Extreme Event (${zScore.toFixed(2)}σ) for ${symbol}! Multiplier: ${volatilityMultiplier.toFixed(1)}x`); 
+                } else if (absZScore > SIGMA_2_THRESHOLD) { 
+                    volatilityMultiplier = HIGH_VOLATILITY_MULTIPLIER; 
+                    console.log(`>> High Volatility Event (${zScore.toFixed(2)}σ) for ${symbol}! Multiplier: ${volatilityMultiplier.toFixed(1)}x`); 
+                } 
+                
+                let changePercent = stock.drift + (stock.volatility * zScore * volatilityMultiplier); 
+                let newPrice = oldPrice * (1 + changePercent); 
+                newPrice = Math.max(MIN_PRICE, newPrice); 
+                stock.lastChange = newPrice - oldPrice; 
+                stock.price = newPrice; 
+            }); 
+        }
+        
         function buyStock(symbol, quantity, isMargin = false) { if (isLiquidating) { showMessage("Trading locked during liquidation.", "error"); return false; } if (quantity <= 0 || !Number.isInteger(quantity)) { showMessage("Invalid quantity.", "error"); return false; } if (!stocks[symbol] || stocks[symbol].price <= 0) { showMessage("Invalid stock or price.", "error"); return false; } const stock = stocks[symbol]; const cost = stock.price * quantity; const { availableMargin } = calculateDerivedValues(); if (!player.portfolio[symbol]) { player.portfolio[symbol] = { quantity: 0, totalCost: 0 }; } if (isMargin) { if (cost <= availableMargin) { player.portfolio[symbol].quantity += quantity; player.portfolio[symbol].totalCost += cost; player.loanAmount += cost; showMessage(`Day ${formatDate(currentDate)}: Bought ${quantity} ${symbol} on margin @ ${formatCurrency(stock.price)}`, "success"); return true; } else { showMessage("Insufficient available margin.", "error"); return false; } } else { if (cost <= player.cash) { player.portfolio[symbol].quantity += quantity; player.portfolio[symbol].totalCost += cost; player.cash -= cost; showMessage(`Day ${formatDate(currentDate)}: Bought ${quantity} ${symbol} with cash @ ${formatCurrency(stock.price)}`, "success"); return true; } else { showMessage("Insufficient cash.", "error"); return false; } } }
         function sellStock(symbol, quantity) { if (quantity <= 0 || !Number.isInteger(quantity)) { showMessage("Invalid quantity.", "error"); return false; } if (!stocks[symbol]) { showMessage("Invalid stock.", "error"); return false; } const position = player.portfolio[symbol]; const ownedQuantity = position ? position.quantity : 0; if (quantity > ownedQuantity) { showMessage(`Not enough ${symbol} shares. You own ${ownedQuantity}.`, "error"); return false; } const stock = stocks[symbol]; const earnings = stock.price * quantity; let costBasisReduction = 0; if (ownedQuantity > 0 && position.totalCost > 0) { const avgCost = position.totalCost / ownedQuantity; costBasisReduction = avgCost * quantity; } position.quantity -= quantity; position.totalCost -= costBasisReduction; if (position.quantity === 0 || position.totalCost < 0.001) { position.totalCost = 0; } const repayment = Math.min(earnings, player.loanAmount); player.loanAmount -= repayment; player.cash += (earnings - repayment); if (!isLiquidating) { showMessage(`Day ${formatDate(currentDate)}: Sold ${quantity} ${symbol} @ ${formatCurrency(stock.price)}. Repaid ${formatCurrency(repayment)} loan.`, "success"); } return true; }
         function liquidatePositions() { if (isLiquidating) return; isLiquidating = true; console.warn("MARGIN CALL TRIGGERED!"); showMessage("MARGIN CALL! Equity too low. Liquidating positions...", "error", true); setTimeout(() => { let iterations = 0; const maxIterations = Object.keys(player.portfolio).length + 5; while (iterations < maxIterations) { const { equity, portfolioVal } = calculateDerivedValues(); if (equity > 0 || portfolioVal <= 0) { break; } let symbolToSell = null; let maxVal = -1; Object.entries(player.portfolio).forEach(([symbol, position]) => { if (position && position.quantity > 0 && stocks[symbol]) { const value = position.quantity * stocks[symbol].price; if (value > maxVal) { maxVal = value; symbolToSell = symbol; } } }); if (symbolToSell) { const quantityToSell = player.portfolio[symbolToSell].quantity; console.log(`Liquidation: Selling ${quantityToSell} of ${symbolToSell}`); sellStock(symbolToSell, quantityToSell); } else { console.error("Liquidation stuck: Portfolio value > 0 but no stock found to sell."); break; } iterations++; } if (iterations >= maxIterations) { console.error("Liquidation loop exceeded max iterations."); } const { equity: finalEquity } = calculateDerivedValues(); if (finalEquity > 0) { showMessage("Liquidation complete. Margin requirement met.", "success", true); } else { showMessage("Liquidation complete. Unable to meet margin requirements. Account underwater!", "error", true); } isLiquidating = false; renderUI(); flashPriceChanges(); }, 50); }
@@ -261,4 +296,4 @@
     </script>
 
 </body>
-</html>
+</ht

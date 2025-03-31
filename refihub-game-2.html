@@ -1,0 +1,2495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The RefiHub Game: Build Your Empire. Buy, Refi, Repeat.</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- Base Styles & Variables --- */
+        :root {
+            --bg-primary: #111827; /* Dark Gray/Navy */
+            --bg-secondary: #1f2937; /* Medium Dark Gray/Navy */
+            --bg-tertiary: #374151; /* Lighter Gray */
+            --border-color: #4b5563; /* Gray Border */
+            --text-primary: #f3f4f6; /* Light Gray/White Text */
+            --text-secondary: #9ca3af; /* Medium Gray Text */
+            --text-tertiary: #6b7280; /* Darker Gray Text */
+            --accent-blue: #3b82f6; /* Bright Blue */
+            --accent-gold: #f59e0b; /* Gold/Amber */
+            --accent-green: #22c55e; /* Bright Green */
+            --accent-red: #ef4444; /* Bright Red */
+            --accent-cyan: #22d3ee; /* Cyan */
+            --accent-pink: #ec4899; /* Pink */
+            --accent-purple: #a855f7; /* Purple */
+            --shadow-color: rgba(0, 0, 0, 0.4); /* Darker shadow */
+            --dscr-good: var(--accent-green);
+            --dscr-ok: var(--accent-gold);
+            --dscr-bad: var(--accent-red);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { font-size: 14px; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        #game-container {
+            width: 100%;
+            max-width: 1400px; /* Increased max width slightly */
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px -5px var(--shadow-color);
+            padding: 1.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* --- Header --- */
+        #header {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+        #header-top {
+             text-align: center;
+             margin-bottom: 0.5rem;
+        }
+        #header-top h1 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 0.1rem;
+            letter-spacing: -0.025em;
+        }
+        #game-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        #stats-grid {
+             display: grid;
+             /* Adjusted grid for 12 items, more flexible */
+             grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+             gap: 0.75rem;
+        }
+        .status-item {
+            background-color: var(--bg-primary);
+            padding: 0.6rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            transition: background-color 0.3s ease;
+            text-align: left;
+        }
+        .status-item .label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            display: block;
+            margin-bottom: 0.15rem;
+            font-weight: 500;
+        }
+        .status-item span:not(.label) {
+            color: var(--text-primary);
+            display: block;
+            font-size: 1.0rem;
+            font-weight: 600;
+            overflow-wrap: break-word;
+            min-height: 1.1rem;
+        }
+        .status-item span.positive { color: var(--accent-green); }
+        .status-item span.negative { color: var(--accent-red); }
+        /* Highlight animation */
+        .status-item.highlight {
+            background-color: var(--bg-tertiary);
+            animation: highlight-anim 0.6s ease-out;
+        }
+        @keyframes highlight-anim {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); background-color: #4b5563; }
+            100% { transform: scale(1); }
+        }
+        /* Lifestyle Level */
+        #level-display {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px dashed var(--border-color);
+        }
+        #level-display .label { display: inline; margin-right: 0.5rem; font-size: 0.8rem; }
+        #level-icon { font-size: 1.5rem; vertical-align: middle; margin: 0 0.5rem; display: inline-block; }
+        #level-text { font-weight: 600; color: var(--accent-gold); font-size: 1rem; }
+        #goal-progress { font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.25rem; }
+
+        /* --- Main Layout --- */
+        #main-layout {
+            display: grid;
+            grid-template-columns: 1fr 300px; /* Adjusted sidebar width slightly */
+            gap: 1.5rem;
+        }
+        #content-area { display: flex; flex-direction: column; gap: 1.5rem; }
+        #sidebar-area {
+             display: flex;
+             flex-direction: column;
+             gap: 1rem;
+        }
+
+        /* --- Graphs (Sidebar) --- */
+        .graph-widget {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            padding: 0.75rem; /* Reduced padding slightly */
+            border-radius: 0.375rem;
+        }
+        .graph-header { margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: baseline;}
+        .graph-header h3 { font-size: 0.75rem; color: var(--text-secondary); } /* Smaller title */
+        .graph-current-value { font-size: 0.9rem; font-weight: 600; } /* Smaller current value */
+        .graph-current-value.positive { color: var(--accent-green); }
+        .graph-current-value.negative { color: var(--accent-red); }
+        .graph-svg { height: 80px; width: 100%; display: block; background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 0.25rem;}
+        .graph-footer { font-size: 0.65rem; margin-top: 0.3rem; text-align: center; color: var(--text-tertiary);}
+        .graph-line { fill: none; stroke-width: 2px; vector-effect: non-scaling-stroke;}
+        .axis-label { font-family: 'Inter', sans-serif; font-size: 0.6rem; fill: var(--text-tertiary); }
+        /* Specific line colors */
+        .rate-line { stroke: var(--accent-blue); }
+        .value-line { stroke: var(--accent-gold); }
+        .rent-line { stroke: var(--accent-purple); }
+        .networth-line { stroke: var(--accent-green); }
+        .cashflow-line { stroke: var(--accent-cyan); }
+
+
+        /* --- Properties Section --- */
+        .section-title {
+            font-size: 1.15rem; /* Slightly smaller */
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.75rem;
+        }
+        #properties-area {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Slightly wider min */
+            gap: 1rem;
+            align-content: start; /* Align items to the top */
+            min-height: 150px;
+        }
+        .card {
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            background-color: var(--bg-secondary);
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px var(--shadow-color);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .card h3 { font-size: 1rem; font-weight: 600; color: var(--text-primary); }
+        .card-icon { font-size: 1.25rem; }
+        .card p {
+            font-size: 0.75rem; /* Smaller text */
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        .card p .label { color: var(--text-tertiary); margin-right: 0.5rem; flex-shrink: 0; }
+        .card p span:not(.label) { font-weight: 500; color: var(--text-primary); text-align: right; }
+        /* Value trend indicator styling */
+        .value-info { display: flex; align-items: center; justify-content: flex-end; }
+        .value-info .trend-indicator { margin-left: 0.25rem; font-size: 0.7rem; }
+        .trend-indicator { display: inline-block; width: 1em; text-align: center; }
+        .trend-up { color: var(--accent-green); }
+        .trend-down { color: var(--accent-red); }
+        .trend-stable { color: var(--text-tertiary); }
+        /* DSCR Styling */
+        .dscr-value.good { color: var(--dscr-good); font-weight: 600; }
+        .dscr-value.ok { color: var(--dscr-ok); font-weight: 600;}
+        .dscr-value.bad { color: var(--dscr-bad); font-weight: 600;}
+        /* Specific card styling */
+        .property-card { border-left: 4px solid var(--accent-blue); }
+        .property-card h3 { color: var(--accent-blue); }
+        .property-actions { margin-top: 0.75rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+
+        /* --- Marketplace Section --- */
+        #marketplace-section {
+             display: flex;
+             flex-direction: column;
+             gap: 1rem;
+        }
+        #marketplace-header {
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+             padding-bottom: 0.5rem;
+             border-bottom: 1px solid var(--border-color);
+        }
+         #marketplace-header h2 { /* Use h2 for title */
+             font-size: 1.15rem; /* Match section title */
+             font-weight: 700;
+             color: #ffffff;
+             margin: 0;
+             padding: 0;
+             border: none;
+             text-align: left;
+         }
+        #marketplace-area { /* Container for cards */
+             display: grid;
+             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Match portfolio */
+             gap: 1rem;
+             min-height: 150px;
+             align-content: start; /* Align items to the top */
+        }
+        .marketplace-card { border-left: 4px solid var(--accent-gold); }
+        .marketplace-card h3 { color: var(--accent-gold); }
+        .marketplace-card .btn-buy {
+             margin-top: 0.75rem;
+             width: 100%;
+        }
+
+        /* --- Offers Section --- */
+        #offers-area {
+            min-height: 120px;
+            background-color: var(--bg-primary); /* Darker background for offers */
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        #offers-area h2 {
+            font-size: 1.15rem; /* Match section title */
+            font-weight: 700;
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        #offer-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px dashed var(--border-color);
+            font-size: 0.7rem; /* Smaller controls text */
+            color: var(--text-secondary);
+        }
+        #offer-controls label { display: flex; align-items: center; gap: 0.3rem; cursor: pointer;}
+        #offer-controls input[type="checkbox"] {
+            width: 0.8rem; height: 0.8rem; cursor: pointer; accent-color: var(--accent-blue);
+        }
+        #no-offers-message {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--accent-green);
+            padding: 1rem;
+            border: 1px dashed var(--accent-green);
+            border-radius: 0.25rem;
+            animation: pulse-green 2s infinite ease-in-out;
+            display: none; /* Initially hidden */
+        }
+        @keyframes pulse-green {
+            0%, 100% { opacity: 0.7; box-shadow: 0 0 3px rgba(34, 197, 94, 0.3); }
+            50% { opacity: 1; box-shadow: 0 0 8px rgba(34, 197, 94, 0.5); }
+        }
+        .offer-card {
+            background-color: var(--bg-secondary); /* Slightly lighter than area bg */
+            border: 1px solid var(--border-color);
+            border-radius: 0.25rem;
+            padding: 0.75rem;
+            font-size: 0.75rem; /* Smaller text */
+            transition: background-color 0.2s ease;
+            box-shadow: 0 1px 2px 0 var(--shadow-color);
+        }
+        .offer-card:hover { background-color: #2a374a; }
+        .offer-card p { margin-bottom: 0.3rem; color: var(--text-secondary); display: flex; justify-content: space-between; }
+        .offer-card p .label { color: var(--text-tertiary); margin-right: 0.5rem; flex-shrink: 0; }
+        .offer-card strong { color: var(--text-primary); font-weight: 600; }
+        .offer-card .cash-out { color: var(--accent-cyan); font-weight: 600; }
+        .offer-card .cost { color: var(--accent-red); font-weight: 500; }
+        .offer-card .savings { color: var(--accent-green); font-weight: 600; text-align: left; margin-top: 0.2rem;} /* Savings styling */
+        .offer-card .offer-source {
+            display: block;
+            font-size: 0.65rem; /* Smaller source label */
+            color: var(--text-tertiary);
+            font-style: italic;
+            text-align: right;
+            margin-bottom: 0.25rem;
+        }
+        /* Left border colors for offer types */
+        .offer-card.offer-type-refinance { border-left: 3px solid var(--accent-blue); }
+        .offer-card.offer-type-refinance-quote { border-left: 3px solid var(--text-tertiary); }
+        .offer-actions { margin-top: 0.75rem; display: flex; gap: 0.5rem; justify-content: flex-end; }
+
+        /* --- Message Log --- */
+        #message-log-container { /* In sidebar */
+             /* No specific styling needed */
+        }
+        #message-log-container h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        #message-log {
+            height: 150px; /* Reduced height slightly */
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 0.25rem;
+            padding: 0.75rem;
+            overflow-y: auto; /* Enable vertical scrolling */
+            font-size: 0.7rem; /* Smaller log text */
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+        #message-log p {
+            margin-bottom: 0.3rem;
+            border-bottom: 1px solid var(--bg-tertiary);
+            padding-bottom: 0.3rem;
+        }
+        #message-log p:last-child { border-bottom: none; }
+        /* Log message type colors */
+        .log-info { color: var(--text-tertiary); }
+        .log-offer { color: var(--accent-gold); }
+        .log-action { color: var(--accent-blue); }
+        .log-warning { color: #facc15; } /* Yellow */
+        .log-success { color: var(--accent-green); }
+        .log-buy-sell { color: var(--accent-pink); }
+        .log-error { color: var(--accent-red); font-weight: bold;}
+
+        /* --- Buttons --- */
+        button {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.75rem; /* Slightly smaller base size */
+            padding: 0.5rem 0.9rem;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            text-transform: none;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            box-shadow: 0 1px 2px 0 var(--shadow-color);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            justify-content: center;
+            font-variant-ligatures: none;
+            -webkit-font-variant-ligatures: none;
+            text-rendering: optimizeLegibility;
+        }
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+            background-color: var(--bg-tertiary) !important;
+            border-color: var(--border-color) !important;
+            color: var(--text-tertiary) !important;
+        }
+        button:active:not(:disabled) { transform: translateY(1px); }
+        /* Color variations */
+        .btn-primary { background-color: var(--accent-blue); border-color: var(--accent-blue); color: #ffffff; }
+        .btn-primary:hover:not(:disabled) { background-color: #2563eb; border-color: #1d4ed8; }
+        .btn-secondary { background-color: var(--bg-tertiary); border-color: var(--border-color); color: var(--text-primary); }
+        .btn-secondary:hover:not(:disabled) { background-color: var(--border-color); }
+        .btn-danger { background-color: var(--accent-red); border-color: var(--accent-red); color: #ffffff; }
+        .btn-danger:hover:not(:disabled) { background-color: #dc2626; border-color: #b91c1c; }
+        .btn-success { background-color: var(--accent-green); border-color: var(--accent-green); color: #ffffff; }
+        .btn-success:hover:not(:disabled) { background-color: #16a34a; border-color: #15803d; }
+        .btn-warning { background-color: var(--accent-gold); border-color: var(--accent-gold); color: var(--bg-primary); }
+        .btn-warning:hover:not(:disabled) { background-color: #d97706; border-color: #b45309; }
+        /* Specific action buttons */
+        .btn-refi { width: 100%; background-color: var(--accent-blue); border-color: var(--accent-blue); color: #ffffff; }
+        .btn-refi:hover:not(:disabled) { background-color: #2563eb; border-color: #1d4ed8; }
+        .btn-sell { width: 100%; background-color: var(--accent-pink); border-color: var(--accent-pink); color: #ffffff; }
+        .btn-sell:hover:not(:disabled) { background-color: #db2777; border-color: #be185d; }
+        .btn-buy { width: 100%; background-color: var(--accent-green); border-color: var(--accent-green); color: #ffffff; }
+        .btn-buy:hover:not(:disabled) { background-color: #16a34a; border-color: #15803d; }
+        .btn-refresh { background-color: var(--accent-purple); border-color: var(--accent-purple); color: #ffffff; }
+        .btn-refresh:hover:not(:disabled) { background-color: #9333ea; border-color: #7e22ce; }
+        .btn-accept { background-color: var(--accent-green); border-color: var(--accent-green); color: #ffffff; }
+        .btn-accept:hover:not(:disabled) { background-color: #16a34a; border-color: #15803d; }
+        .btn-reject { background-color: var(--accent-red); border-color: var(--accent-red); color: #ffffff; }
+        .btn-reject:hover:not(:disabled) { background-color: #dc2626; border-color: #b91c1c; }
+        .btn-resume { background-color: var(--accent-gold); border-color: var(--accent-gold); color: var(--bg-primary); }
+        .btn-resume:hover:not(:disabled) { background-color: #d97706; border-color: #b45309; }
+
+        /* --- Game Over / Win Overlay --- */
+        #game-over-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(17, 24, 39, 0.95);
+            color: #f9fafb;
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            z-index: 100;
+            font-size: 1rem;
+            padding: 2rem;
+            backdrop-filter: blur(5px);
+        }
+        #game-over-overlay h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+        #game-over-overlay p { margin-bottom: 1.5rem; line-height: 1.6; color: #d1d5db; }
+        #game-over-title.win { color: var(--accent-green); }
+        #game-over-title.lose { color: var(--accent-red); }
+        #restart-btn {
+            font-size: 1rem;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: #ffffff;
+        }
+        #restart-btn:hover { background-color: #2563eb; border-color: #1d4ed8; }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 1200px) {
+             #stats-grid { grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); }
+        }
+        @media (max-width: 900px) {
+            #main-layout {
+                grid-template-columns: 1fr; /* Stack content and sidebar */
+            }
+            #sidebar-area {
+                 order: 1; /* Move sidebar below content */
+                 margin-top: 1.5rem;
+            }
+            #stats-grid { grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
+            #message-log { height: 130px; }
+            /* Stack graphs in sidebar when stacked */
+            #sidebar-area {
+                display: grid;
+                grid-template-columns: 1fr 1fr; /* Two columns for graphs when stacked */
+                gap: 1rem;
+            }
+             #message-log-container {
+                grid-column: 1 / -1; /* Log spans full width below graphs */
+                margin-top: 0.5rem;
+             }
+
+        }
+        @media (max-width: 600px) {
+            html { font-size: 13px; }
+            #game-container { padding: 1rem; }
+            #header { gap: 0.75rem; }
+            #stats-grid { gap: 0.5rem; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); } /* Further shrink minmax */
+            .status-item { padding: 0.5rem; }
+            .status-item span:not(.label) { font-size: 0.85rem; min-height: 1rem;}
+            #level-display { margin-top: 0.25rem; padding-top: 0.25rem;}
+            #level-icon { font-size: 1.2rem; }
+            #level-text { font-size: 0.9rem; }
+            #goal-progress { font-size: 0.7rem; }
+            #properties-area, #marketplace-area { grid-template-columns: 1fr; } /* Single column cards */
+            button { padding: 0.4rem 0.8rem; font-size: 0.7rem; }
+            #game-over-overlay h2 { font-size: 1.5rem; }
+             /* Stack graphs single column on smallest screens */
+            #sidebar-area {
+                grid-template-columns: 1fr;
+            }
+            #message-log { height: 120px; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <!-- Header Section: Title, Stats Grid, Level Display -->
+        <header id="header">
+            <div id="header-top">
+                 <h1>RefiHub: Real-Time Simulation</h1>
+                 <p id="game-subtitle">Maximize cash flow, manage risk, and build your empire.</p>
+            </div>
+            <div id="stats-grid">
+                 <div class="status-item"><span class="label">Date:</span> <span id="time-display">Loading...</span></div>
+                 <div class="status-item"><span class="label">Properties:</span> <span id="prop-count-display">0 / 9</span></div>
+                 <div class="status-item"><span class="label">Total AUM:</span> <span id="total-aum-display">$0</span></div>
+                 <div class="status-item"><span class="label">Net Worth:</span> <span id="net-worth-display">$0</span></div>
+                 <div class="status-item"><span class="label">Cash:</span> <span id="cash-display">$0</span></div>
+                 <div class="status-item"><span class="label">Total Loans:</span> <span id="total-loan-display">$0</span></div>
+                 <div class="status-item"><span class="label">Avg Loan Rate:</span> <span id="avg-rate-display">0%</span></div>
+                 <div class="status-item"><span class="label">Yearly NOI:</span> <span id="total-noi-display">$0</span></div>
+                 <div class="status-item"><span class="label">Yearly Debt Svc:</span> <span id="total-debt-service-display">$0</span></div>
+                 <div class="status-item"><span class="label">Portfolio DSCR:</span> <span id="portfolio-dscr-display">N/A</span></div>
+                 <div class="status-item"><span class="label">Yearly Cash Flow:</span> <span id="last-cashflow-display">$0</span></div>
+                 <div class="status-item"><span class="label">Market Rate:</span> <span id="hdr-market-rate">-%</span></div>
+            </div>
+            <div id="level-display">
+                 <span class="label">Lifestyle Level:</span>
+                 <span id="level-icon">💰</span> <span id="level-text">Starting Out</span>
+                 <div id="goal-progress">Goal: $100K / Yr CF</div>
+            </div>
+        </header>
+
+        <!-- Main Content Layout: Content Area (Offers, Portfolio, Marketplace) & Sidebar (Graphs, Log) -->
+        <div id="main-layout">
+            <!-- Content Area -->
+            <div id="content-area">
+                <!-- Refinance Offers & Quotes Section -->
+                <section id="offers-area">
+                    <h2>Refinance Offers & Quotes</h2>
+                    <div id="offer-controls">
+                        <label title="Receive unsolicited offers only if the rate is lower than your current loan (still maximizes cash out based on DSCR).">
+                            <input type="checkbox" id="lower-rate-offers-toggle" checked> Receive Lower Rate Offers
+                        </label>
+                         <label title="Receive unsolicited offers that provide cash out (may have similar or slightly higher rate, maximizes cash out based on DSCR).">
+                            <input type="checkbox" id="cash-out-offers-toggle" checked> Receive Cash-Out Offers
+                        </label>
+                    </div>
+                    <div id="offers-list">
+                        <div id="no-offers-message" style="display: block;"> <!-- Initially visible -->
+                            Automated Refinance Alerts Activated
+                        </div>
+                        <!-- Offer cards will be dynamically added here -->
+                    </div>
+                </section>
+
+                <!-- Player Portfolio Section -->
+                <section id="portfolio-section">
+                    <h2 class="section-title">Your Portfolio</h2>
+                    <div id="properties-area">
+                        <!-- Property cards will be dynamically added here -->
+                    </div>
+                </section>
+
+                <!-- Property Marketplace Section -->
+                <section id="marketplace-section">
+                     <div id="marketplace-header">
+                         <h2>Property Marketplace</h2>
+                         <button id="refresh-marketplace-btn" class="btn-refresh">Refresh Marketplace</button>
+                     </div>
+                     <div id="marketplace-area">
+                         <!-- Marketplace property cards will be dynamically added here -->
+                     </div>
+                 </section>
+            </div>
+
+            <!-- Sidebar Area -->
+            <aside id="sidebar-area">
+                <!-- Market Interest Rate Graph -->
+                <div id="rate-graph-widget" class="graph-widget">
+                     <div class="graph-header">
+                         <h3>Interest Rate</h3>
+                         <span id="current-market-rate" class="graph-current-value">-%</span>
+                     </div>
+                     <svg id="rate-graph" class="graph-svg" viewBox="0 0 200 100" preserveAspectRatio="none">
+                         <polyline id="rate-line" class="graph-line rate-line" points="0,50 200,50"/>
+                         <text id="rate-max-label" x="5" y="10" class="axis-label">0%</text>
+                         <text id="rate-min-label" x="5" y="95" class="axis-label">0%</text>
+                     </svg>
+                     <div class="graph-footer">Last 100 Days</div>
+                 </div>
+                 <!-- Property Value Index Graph -->
+                 <div id="value-graph-widget" class="graph-widget">
+                     <div class="graph-header">
+                         <h3>Value Index (YoY)</h3>
+                         <span id="current-value-index" class="graph-current-value">N/A</span>
+                     </div>
+                     <svg id="value-graph" class="graph-svg" viewBox="0 0 200 100" preserveAspectRatio="none">
+                         <polyline id="value-line" class="graph-line value-line" points="0,50 200,50"/>
+                         <text id="value-max-label" x="5" y="10" class="axis-label"></text>
+                         <text id="value-min-label" x="5" y="95" class="axis-label"></text>
+                     </svg>
+                     <div class="graph-footer">Last 100 Days</div>
+                 </div>
+                 <!-- Rent Index Graph -->
+                  <div id="rent-graph-widget" class="graph-widget">
+                     <div class="graph-header">
+                         <h3>Rent Index (YoY)</h3>
+                         <span id="current-rent-index" class="graph-current-value">N/A</span>
+                     </div>
+                     <svg id="rent-graph" class="graph-svg" viewBox="0 0 200 100" preserveAspectRatio="none">
+                         <polyline id="rent-line" class="graph-line rent-line" points="0,50 200,50"/>
+                         <text id="rent-max-label" x="5" y="10" class="axis-label"></text>
+                         <text id="rent-min-label" x="5" y="95" class="axis-label"></text>
+                     </svg>
+                     <div class="graph-footer">Last 100 Days</div>
+                 </div>
+                 <!-- Net Worth Graph -->
+                 <div id="networth-graph-widget" class="graph-widget">
+                     <div class="graph-header">
+                         <h3>Net Worth</h3>
+                         <span id="current-networth-value" class="graph-current-value">$0</span>
+                     </div>
+                     <svg id="networth-graph" class="graph-svg" viewBox="0 0 200 100" preserveAspectRatio="none">
+                         <polyline id="networth-line" class="graph-line networth-line" points="0,50 200,50"/>
+                         <text id="networth-max-label" x="5" y="10" class="axis-label"></text>
+                         <text id="networth-min-label" x="5" y="95" class="axis-label"></text>
+                     </svg>
+                     <div class="graph-footer">Last 100 Days</div>
+                 </div>
+                 <!-- Cash Flow Graph -->
+                 <div id="cashflow-graph-widget" class="graph-widget">
+                     <div class="graph-header">
+                         <h3>Cash Flow (Yrly)</h3>
+                         <span id="current-cashflow-value" class="graph-current-value">$0</span>
+                     </div>
+                     <svg id="cashflow-graph" class="graph-svg" viewBox="0 0 200 100" preserveAspectRatio="none">
+                         <polyline id="cashflow-line" class="graph-line cashflow-line" points="0,50 200,50"/>
+                         <text id="cashflow-max-label" x="5" y="10" class="axis-label"></text>
+                         <text id="cashflow-min-label" x="5" y="95" class="axis-label"></text>
+                     </svg>
+                     <div class="graph-footer">Last 100 Days</div>
+                 </div>
+
+                <!-- Message Log Container -->
+                <div id="message-log-container">
+                    <h2>Event Log</h2>
+                    <div id="message-log">
+                        <!-- Log messages will be dynamically added here -->
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+    </div> <!-- End #game-container -->
+
+    <!-- Game Over / Win Overlay -->
+    <div id="game-over-overlay">
+        <h2 id="game-over-title">GAME OVER</h2>
+        <p id="game-over-message">You went bankrupt!</p>
+        <p>Survived: <span id="final-days"></span> Days</p>
+        <p>Final Net Worth: <span id="final-net-worth"></span></p>
+        <button id="restart-btn" class="btn-primary">Restart Game</button>
+    </div>
+
+    <script>
+        // --- Game Configuration Constants ---
+        const STARTING_CASH = 150000;
+        const BANKRUPTCY_THRESHOLD = -50000; // Net worth drops below this -> Game Over
+        const MAX_PROPERTIES = 9;
+        const BASE_MARKET_RATE = 5.0; // Starting market interest rate %
+        const MIN_RATE = 2.0; // Minimum possible market rate %
+        const MAX_RATE = 9.0; // Maximum possible market rate %
+        const CENTER_RATE = 4.5; // Rate towards which the market mean-reverts %
+        const MEAN_REVERSION_FACTOR = 0.005; // Strength of mean reversion pull (per day)
+        const DAILY_RATE_VOLATILITY = 0.02; // Base daily random fluctuation for rates (absolute percentage points)
+        const MAX_DAILY_RATE_CHANGE = 0.10; // Max absolute change in rate per day (absolute percentage points)
+        const CRASH_CHANCE_PER_DAY = 2 / 365; // Approx 2 times per year chance of a rate crash event
+        const CRASH_MAGNITUDE = 1.0; // How much the rate drops during a crash (absolute percentage points)
+        const CRASH_DURATION_DAYS = 7; // How many days the crash event lasts
+        const ANNUAL_VALUE_GROWTH_TARGET = 0.05; // Target average annual growth for property value index (5%)
+        const DAILY_VALUE_VOLATILITY = 0.002; // Base daily random fluctuation for value index (as multiplier delta)
+        const ANNUAL_RENT_GROWTH_TARGET = 0.04; // Target average annual growth for rent index (4%)
+        const DAILY_RENT_VOLATILITY = 0.0015; // Base daily random fluctuation for rent index (as multiplier delta)
+        const UNSOLICITED_OFFER_CHANCE_PER_DAY = 0.01; // Chance *per property* *per day* to receive an unsolicited refi offer
+        const REFI_RATE_SPREAD = 0.5; // Base spread *below* market rate for potential refi offers (reduced for max loan/cash out)
+        const REFI_CLOSING_COST_PERCENT = 0.015; // Closing costs as a % of the new loan amount
+        const PURCHASE_DOWN_PAYMENT_PERCENT = 0.25; // Required down payment for purchase (scope said 25%, but code implies LTV max is the constraint)
+        const MAX_LTV_PURCHASE = 0.75; // Max Loan-to-Value constraint for purchase (75% LTV = 25% down)
+        const PURCHASE_DSCR_THRESHOLD = 1.25; // Minimum DSCR required for purchase financing approval
+        const CASH_OUT_RATE_PREMIUM = 0.15; // Rate premium added for cash-out offers (absolute percentage points)
+        const PURCHASE_RATE_PREMIUM = 0.25; // Premium added to market rate for purchase loans (absolute percentage points)
+        const PURCHASE_LOAN_TERM_MONTHS = 360; // Standard loan term for new purchases (30 years)
+        const REFI_LOAN_TERM_MONTHS = 360; // Standard loan term for refinances (30 years)
+        const TARGET_DSCR = 1.25; // Target DSCR for maximizing refinance loans (also used for purchase check)
+        const SELLING_COST_PERCENT = 0.05; // Costs deducted when selling a property (5% of sale price)
+        const GRAPH_HISTORY_LENGTH = 370; // Days of history to store (allows for YoY calcs)
+        const GRAPH_DISPLAY_DAYS = 100; // Number of days to visually display on graphs
+        const GRAPH_UPDATE_INTERVAL = 3; // Update graphs every N game ticks (more frequent updates)
+        const PROPERTY_TYPES = { APT: '🏢', PLEX: '🏘️', RETAIL: '🏬', OFFICE: '🏦', IND: '🏭' };
+        const PROPERTY_TYPE_DETAILS = {
+            APT: { baseCap: 0.06, name: 'Apartment Complex' },
+            PLEX: { baseCap: 0.065, name: 'Multi-Plex Housing' },
+            RETAIL: { baseCap: 0.07, name: 'Retail Strip' },
+            OFFICE: { baseCap: 0.075, name: 'Office Building' },
+            IND: { baseCap: 0.08, name: 'Industrial Warehouse' }
+        };
+        const MARKETPLACE_SIZE = 3; // Number of properties to show in the marketplace
+        const CASH_TO_PRICE_MULTIPLIER = 4; // Target property price relative to player cash for marketplace generation
+        const GAME_SPEED_MS = 1000; // Milliseconds per game day (1 second = 1 day)
+        const LEVEL_MILESTONES = [
+            { threshold: 100000, name: "Getting Started", icon: "💰" }, // ~8.3k/mo
+            { threshold: 250000, name: "Investor", icon: "🚗" },        // ~21k/mo
+            { threshold: 500000, name: "Pro Investor", icon: "🏠" },   // ~41k/mo
+            { threshold: 1000000, name: "Tycoon", icon: "🛥️" },        // ~83k/mo
+            { threshold: 5000000, name: "Mogul", icon: "✈️" },         // ~416k/mo
+            { threshold: 10000000, name: "Legend", icon: "🏆" }        // ~833k/mo - Win condition
+        ];
+        const REFI_RATE_IMPROVEMENT_THRESHOLD = 0.10; // Min rate drop required for a "lower rate" offer (absolute percentage points)
+
+        // --- Game State Variables ---
+        let gameState = {}; // Holds all dynamic game data
+        let gameLoopInterval = null; // Stores the interval ID for the main game loop
+        let rateHistory = []; // Market rate history
+        let valueHistory = []; // Property value index history
+        let rentHistory = []; // Rent index history
+        let netWorthHistory = []; // Player net worth history
+        let cashFlowHistory = []; // Player annualized cash flow history
+        let tickCounter = 0; // Internal counter for periodic actions
+        let lastMonthNetCashFlow = 0; // Stores the raw net cash flow from the previous month
+        let currentSimDate = new Date(); // Holds the current simulated date
+        let isCrashing = false; // Flag for market rate crash event
+        let crashTargetRate = 0;
+        let crashDaysRemaining = 0;
+        let nextPropertyId = 2000; // Counter for unique property IDs
+
+        // --- DOM Element References ---
+        // Header Stats
+        const timeDisplay = document.getElementById('time-display');
+        const propCountDisplay = document.getElementById('prop-count-display');
+        const netWorthDisplay = document.getElementById('net-worth-display');
+        const cashDisplay = document.getElementById('cash-display');
+        const totalLoanDisplay = document.getElementById('total-loan-display');
+        const totalDebtServiceDisplay = document.getElementById('total-debt-service-display');
+        const portfolioDscrDisplay = document.getElementById('portfolio-dscr-display');
+        const totalAumDisplay = document.getElementById('total-aum-display');
+        const avgRateDisplay = document.getElementById('avg-rate-display');
+        const totalNoiDisplay = document.getElementById('total-noi-display');
+        const lastCashflowDisplay = document.getElementById('last-cashflow-display');
+        const hdrMarketRateDisplay = document.getElementById('hdr-market-rate'); // Added header market rate
+        // Level Display
+        const levelIconEl = document.getElementById('level-icon');
+        const levelTextEl = document.getElementById('level-text');
+        const goalProgressEl = document.getElementById('goal-progress');
+        // Content Areas
+        const propertiesArea = document.getElementById('properties-area');
+        const marketplaceArea = document.getElementById('marketplace-area');
+        const refreshMarketplaceBtn = document.getElementById('refresh-marketplace-btn');
+        const offersList = document.getElementById('offers-list');
+        const noOffersMessage = document.getElementById('no-offers-message');
+        const lowerRateOffersToggle = document.getElementById('lower-rate-offers-toggle');
+        const cashOutOffersToggle = document.getElementById('cash-out-offers-toggle');
+        // Sidebar
+        const messageLog = document.getElementById('message-log');
+        // Graph Elements
+        const rateLine = document.getElementById('rate-line');
+        const valueLine = document.getElementById('value-line');
+        const rentLine = document.getElementById('rent-line');
+        const networthLine = document.getElementById('networth-line'); // New
+        const cashflowLine = document.getElementById('cashflow-line'); // New
+        const rateMaxLabel = document.getElementById('rate-max-label');
+        const rateMinLabel = document.getElementById('rate-min-label');
+        const valueMaxLabel = document.getElementById('value-max-label'); // New
+        const valueMinLabel = document.getElementById('value-min-label'); // New
+        const rentMaxLabel = document.getElementById('rent-max-label');   // New
+        const rentMinLabel = document.getElementById('rent-min-label');   // New
+        const networthMaxLabel = document.getElementById('networth-max-label'); // New
+        const networthMinLabel = document.getElementById('networth-min-label'); // New
+        const cashflowMaxLabel = document.getElementById('cashflow-max-label'); // New
+        const cashflowMinLabel = document.getElementById('cashflow-min-label'); // New
+        const currentMarketRateEl = document.getElementById('current-market-rate');
+        const currentValueIndexEl = document.getElementById('current-value-index');
+        const currentRentIndexEl = document.getElementById('current-rent-index');
+        const currentNetworthValueEl = document.getElementById('current-networth-value'); // New
+        const currentCashflowValueEl = document.getElementById('current-cashflow-value'); // New
+        // Game Over Overlay
+        const gameOverOverlay = document.getElementById('game-over-overlay');
+        const gameOverTitle = document.getElementById('game-over-title');
+        const gameOverMessage = document.getElementById('game-over-message');
+        const finalDays = document.getElementById('final-days');
+        const finalNetWorth = document.getElementById('final-net-worth');
+        const restartBtn = document.getElementById('restart-btn');
+
+
+        // --- Utility Functions ---
+
+        /** Formats a number as US Dollar currency. */
+        function formatCurrency(value, showSign = false, compact = false) {
+            const numValue = Number(value);
+            if (isNaN(numValue)) return '$NaN';
+
+            // Compact formatting (e.g., $1.2M, $500K)
+            if (compact && Math.abs(numValue) >= 1000) {
+                const suffixes = ["", "K", "M", "B", "T"];
+                let suffixIndex = 0;
+                let formattedValue = numValue;
+                while(Math.abs(formattedValue) >= 1000 && suffixIndex < suffixes.length - 1) {
+                    formattedValue /= 1000;
+                    suffixIndex++;
+                }
+                // Adjust precision based on magnitude
+                const precision = Math.abs(formattedValue) >= 100 ? 0 : Math.abs(formattedValue) >= 10 ? 1 : 1;
+                const sign = numValue < 0 ? "-" : (showSign ? "+" : "");
+                return `${sign}$${Math.abs(formattedValue).toFixed(precision)}${suffixes[suffixIndex]}`;
+            }
+
+            // Standard formatting
+            const options = { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 };
+            if (showSign) { options.signDisplay = 'always'; }
+            return numValue.toLocaleString('en-US', options);
+        }
+
+
+        /** Formats a number as a percentage with one decimal place. */
+        function formatPercent(value, showSign = false) {
+            const numValue = Number(value);
+            if(isNaN(numValue)) return 'NaN%';
+            const options = { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 };
+            if (showSign) { options.signDisplay = 'always'; }
+            // Input is expected as percentage points (e.g., 5.5), divide by 100 for toLocaleString
+            return (numValue / 100).toLocaleString('en-US', options);
+        }
+
+        /** Formats a number as a percentage rate with two decimal places. */
+        function formatPercentRate(value) {
+            const numValue = Number(value);
+            return isNaN(numValue) ? 'NaN%' : numValue.toFixed(2) + '%';
+        }
+
+        /** Formats a number to a fixed number of decimal places. */
+        function formatDecimal(value, places = 2) {
+            const numValue = Number(value);
+            return isNaN(numValue) ? 'NaN' : numValue.toFixed(places);
+        }
+
+        /** Formats a Date object into a readable string (e.g., "March 30, 2025"). */
+        function formatFullDate(date) {
+            if (!(date instanceof Date)) return "Invalid Date";
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        /** Calculates the monthly payment for a loan. */
+        function calculateMonthlyPayment(principal, annualRatePercent, termMonths) {
+            principal = Number(principal);
+            annualRatePercent = Number(annualRatePercent);
+            termMonths = Number(termMonths);
+
+            if (principal <= 0 || termMonths <= 0 || isNaN(principal) || isNaN(annualRatePercent) || isNaN(termMonths)) return 0;
+
+            if (annualRatePercent === 0) return principal / termMonths;
+
+            const monthlyRate = annualRatePercent / 100 / 12;
+            const n = termMonths;
+
+            const payment = principal * (monthlyRate * Math.pow(1 + monthlyRate, n)) / (Math.pow(1 + monthlyRate, n) - 1);
+
+            return (isNaN(payment) || !isFinite(payment)) ? 0 : payment;
+        }
+
+        /** Calculates the total annual debt service for a given loan. */
+        function calculateAnnualDebtService(principal, annualRatePercent, termMonths) {
+            const monthlyPayment = calculateMonthlyPayment(principal, annualRatePercent, termMonths);
+            return monthlyPayment * 12;
+        }
+
+        /** Calculates the maximum loan principal supportable by a given NOI at a target DSCR. */
+        function calculateMaxLoanByDSCR(annualNOI, annualRatePercent, termMonths, targetDSCR) {
+             annualNOI = Number(annualNOI);
+             annualRatePercent = Number(annualRatePercent);
+             termMonths = Number(termMonths);
+             targetDSCR = Number(targetDSCR);
+
+             if (annualNOI <= 0 || annualRatePercent < 0 || termMonths <= 0 || targetDSCR <= 0 || isNaN(annualNOI) || isNaN(annualRatePercent) || isNaN(termMonths) || isNaN(targetDSCR)) {
+                return 0;
+            }
+
+            const maxAnnualDebtService = annualNOI / targetDSCR;
+            const maxMonthlyPayment = maxAnnualDebtService / 12;
+
+            if (maxMonthlyPayment <= 0) return 0; // Cannot support any loan if max payment is non-positive
+
+            // If rate is 0, max loan is simply payment * term
+            if (annualRatePercent === 0) {
+                 return maxMonthlyPayment * termMonths;
+            }
+
+            const monthlyRate = annualRatePercent / 100 / 12;
+            const n = termMonths;
+
+            // Calculate Principal using the rearranged formula: P = Payment * [1 - (1 + r)^-n] / r
+            const principal = maxMonthlyPayment * (1 - Math.pow(1 + monthlyRate, -n)) / monthlyRate;
+
+            return (isNaN(principal) || !isFinite(principal) || principal < 0) ? 0 : principal;
+        }
+
+        /** Logs a message to the in-game message log. */
+        function logMessage(message, type = 'info') {
+            if (!messageLog) { console.error("Message log element not found!"); return; }
+            // Add timestamp prefix only if game has started
+            const dayPrefix = gameState && gameState.day > 0 ? `D${gameState.day}: ` : 'Init: ';
+            const p = document.createElement('p');
+            p.textContent = dayPrefix + message;
+            p.className = `log-${type}`; // Apply CSS class based on type
+            messageLog.appendChild(p);
+            // Auto-scroll to the bottom
+            messageLog.scrollTop = messageLog.scrollHeight;
+            // Limit log length to prevent performance issues
+            while (messageLog.children.length > 100) { // Keep last 100 messages
+                messageLog.removeChild(messageLog.firstChild);
+            }
+        }
+
+        /** Briefly highlights a status item in the header. */
+        function highlightStatus(elementId) {
+            const element = document.getElementById(elementId)?.parentElement; // Target parent .status-item
+            if (element) {
+                element.classList.add('highlight');
+                setTimeout(() => element.classList.remove('highlight'), 600); // Match CSS animation duration
+            }
+        }
+
+        // --- Core Calculation Functions ---
+
+        /** Calculates the player's current net worth (Total Value - Total Loan + Cash). */
+        function calculateNetWorth() {
+            if (!gameState || !gameState.properties) return 0;
+            const totalPropertyValue = gameState.properties.reduce((sum, prop) => sum + (Number(prop.value) || 0), 0);
+            const totalLoanBalance = calculateTotalLoanBalance();
+            return totalPropertyValue - totalLoanBalance + (Number(gameState.cash) || 0);
+        }
+
+        /** Calculates the weighted average loan rate across all properties. */
+        function calculateAverageLoanRate() {
+            if (!gameState || !gameState.properties || gameState.properties.length === 0) return 0;
+            let totalBalance = 0;
+            let weightedRateSum = 0;
+            gameState.properties.forEach(prop => {
+                const balance = Number(prop.loan?.balance) || 0;
+                const rate = Number(prop.loan?.rate) || 0;
+                if (balance > 0) {
+                    totalBalance += balance;
+                    weightedRateSum += balance * rate;
+                }
+            });
+            return totalBalance > 0 ? (weightedRateSum / totalBalance) : 0;
+        }
+
+        /** Calculates the sum of all outstanding loan balances. */
+        function calculateTotalLoanBalance() {
+            if (!gameState || !gameState.properties) return 0;
+            return gameState.properties.reduce((sum, prop) => sum + (Number(prop.loan?.balance) || 0), 0);
+        }
+
+        /** Calculates the total estimated annual debt service for all properties. */
+        function calculateTotalYearlyDebtService() {
+            if (!gameState || !gameState.properties) return 0;
+            return gameState.properties.reduce((sum, prop) => {
+                const balance = Number(prop.loan?.balance) || 0;
+                const rate = Number(prop.loan?.rate) || 0;
+                const monthsRem = Number(prop.loan?.monthsRemaining) || 0;
+                // Only calculate service if there's a balance and term remaining
+                const annualService = (balance > 0 && monthsRem > 0) ? calculateAnnualDebtService(balance, rate, monthsRem) : 0;
+                return sum + annualService;
+            }, 0);
+        }
+
+        /** Calculates the portfolio-wide DSCR (Total Annual NOI / Total Annual Debt Service). */
+        function calculatePortfolioDSCR() {
+            if (!gameState || !gameState.properties || gameState.properties.length === 0) return Infinity; // Or N/A if no properties
+            const totalAnnualNOI = gameState.properties.reduce((sum, prop) => sum + (Number(prop.noi) || 0), 0) * 12;
+            const totalAnnualDebtService = calculateTotalYearlyDebtService();
+
+            if (totalAnnualNOI <= 0 && totalAnnualDebtService <= 0) return Infinity; // Both zero, technically infinite coverage
+            if (totalAnnualDebtService <= 0) return Infinity; // No debt, infinite coverage
+            if (totalAnnualNOI <= 0) return 0; // No income to cover debt
+
+            return totalAnnualNOI / totalAnnualDebtService;
+        }
+
+        /** Calculates total Assets Under Management (Total Property Value + Cash). */
+        function calculateTotalAUM() {
+             if (!gameState || !gameState.properties) return 0;
+             const totalPropertyValue = gameState.properties.reduce((sum, prop) => sum + (Number(prop.value) || 0), 0);
+             return totalPropertyValue + (Number(gameState.cash) || 0);
+        }
+
+        // --- Graph Update Function ---
+
+        /**
+         * Updates all graphs in the sidebar using historical data.
+         * Handles scaling, point calculation, and rendering, including error checks.
+         * @param {string} [graphId=null] - If provided, only update this specific graph.
+         */
+        function updateGraphs(graphId = null) {
+            try {
+                const svgWidth = 200;
+                const svgHeight = 100;
+                const displayCount = GRAPH_DISPLAY_DAYS; // Use constant
+
+                const updateSingleGraph = (lineElement, labelMaxEl, labelMinEl, historyArray, currentValEl, formatFunc, yAxisLabelFormatFunc = formatDecimal, showSign = false, useCompact = false) => {
+                    if (!lineElement || !historyArray) return; // Element or history missing
+
+                    // Get the last 'displayCount' valid, finite numbers from history
+                    const displayHistory = historyArray.slice(-displayCount).filter(val => typeof val === 'number' && isFinite(val));
+
+                    if (displayHistory.length < 2) { // Need at least two points to draw a line
+                        lineElement.setAttribute('points', `0,${svgHeight / 2} ${svgWidth},${svgHeight / 2}`); // Default flat line
+                        if(labelMaxEl) labelMaxEl.textContent = '';
+                        if(labelMinEl) labelMinEl.textContent = '';
+                        if(currentValEl && historyArray.length > 0) {
+                             const latestVal = historyArray[historyArray.length - 1];
+                             currentValEl.textContent = (typeof latestVal === 'number' && isFinite(latestVal)) ? formatFunc(latestVal, showSign, useCompact) : 'N/A';
+                             currentValEl.className = 'graph-current-value'; // Reset class
+                        } else if (currentValEl) {
+                             currentValEl.textContent = 'N/A';
+                             currentValEl.className = 'graph-current-value'; // Reset class
+                        }
+                        return;
+                    }
+
+                    const currentVal = displayHistory[displayHistory.length - 1];
+                    const prevVal = displayHistory.length > 1 ? displayHistory[displayHistory.length - 2] : currentVal;
+
+                    // Calculate min/max, ensuring a minimum range to prevent division by zero/flat lines
+                    let minHist = Math.min(...displayHistory);
+                    let maxHist = Math.max(...displayHistory);
+                    let range = maxHist - minHist;
+
+                    // Special handling for Net Worth/Cash Flow potentially being zero or negative
+                    if (minHist === maxHist) { // If all values are the same
+                         const buffer = Math.abs(minHist * 0.1) || 0.1; // Add a small buffer or 0.1 if value is 0
+                         minHist -= buffer;
+                         maxHist += buffer;
+                         range = maxHist - minHist;
+                    }
+
+                    range = Math.max(range, 0.1); // Ensure range is at least 0.1
+
+                    // Add buffer for visual spacing, adjust minScale if needed (e.g., don't go below 0 for indices)
+                    const buffer = range * 0.1;
+                    let minScale = minHist - buffer;
+                    let maxScale = maxHist + buffer;
+
+                    // Prevent value/rent indices going below 0 visually
+                    if (graphId === 'value-graph' || graphId === 'rent-graph') {
+                        minScale = Math.max(0, minScale);
+                    }
+                     // Prevent rate going below min rate visually
+                     if (graphId === 'rate-graph') {
+                         minScale = Math.max(0, minScale); // Rate shouldn't be negative
+                         // Optionally clamp to MIN_RATE if desired, but dynamic scaling might be better
+                     }
+
+
+                    const displayRange = Math.max(0.1, maxScale - minScale); // Final range for scaling
+
+                    // Generate SVG points
+                    const points = displayHistory.map((val, index) => {
+                        const x = (index / (displayHistory.length - 1)) * svgWidth;
+                        // Scale y: (value - minScale) / displayRange gives 0-1, multiply by height, invert, clamp
+                        const yValue = svgHeight - ((val - minScale) / displayRange) * svgHeight;
+                        // Clamp Y slightly inside SVG bounds to prevent rendering issues at edges
+                        const clampedY = Math.max(0.1, Math.min(svgHeight - 0.1, yValue));
+                        // Ensure coordinates are valid numbers
+                        if (isNaN(x) || isNaN(clampedY)) {
+                            console.warn(`Invalid point generated for ${graphId}: (${x}, ${clampedY}) at index ${index}, value ${val}`);
+                            return null; // Skip this point
+                        }
+                        return `${x.toFixed(1)},${clampedY.toFixed(1)}`;
+                    }).filter(p => p !== null).join(' '); // Filter out null points before joining
+
+                    // Check if points string is valid before setting
+                    if (points && points.length > 0 && points.includes(',')) {
+                         lineElement.setAttribute('points', points);
+                    } else {
+                        // Fallback if no valid points generated
+                        console.warn(`No valid points generated for ${graphId}, setting default line.`);
+                        lineElement.setAttribute('points', `0,${svgHeight / 2} ${svgWidth},${svgHeight / 2}`);
+                    }
+
+
+                    // Update axis labels and current value display
+                    if (labelMaxEl) labelMaxEl.textContent = yAxisLabelFormatFunc(maxScale, false, true); // Use compact for axis
+                    if (labelMinEl) labelMinEl.textContent = yAxisLabelFormatFunc(minScale, false, true); // Use compact for axis
+                    if (currentValEl) {
+                        currentValEl.textContent = formatFunc(currentVal, showSign, useCompact); // Use specified formatter/compactness
+                        // Add positive/negative trend class
+                        let trendClass = '';
+                        if (currentVal > prevVal + 1e-6) trendClass = 'positive'; // Use small epsilon for float comparison
+                        else if (currentVal < prevVal - 1e-6) trendClass = 'negative';
+                        currentValEl.className = `graph-current-value ${trendClass}`;
+                    }
+                };
+
+                 // Function to calculate and format YoY change
+                 const formatYoY = (histArray) => {
+                    if (!histArray || histArray.length < 366) {
+                        return { text: "+0.0%", class: "" }; // Assume 0 change if not enough history (as per scope)
+                    }
+                    const current = histArray[histArray.length - 1];
+                    const past = histArray[histArray.length - 1 - 365];
+                    if (typeof current !== 'number' || typeof past !== 'number' || !isFinite(current) || !isFinite(past) || past <= 0) {
+                        return { text: "N/A", class: "" }; // Cannot calculate
+                    }
+                    const change = ((current / past) - 1) * 100; // Calculate YoY change percentage
+                    const yoyClass = change > 0.01 ? 'positive' : change < -0.01 ? 'negative' : '';
+                    return { text: formatPercent(change, true), class: yoyClass };
+                 };
+
+
+                // --- Update Individual Graphs ---
+                if (!graphId || graphId === 'rate-graph') {
+                    updateSingleGraph(rateLine, rateMaxLabel, rateMinLabel, rateHistory, currentMarketRateEl, formatPercentRate, formatPercentRate);
+                }
+                if (!graphId || graphId === 'value-graph') {
+                    const yoyValue = formatYoY(valueHistory);
+                    updateSingleGraph(valueLine, valueMaxLabel, valueMinLabel, valueHistory, currentValueIndexEl, () => yoyValue.text, formatDecimal); // Display YoY text
+                    if(currentValueIndexEl) currentValueIndexEl.className = `graph-current-value ${yoyValue.class}`; // Apply YoY class
+                }
+                 if (!graphId || graphId === 'rent-graph') {
+                    const yoyRent = formatYoY(rentHistory);
+                    updateSingleGraph(rentLine, rentMaxLabel, rentMinLabel, rentHistory, currentRentIndexEl, () => yoyRent.text, formatDecimal); // Display YoY text
+                    if(currentRentIndexEl) currentRentIndexEl.className = `graph-current-value ${yoyRent.class}`; // Apply YoY class
+                 }
+                if (!graphId || graphId === 'networth-graph') {
+                    updateSingleGraph(networthLine, networthMaxLabel, networthMinLabel, netWorthHistory, currentNetworthValueEl, formatCurrency, formatCurrency, false, true); // Show compact on axis/current
+                }
+                if (!graphId || graphId === 'cashflow-graph') {
+                    updateSingleGraph(cashflowLine, cashflowMaxLabel, cashflowMinLabel, cashFlowHistory, currentCashflowValueEl, formatCurrency, formatCurrency, true, true); // Show sign, compact on axis/current
+                }
+
+            } catch (error) {
+                console.error("Error updating graphs:", error);
+                logMessage("Graph update error. See console.", "error");
+                // Attempt to reset points to avoid broken state - Check if elements exist first
+                const resetPoints = `0,${svgHeight/2} ${svgWidth},${svgHeight/2}`;
+                if(rateLine) rateLine.setAttribute('points', resetPoints);
+                if(valueLine) valueLine.setAttribute('points', resetPoints);
+                if(rentLine) rentLine.setAttribute('points', resetPoints);
+                if(networthLine) networthLine.setAttribute('points', resetPoints);
+                if(cashflowLine) cashflowLine.setAttribute('points', resetPoints);
+            }
+        }
+
+
+        // --- Game Logic Functions ---
+
+        /** Generates a new property object for the marketplace, scaled to a target price. */
+        function generateMarketplaceProperty(targetPrice) {
+            nextPropertyId++;
+            const propKeys = Object.keys(PROPERTY_TYPES);
+            const randomTypeKey = propKeys[Math.floor(Math.random() * propKeys.length)];
+            const typeDetails = PROPERTY_TYPE_DETAILS[randomTypeKey];
+
+            // Add variance to the target price
+            const finalPrice = Math.max(50000, Math.round(targetPrice * (0.85 + Math.random() * 0.3))); // +/- 15% variance, min 50k
+
+            // Calculate NOI based on price and a slightly randomized base cap rate
+            const randomCapRate = typeDetails.baseCap * (0.9 + Math.random() * 0.2); // +/- 10% variance
+            const annualNOI = finalPrice * randomCapRate;
+            const monthlyNOI = Math.round(annualNOI / 12);
+
+            // Generate a plausible name
+            const namePrefixes = ["Metro", "Central", "Riverside", "Uptown", "Suburban", "Gateway", "Landmark", "Apex", "Summit"];
+            const name = `${namePrefixes[Math.floor(Math.random() * namePrefixes.length)]} ${typeDetails.name}`;
+
+            return {
+                id: nextPropertyId,
+                name: name,
+                type: PROPERTY_TYPES[randomTypeKey],
+                price: finalPrice,
+                noi: monthlyNOI // Store base monthly NOI
+            };
+        }
+
+        /** Refreshes the marketplace properties, scaled to player cash. */
+        function refreshMarketplace() {
+            // Avoid refreshing if paused or game over
+            if (gameState.isPaused || gameState.gameOver) return;
+
+            logMessage("Refreshing marketplace listings...", "action");
+            gameState.marketplaceProperties = []; // Clear existing
+            for (let i = 0; i < MARKETPLACE_SIZE; i++) {
+                 // Base target price on cash + existing property value to allow scaling up
+                 const currentAUM = calculateTotalAUM();
+                 const baseTarget = Math.max(50000, (gameState.cash + currentAUM * 0.1) * CASH_TO_PRICE_MULTIPLIER);
+                 const targetPrice = baseTarget * (0.75 + Math.random()*0.5); // Add variance
+                 gameState.marketplaceProperties.push(generateMarketplaceProperty(targetPrice));
+            }
+            updateUI(); // Update the UI to show the new properties
+        }
+
+        /** Initializes the game state, sets up starting conditions, and starts the game loop. */
+        function initGame() {
+            console.log("Initializing game...");
+            if (gameLoopInterval) clearInterval(gameLoopInterval); // Clear any existing loop
+
+            try {
+                currentSimDate = new Date(); // Start from today's real date
+                currentSimDate.setHours(0, 0, 0, 0); // Normalize time part
+
+                gameState = {
+                    day: 0,
+                    simDate: new Date(currentSimDate),
+                    cash: STARTING_CASH,
+                    marketRate: BASE_MARKET_RATE,
+                    propertyValueMultiplier: 1.0,
+                    rentIndexMultiplier: 1.0,
+                    isPaused: false,
+                    playerLevel: 0,
+                    receiveLowerRateOffers: true,
+                    receiveCashOutOffers: true,
+                    properties: [ // Starting portfolio with slightly adjusted initial loans/NOI for better initial DSCR
+                        { id: 1, name: "Downtown Apt", type: PROPERTY_TYPES.APT, baseValue: 500000, value: 500000, baseNoi: 3000 * 1.1, noi: 3000 * 1.1, // Increased NOI slightly
+                          loan: { id: 101, initialBalance: 375000, balance: 375000, rate: 5.5, termMonths: 360, monthsRemaining: 360 } }, // Adjusted LTV
+                        { id: 2, name: "Suburban Plex", type: PROPERTY_TYPES.PLEX, baseValue: 750000, value: 750000, baseNoi: 4750 * 1.1, noi: 4750 * 1.1,
+                          loan: { id: 102, initialBalance: 562500, balance: 562500, rate: 6.0, termMonths: 360, monthsRemaining: 360 } },
+                        { id: 3, name: "Small Retail", type: PROPERTY_TYPES.RETAIL, baseValue: 400000, value: 400000, baseNoi: 2600 * 1.1, noi: 2600 * 1.1,
+                          loan: { id: 103, initialBalance: 280000, balance: 280000, rate: 5.0, termMonths: 240, monthsRemaining: 240 } } // Adjusted LTV/Term Rate
+                    ],
+                    marketplaceProperties: [],
+                    offers: [],
+                    gameOver: false,
+                    gameWon: false,
+                };
+
+                // Initialize history arrays with starting values
+                rateHistory = Array(GRAPH_HISTORY_LENGTH).fill(gameState.marketRate);
+                valueHistory = Array(GRAPH_HISTORY_LENGTH).fill(gameState.propertyValueMultiplier);
+                rentHistory = Array(GRAPH_HISTORY_LENGTH).fill(gameState.rentIndexMultiplier);
+                // Initialize net worth/cash flow based on initial state
+                const initialNetWorth = calculateNetWorth();
+                const initialYearlyCashFlow = 0; // Starts at 0 until first month end
+                netWorthHistory = Array(GRAPH_HISTORY_LENGTH).fill(initialNetWorth);
+                cashFlowHistory = Array(GRAPH_HISTORY_LENGTH).fill(initialYearlyCashFlow);
+
+
+                // Generate initial marketplace properties AFTER initializing gameState
+                 refreshMarketplace();
+
+                // Reset counters and flags
+                tickCounter = 0;
+                lastMonthNetCashFlow = 0;
+                isCrashing = false;
+                crashDaysRemaining = 0;
+                nextPropertyId = 2000; // Reset property ID counter
+
+                // Reset UI elements
+                if (gameOverOverlay) gameOverOverlay.style.display = 'none';
+                if (messageLog) messageLog.innerHTML = '';
+                if (lowerRateOffersToggle) lowerRateOffersToggle.checked = gameState.receiveLowerRateOffers;
+                if (cashOutOffersToggle) cashOutOffersToggle.checked = gameState.receiveCashOutOffers;
+                if (noOffersMessage) noOffersMessage.style.display = 'block'; // Show initial message
+
+                logMessage("RefiHub: Real-Time Simulation START!", "success");
+                logMessage(`Starting Cash: ${formatCurrency(gameState.cash)}`, "info");
+                logMessage(`Initial Portfolio DSCR: ${formatDecimal(calculatePortfolioDSCR(), 2)}`, "info");
+                logMessage(`Goal: Reach ${formatCurrency(LEVEL_MILESTONES[LEVEL_MILESTONES.length - 1].threshold, false, true)}/yr Cash Flow!`, "info");
+
+
+                // Initial UI and graph update
+                updateUI(); // Update UI first to reflect initial state
+                updateGraphs(); // Then update graphs based on initial history
+
+                // Start the game loop
+                startGameLoop();
+                console.log("Game initialized and loop started.");
+
+            } catch (error) {
+                console.error("Error during game initialization:", error);
+                logMessage(`FATAL ERROR during init: ${error.message}. Cannot start game. Check console.`, "error");
+                if (gameLoopInterval) clearInterval(gameLoopInterval);
+                gameLoopInterval = null;
+            }
+        }
+
+        /** Starts the main game loop interval. */
+        function startGameLoop() {
+            if (gameLoopInterval) {
+                // console.warn("Attempted to start loop when already running.");
+                return; // Prevent multiple loops
+            }
+            if (gameState.gameOver) return; // Don't start if game is already over
+
+            gameState.isPaused = false;
+            console.log("Starting game loop interval...");
+            // Use a lambda to ensure 'this' context is not an issue, though not strictly needed here
+            gameLoopInterval = setInterval(() => gameTick(), GAME_SPEED_MS);
+
+            // Only log resume message if game actually started before
+            if (gameState.day > 0) logMessage("Game Resumed.", "info");
+             updateUI(); // Update UI immediately to reflect running state (e.g., enable buttons)
+        }
+
+        /** Pauses the game loop. */
+        function pauseGameLoop() {
+            if (gameLoopInterval) {
+                console.log("Pausing game loop.");
+                clearInterval(gameLoopInterval);
+                gameLoopInterval = null; // Crucial: set interval ID to null when paused
+                gameState.isPaused = true;
+                logMessage("Game Paused - Action Required.", "warning");
+                updateUI(); // Update UI to reflect paused state (e.g., disable buttons)
+            } else {
+                // console.warn("Attempted to pause loop when not running.");
+            }
+        }
+
+        /** Resumes the game if it was paused and no pausing offers remain. */
+         function resumeGameIfNeeded() {
+            if (gameState.isPaused) {
+                // Check if any offers that *should* pause the game still exist
+                const shouldRemainPaused = gameState.offers.some(o => o.pausesGame);
+                if (!shouldRemainPaused) {
+                    console.log("No pausing offers remain, resuming game.");
+                    startGameLoop(); // Only resume if no pausing offers are left
+                } else {
+                    logMessage("Cannot resume yet - another pausing offer exists.", "info");
+                }
+            }
+        }
+
+        /** Updates market indices (rate, value, rent) daily. */
+        function updateMarketDaily() {
+            // --- Interest Rate Update ---
+            let rateChange = 0;
+            let newRate = gameState.marketRate;
+
+            // Handle crash event decay
+            if (isCrashing && crashDaysRemaining > 0) {
+                const moveTowardsTarget = (crashTargetRate - gameState.marketRate) / Math.max(1, crashDaysRemaining); // Move fractionally each day
+                rateChange = moveTowardsTarget;
+                crashDaysRemaining--;
+                if (crashDaysRemaining <= 0) {
+                    isCrashing = false;
+                    logMessage("Market rate crash finished.", "info");
+                }
+            // Check for new crash event
+            } else if (!isCrashing && Math.random() < CRASH_CHANCE_PER_DAY) {
+                    isCrashing = true;
+                    crashTargetRate = Math.max(MIN_RATE, gameState.marketRate - CRASH_MAGNITUDE);
+                    crashDaysRemaining = CRASH_DURATION_DAYS;
+                    rateChange = (crashTargetRate - gameState.marketRate) / Math.max(1, crashDaysRemaining); // Start moving towards target
+                    logMessage(`Market rate crash triggered! Target: ${formatPercentRate(crashTargetRate)} over ${CRASH_DURATION_DAYS} days.`, "warning");
+            // Normal daily fluctuation
+            } else {
+                isCrashing = false; // Ensure flag is off
+                // Random walk component
+                const randomFactor = (Math.random() * 2 - 1) * DAILY_RATE_VOLATILITY;
+                // Mean reversion component
+                const reversionFactor = (CENTER_RATE - gameState.marketRate) * MEAN_REVERSION_FACTOR;
+                // Combine and cap the change
+                rateChange = randomFactor + reversionFactor;
+                rateChange = Math.max(-MAX_DAILY_RATE_CHANGE, Math.min(MAX_DAILY_RATE_CHANGE, rateChange));
+            }
+
+            newRate = gameState.marketRate + rateChange;
+            // Clamp rate within MIN/MAX bounds
+            gameState.marketRate = Math.max(MIN_RATE, Math.min(MAX_RATE, newRate));
+
+            // --- Property Value Index Update ---
+            // Daily drift based on annual target
+            const dailyValueDrift = Math.pow(1 + ANNUAL_VALUE_GROWTH_TARGET, 1/365) - 1;
+            // Daily random volatility
+            const valueVolatilityFactor = (Math.random() * 2 - 1) * DAILY_VALUE_VOLATILITY;
+            // Apply change, ensure multiplier doesn't drop too low (e.g., below 0.5)
+            const valueChangePercent = dailyValueDrift + valueVolatilityFactor;
+            gameState.propertyValueMultiplier = Math.max(0.5, gameState.propertyValueMultiplier * (1 + valueChangePercent));
+
+            // --- Rent Index Update ---
+            const dailyRentDrift = Math.pow(1 + ANNUAL_RENT_GROWTH_TARGET, 1/365) - 1;
+            const rentVolatilityFactor = (Math.random() * 2 - 1) * DAILY_RENT_VOLATILITY;
+            const rentChangePercent = dailyRentDrift + rentVolatilityFactor;
+            gameState.rentIndexMultiplier = Math.max(0.5, gameState.rentIndexMultiplier * (1 + rentChangePercent));
+
+            // --- Update Individual Properties based on Indices ---
+            gameState.properties.forEach(prop => {
+                prop.value = prop.baseValue * gameState.propertyValueMultiplier;
+                prop.noi = prop.baseNoi * gameState.rentIndexMultiplier; // NOI is monthly base * multiplier
+            });
+
+            // --- Update History Arrays (Done in gameTick after other updates) ---
+        }
+
+        /** Processes end-of-month events: income, loan payments, cash flow calculation. */
+        function processMonthlyEvents() {
+            let totalMonthlyNOI = 0;
+            let totalMonthlyPayments = 0;
+            let paidOffLoanThisMonth = false;
+
+            gameState.properties.forEach(prop => {
+                 // Ensure loan exists and has balance before processing
+                 if (!prop.loan || prop.loan.balance <= 0) return;
+
+                // Accumulate current monthly NOI
+                totalMonthlyNOI += (Number(prop.noi) || 0);
+
+                // Calculate payment based on *current* balance, rate, and *remaining* term
+                // Ensure monthsRemaining is at least 1 for calculation if balance > 0
+                const termForCalc = Math.max(1, prop.loan.monthsRemaining);
+                const monthlyPayment = calculateMonthlyPayment(prop.loan.balance, prop.loan.rate, termForCalc);
+                totalMonthlyPayments += monthlyPayment;
+
+                // Calculate interest portion for this month
+                const interestPayment = prop.loan.balance * (prop.loan.rate / 100) / 12;
+                // Principal is payment minus interest (cannot be negative)
+                const principalPayment = Math.max(0, monthlyPayment - interestPayment);
+
+                // Apply principal payment
+                prop.loan.balance -= principalPayment;
+
+                // Check for loan payoff (handle floating point inaccuracies)
+                if (prop.loan.balance <= 0.01) {
+                    prop.loan.balance = 0;
+                    prop.loan.monthsRemaining = 0; // Explicitly set remaining term to 0
+                    logMessage(`${prop.name} Loan PAID OFF!`, "success");
+                    paidOffLoanThisMonth = true;
+                    // No further payment calculation needed for this property
+                }
+                // Note: monthsRemaining is decremented daily in gameTick
+            });
+
+            // Calculate net cash flow for the month
+            lastMonthNetCashFlow = totalMonthlyNOI - totalMonthlyPayments;
+            const cashBefore = gameState.cash;
+            gameState.cash += lastMonthNetCashFlow; // Update player cash
+
+            // Log summary
+            logMessage(`End of Month ${gameState.simDate.toLocaleString('default', { month: 'short' })}: Income: ${formatCurrency(totalMonthlyNOI)}, Pmt: ${formatCurrency(totalMonthlyPayments)}, Net CF: ${formatCurrency(lastMonthNetCashFlow, true)}. Cash ${formatCurrency(cashBefore)} -> ${formatCurrency(gameState.cash)}`, "info");
+
+            // Highlight affected stats
+            highlightStatus('cash-display');
+            highlightStatus('last-cashflow-display'); // Yearly cash flow display
+
+            // If a loan was paid off, trigger a full UI update to refresh card state
+            if (paidOffLoanThisMonth) {
+                updateUI();
+            }
+        }
+
+
+        // --- Offer Generation Functions ---
+
+        /** Checks each property daily for a chance to generate an unsolicited refinance offer. */
+        function generateUnsolicitedOffers() {
+            // Skip if paused, game over, or no properties
+            if (gameState.isPaused || gameState.gameOver || !gameState.properties || gameState.properties.length === 0) return;
+
+            gameState.properties.forEach(prop => {
+                // Basic checks: property exists, has a loan, has term remaining, no existing offer
+                if (!prop || !prop.loan || prop.loan.balance <= 0 || prop.loan.monthsRemaining <= 0 || gameState.offers.some(o => o.propertyId === prop.id)) {
+                    return;
+                }
+
+                // Check random chance
+                if (Math.random() < UNSOLICITED_OFFER_CHANCE_PER_DAY) {
+                    // --- Calculate Potential Offer ---
+                    // Base offer rate: Market rate - spread + small random factor
+                    let offerRate = Math.max(MIN_RATE, gameState.marketRate - REFI_RATE_SPREAD + (Math.random() * 0.4 - 0.2)); // +/- 0.2% variance
+
+                    // Calculate Max Loan based ONLY on DSCR constraint at the potential offer rate
+                    const annualNOI = (Number(prop.noi) || 0) * 12;
+                    if (annualNOI <= 0) return; // Cannot generate offer if NOI is zero or negative
+
+                    // Use standard 30-year term for refi calculation
+                    const maxLoanDSCR = calculateMaxLoanByDSCR(annualNOI, offerRate, REFI_LOAN_TERM_MONTHS, TARGET_DSCR);
+
+                    // Potential loan amount is limited by DSCR
+                    let potentialLoanAmount = Math.max(0, maxLoanDSCR);
+
+                    // Ensure potential loan isn't drastically lower than current balance (unless DSCR forces it)
+                    // Allow it to be slightly lower, but prioritize at least covering the balance if DSCR allows.
+                    let newLoanAmount = Math.max(prop.loan.balance * 0.95, potentialLoanAmount);
+                    // Don't exceed the DSCR limit, even if current balance is higher
+                    newLoanAmount = Math.min(newLoanAmount, maxLoanDSCR);
+
+
+                    // Calculate potential cash out
+                    let cashOutAmount = Math.max(0, newLoanAmount - prop.loan.balance);
+
+                    // --- Apply Cash-Out Premium and Re-evaluate ---
+                    // If significant cash out AND rate isn't already a big improvement, apply premium
+                    const isSignificantCashOut = cashOutAmount > 1000;
+                    const isRateImprovement = offerRate < prop.loan.rate - REFI_RATE_IMPROVEMENT_THRESHOLD;
+
+                    if (isSignificantCashOut && !isRateImprovement) {
+                         offerRate = Math.max(MIN_RATE, offerRate + CASH_OUT_RATE_PREMIUM); // Add premium
+
+                         // Recalculate max loan and final loan amount with the higher rate
+                         const maxLoanDSCR_CO = calculateMaxLoanByDSCR(annualNOI, offerRate, REFI_LOAN_TERM_MONTHS, TARGET_DSCR);
+                         potentialLoanAmount = Math.max(0, maxLoanDSCR_CO);
+                         newLoanAmount = Math.max(prop.loan.balance * 0.95, potentialLoanAmount);
+                         newLoanAmount = Math.min(newLoanAmount, maxLoanDSCR_CO); // Re-cap at new DSCR limit
+                         cashOutAmount = Math.max(0, newLoanAmount - prop.loan.balance); // Recalculate cash out
+                    }
+
+                    // --- Filter Based on Player Preferences ---
+                    const isLowerRateType = offerRate < prop.loan.rate - REFI_RATE_IMPROVEMENT_THRESHOLD;
+                    const isCashOutType = cashOutAmount > 1000; // Consider cash-out if > $1k
+
+                    let shouldGenerate = false;
+                    if (isLowerRateType && gameState.receiveLowerRateOffers) shouldGenerate = true;
+                    if (isCashOutType && gameState.receiveCashOutOffers) shouldGenerate = true;
+                    // Also generate if it's neither strongly typed but *at least one* toggle is enabled (less restrictive)
+                    if (!isLowerRateType && !isCashOutType && (gameState.receiveLowerRateOffers || gameState.receiveCashOutOffers)) {
+                        shouldGenerate = true;
+                    }
+                    // However, don't generate offers that are significantly worse than current loan unless substantial cash out
+                    if (offerRate > prop.loan.rate + 0.5 && cashOutAmount < prop.loan.balance * 0.1) {
+                        shouldGenerate = false; // Avoid clearly bad offers unless big cash out
+                    }
+
+
+                    // --- Final Check and Add Offer ---
+                    if (shouldGenerate && newLoanAmount > 0) {
+                         // Pass current property NOI (monthly) when generating
+                         generateAndAddOffer(prop, offerRate, true, 'Refinance', newLoanAmount, cashOutAmount, prop.noi);
+                    }
+                }
+            });
+        }
+
+        /** Creates and adds a refinance offer object to the gameState. Includes DSCR calculation. */
+        function generateAndAddOffer(property, offerRate, unsolicited = false, type = 'Refinance', newLoanAmount = property.loan.balance, cashOutAmount = 0, currentMonthlyNOI) {
+            // Prevent adding duplicate offers for the same property ID
+             if (gameState.offers.some(o => o.propertyId === property.id)) {
+                 // console.log(`Offer/Quote already exists for property ${property.id}, skipping generation.`);
+                 return;
+             }
+
+            // Ensure numerical inputs
+            newLoanAmount = Number(newLoanAmount) || 0;
+            offerRate = Number(offerRate) || 0;
+            currentMonthlyNOI = Number(currentMonthlyNOI) || 0;
+            cashOutAmount = Number(cashOutAmount) || 0;
+
+             if (newLoanAmount <= 0 || offerRate < 0) {
+                 logMessage(`Could not generate valid ${type} for ${property.name} (invalid loan/rate).`, "warning");
+                 return;
+             }
+
+
+            const closingCosts = newLoanAmount * REFI_CLOSING_COST_PERCENT;
+            const newTermMonths = REFI_LOAN_TERM_MONTHS; // Standard 30yr term for refi
+
+            // Calculate potential new monthly payments and DSCR based on offer terms
+            const newPotentialPayment = calculateMonthlyPayment(newLoanAmount, offerRate, newTermMonths);
+            const newAnnualDebtService = newPotentialPayment * 12;
+            const annualNOI = currentMonthlyNOI * 12;
+            // Calculate DSCR for the *new* loan terms
+            let newDSCR = Infinity; // Default if no debt service or no income
+             if (newAnnualDebtService > 0) {
+                 newDSCR = annualNOI > 0 ? (annualNOI / newAnnualDebtService) : 0; // If income is 0, DSCR is 0
+             } else if (annualNOI <= 0 && newAnnualDebtService <= 0) {
+                 newDSCR = Infinity; // Or consider N/A? Infinity implies no debt to cover.
+             } else if (annualNOI > 0 && newAnnualDebtService <= 0) {
+                  newDSCR = Infinity; // Income exists, but no debt service
+             }
+
+
+            // Get current payment for comparison display
+             const currentPayment = (property.loan && property.loan.balance > 0 && property.loan.monthsRemaining > 0)
+                ? calculateMonthlyPayment(property.loan.balance, property.loan.rate, property.loan.monthsRemaining)
+                : 0;
+
+            // Create the offer object
+            const offer = {
+                offerId: Date.now() + property.id + Math.random(), // Unique ID
+                type: type, // 'Refinance' or 'Refinance Quote'
+                propertyId: property.id,
+                propertyName: property.name,
+                loanId: property.loan?.id || null, // Store original loan ID if exists
+                currentRate: property.loan?.rate || 0,
+                currentPayment: currentPayment,
+                monthlyNOI: currentMonthlyNOI, // Store current NOI at time of offer
+                newRate: parseFloat(offerRate.toFixed(2)),
+                newTerm: newTermMonths,
+                closingCosts: Math.round(closingCosts),
+                newLoanAmount: Math.round(newLoanAmount),
+                cashOutAmount: Math.round(cashOutAmount),
+                newPotentialPayment: newPotentialPayment, // Store calculated payment
+                newDSCR: newDSCR, // Store calculated DSCR for the new loan
+                source: unsolicited ? 'Lender Offer' : 'Your Quote',
+                pausesGame: unsolicited && type === 'Refinance' // Only unsolicited 'Refinance' offers pause
+            };
+
+            gameState.offers.push(offer);
+
+            logMessage(`Refi ${unsolicited ? 'Offer' : 'Quote'} for ${property.name}: ${formatPercentRate(offer.newRate)} rate, Loan: ${formatCurrency(offer.newLoanAmount)} ${offer.cashOutAmount > 0 ? '(Cash Out: '+formatCurrency(offer.cashOutAmount)+')' : ''} (New DSCR: ${isFinite(offer.newDSCR) ? formatDecimal(offer.newDSCR, 2) : 'N/A'})`, "offer");
+
+            // Pause game immediately if required by this offer
+            if (offer.pausesGame) {
+                pauseGameLoop(); // Will also trigger UI update
+            } else {
+                 updateUI(); // Trigger UI update for non-pausing quotes
+            }
+        }
+
+
+        // --- Player Action Functions ---
+
+        /** Handles player requesting a refinance quote. Aims for max DSCR loan. */
+        function requestRefinance(propertyId) {
+            if (gameState.isPaused) { logMessage("Cannot request quote while paused.", "warning"); return; }
+
+            const property = gameState.properties.find(p => p.id === propertyId);
+            if (!property) { logMessage(`Error: Property ID ${propertyId} not found.`, "warning"); return; }
+            if (!property.loan || property.loan.balance <= 0) { logMessage(`${property.name} loan is paid off, cannot refinance.`, "info"); return; }
+             if (gameState.offers.some(o => o.propertyId === property.id)) {
+                logMessage(`Quote/Offer already exists for ${property.name}. Reject existing first.`, "info");
+                return;
+            }
+
+            logMessage(`Requesting max DSCR refi quote for ${property.name}...`, "action");
+
+            // Calculate potential offer rate (slightly better spread for requested quotes?)
+            let offerRate = Math.max(MIN_RATE, gameState.marketRate - REFI_RATE_SPREAD * 0.75 + (Math.random() * 0.2 - 0.1));
+
+            // Calculate Max Loan based ONLY on DSCR constraint
+            const annualNOI = (Number(property.noi) || 0) * 12;
+             if (annualNOI <= 0) {
+                 logMessage(`Cannot generate quote for ${property.name}: Current NOI is not positive.`, "warning");
+                 return;
+             }
+
+            // Use standard 30-year term
+            const maxLoanDSCR = calculateMaxLoanByDSCR(annualNOI, offerRate, REFI_LOAN_TERM_MONTHS, TARGET_DSCR);
+
+            let potentialLoanAmount = Math.max(0, maxLoanDSCR);
+
+            // Aim for at least current balance if DSCR allows, but don't exceed maxLoanDSCR
+            let newLoanAmount = Math.max(property.loan.balance, potentialLoanAmount);
+            newLoanAmount = Math.min(newLoanAmount, maxLoanDSCR);
+
+            // Calculate cash out
+            let cashOutAmount = Math.max(0, newLoanAmount - property.loan.balance);
+
+            // Apply cash-out premium *if* this results in cash out (even for requested quote)
+            if (cashOutAmount > 1000) {
+                 offerRate = Math.max(MIN_RATE, offerRate + CASH_OUT_RATE_PREMIUM);
+                 // Recalculate max loan and final amount with the potentially higher rate
+                 const maxLoanDSCR_CO = calculateMaxLoanByDSCR(annualNOI, offerRate, REFI_LOAN_TERM_MONTHS, TARGET_DSCR);
+                 potentialLoanAmount = Math.max(0, maxLoanDSCR_CO);
+                 newLoanAmount = Math.max(property.loan.balance, potentialLoanAmount);
+                 newLoanAmount = Math.min(newLoanAmount, maxLoanDSCR_CO);
+                 cashOutAmount = Math.max(0, newLoanAmount - property.loan.balance);
+             }
+
+            // Generate the quote if a valid loan amount is found
+            if (newLoanAmount > 0 && newLoanAmount >= property.loan.balance * 0.9) { // Check if reasonable
+                 // Pass current property NOI (monthly) when generating the quote
+                 generateAndAddOffer(property, offerRate, false, 'Refinance Quote', newLoanAmount, cashOutAmount, property.noi);
+            } else {
+                 logMessage(`Could not generate favorable max DSCR quote for ${property.name} (Loan: ${formatCurrency(newLoanAmount)}, Rate: ${formatPercentRate(offerRate)}). DSCR or NOI may be too low.`, "warning");
+            }
+        }
+
+        /** Handles player purchasing a marketplace property. */
+        function attemptPurchase(marketplacePropId) {
+            if (gameState.isPaused) { logMessage("Cannot purchase while paused.", "warning"); return; }
+            // Check max properties *first*
+            if (gameState.properties.length >= MAX_PROPERTIES) {
+                logMessage(`Portfolio full (${MAX_PROPERTIES}/${MAX_PROPERTIES} properties). Sell a property to make room.`, "warning");
+                return;
+            }
+
+            const propIndex = gameState.marketplaceProperties.findIndex(p => p.id === marketplacePropId);
+            if (propIndex === -1) { logMessage("Property not found in marketplace.", "warning"); return; }
+
+            const propToBuy = gameState.marketplaceProperties[propIndex];
+            const purchasePrice = propToBuy.price; // Purchase at listed price
+
+            logMessage(`Attempting purchase of ${propToBuy.name} for ${formatCurrency(purchasePrice)}...`, "action");
+
+            // --- Calculate Max Financing & Required Cash ---
+            const annualNOI = (Number(propToBuy.noi) || 0) * 12; // Use the base NOI from marketplace listing
+             if (annualNOI <= 0) {
+                 logMessage(`Purchase Failed: ${propToBuy.name} has non-positive estimated NOI.`, "warning");
+                 return;
+             }
+
+            // Determine purchase loan rate (market + premium + slight variance)
+            const purchaseRate = Math.max(MIN_RATE, gameState.marketRate + PURCHASE_RATE_PREMIUM + (Math.random()*0.1 - 0.05));
+
+            // Constraint 1: Max loan based on TARGET_DSCR (using purchase rate)
+            const maxLoanDSCR = calculateMaxLoanByDSCR(annualNOI, purchaseRate, PURCHASE_LOAN_TERM_MONTHS, TARGET_DSCR);
+            // Constraint 2: Max loan based on MAX_LTV_PURCHASE of the purchase price
+            const maxLoanLTV = purchasePrice * MAX_LTV_PURCHASE;
+
+            // Actual loan amount is the minimum of the two constraints
+            const loanAmount = Math.max(0, Math.min(maxLoanDSCR, maxLoanLTV));
+
+            // Required down payment is the difference between price and loan amount
+            const downPayment = purchasePrice - loanAmount;
+
+            // Estimate closing costs based on the loan amount
+            const closingCosts = loanAmount * REFI_CLOSING_COST_PERCENT; // Use refi % as estimate
+
+            // Total cash needed = down payment + closing costs
+            const totalCashNeeded = downPayment + closingCosts;
+
+            logMessage(`Financing Check: Price=${formatCurrency(purchasePrice)}, Rate=${formatPercentRate(purchaseRate)}, Max Loan (DSCR): ${formatCurrency(maxLoanDSCR)}, Max Loan (LTV): ${formatCurrency(maxLoanLTV)} -> Actual Loan=${formatCurrency(loanAmount)}. Down Pmt Req=${formatCurrency(downPayment)}, Est. Costs=${formatCurrency(closingCosts)}, Total Cash Needed=${formatCurrency(totalCashNeeded)}`, "info");
+
+            // --- Check Cash and Complete Purchase ---
+            if (gameState.cash < totalCashNeeded) {
+                logMessage(`Purchase Failed: Need ${formatCurrency(totalCashNeeded)} cash (You have ${formatCurrency(gameState.cash)}).`, "warning");
+                return;
+            }
+
+            // Sufficient cash and financing determined - Proceed with purchase
+            logMessage(`Financing Approved! Purchase complete!`, "success");
+
+             // Create the new property object for the player's portfolio
+             const newProperty = {
+                 id: propToBuy.id, // Use the ID from the marketplace property
+                 name: propToBuy.name,
+                 type: propToBuy.type,
+                 baseValue: purchasePrice, // Purchase price becomes the new base value
+                 value: purchasePrice, // Initial value matches purchase price
+                 baseNoi: propToBuy.noi, // Store the base monthly NOI from listing
+                 noi: propToBuy.noi * gameState.rentIndexMultiplier, // Current monthly NOI adjusted by rent index
+                 loan: {
+                     id: Date.now() + propToBuy.id + Math.random(), // Unique loan ID
+                     initialBalance: loanAmount,
+                     balance: loanAmount,
+                     rate: parseFloat(purchaseRate.toFixed(2)),
+                     termMonths: PURCHASE_LOAN_TERM_MONTHS,
+                     monthsRemaining: PURCHASE_LOAN_TERM_MONTHS // Start with full term remaining
+                 }
+             };
+
+             // Add to portfolio
+             gameState.properties.push(newProperty);
+             // Deduct cash
+             gameState.cash -= totalCashNeeded;
+             highlightStatus('cash-display');
+
+             // Remove purchased property from marketplace and add a new one to replace it
+             gameState.marketplaceProperties.splice(propIndex, 1);
+             // Generate a replacement property
+             const currentAUM = calculateTotalAUM(); // Use AUM for scaling replacement
+             const baseTarget = Math.max(50000, (gameState.cash + currentAUM * 0.1) * CASH_TO_PRICE_MULTIPLIER);
+             const targetPrice = baseTarget * (0.75 + Math.random()*0.5);
+             gameState.marketplaceProperties.push(generateMarketplaceProperty(targetPrice));
+
+             logMessage(`Purchased ${newProperty.name}! Cash: ${formatCurrency(gameState.cash)}`, "buy-sell");
+             updateUI(); // Update UI immediately
+        }
+
+        /** Handles player selling a property from their portfolio. */
+        function sellProperty(propertyId) {
+            if (gameState.isPaused) { logMessage("Cannot sell while paused.", "warning"); return; }
+
+            const propIndex = gameState.properties.findIndex(p => p.id === propertyId);
+            if (propIndex === -1) { logMessage("Property not found.", "warning"); return; }
+
+            const propToSell = gameState.properties[propIndex];
+            const saleValue = propToSell.value; // Sell at current market value
+            const sellingCosts = saleValue * SELLING_COST_PERCENT;
+            // Ensure loan balance is treated as a number, default to 0 if no loan
+            const loanPayoff = Number(propToSell.loan?.balance) || 0;
+            const proceeds = saleValue - loanPayoff - sellingCosts; // Cash received by player
+
+            logMessage(`Selling ${propToSell.name} for ${formatCurrency(saleValue)}... Costs: ${formatCurrency(sellingCosts)}, Loan Payoff: ${formatCurrency(loanPayoff)}`, "action");
+
+            // Add proceeds to cash
+            gameState.cash += proceeds;
+            highlightStatus('cash-display');
+
+            // Remove property from portfolio
+            gameState.properties.splice(propIndex, 1);
+
+            // Remove any outstanding offers related to the sold property
+            const initialOfferCount = gameState.offers.length;
+            gameState.offers = gameState.offers.filter(o => o.propertyId !== propertyId);
+            if(gameState.offers.length < initialOfferCount) {
+                logMessage(`Removed outstanding offer for sold property ${propToSell.name}.`, "info");
+            }
+
+
+            logMessage(`Sold ${propToSell.name}! Proceeds: ${formatCurrency(proceeds)}. Cash: ${formatCurrency(gameState.cash)}`, "buy-sell");
+
+            // Check if game should resume if a pausing offer for this property was removed
+            resumeGameIfNeeded(); // Check resume condition after removing offers
+
+            updateUI(); // Update UI to reflect sale
+        }
+
+        /** Handles accepting a refinance offer (unsolicited or quote). */
+        function acceptRefi(offerId) {
+            const offerIndex = gameState.offers.findIndex(o => o.offerId === offerId);
+            if (offerIndex === -1) { logMessage("Offer not found.", "warning"); return; }
+
+            const offer = gameState.offers[offerIndex];
+            const property = gameState.properties.find(p => p.id === offer.propertyId);
+
+            if (!property) {
+                logMessage(`Property for offer ${offerId} (${offer.propertyName}) not found (maybe sold?). Offer removed.`, "warning");
+                gameState.offers.splice(offerIndex, 1);
+                // Check if the removed offer was the last pausing one
+                if (offer.pausesGame) resumeGameIfNeeded();
+                updateUI();
+                return;
+            }
+
+            // Calculate net cash change from the refi (cash out minus closing costs)
+            const netCashChange = offer.cashOutAmount - offer.closingCosts;
+
+            // Check if player has enough cash to cover costs if net change is negative
+            if (gameState.cash + netCashChange < 0) {
+                logMessage(`Cannot accept Refi for ${property.name}: Insufficient cash (${formatCurrency(gameState.cash)}) to cover net costs (${formatCurrency(-netCashChange)}).`, "warning");
+                // Offer remains, player needs more cash
+                return; // Do not proceed further
+            }
+
+            // Sufficient cash - Proceed with refinancing
+            // Update cash
+            gameState.cash += netCashChange;
+
+            // Update loan details on the property object
+            // Ensure property.loan object exists
+            if (!property.loan) { property.loan = {}; }
+
+            property.loan.balance = offer.newLoanAmount;
+            property.loan.rate = offer.newRate;
+            property.loan.termMonths = offer.newTerm; // Use the term from the offer (should be REFI_LOAN_TERM_MONTHS)
+            property.loan.monthsRemaining = offer.newTerm; // Reset remaining term
+            property.loan.initialBalance = offer.newLoanAmount; // Update initial balance for reference
+            property.loan.id = Date.now() + property.id + Math.random(); // Assign a new unique loan ID
+
+            logMessage(`Refinanced ${property.name}! New Rate: ${formatPercentRate(property.loan.rate)}, New Loan: ${formatCurrency(property.loan.balance)}. ${offer.cashOutAmount > 0 ? 'Cash Out: '+formatCurrency(offer.cashOutAmount)+'.' : ''} Costs: ${formatCurrency(offer.closingCosts)}. Net Cash: ${formatCurrency(netCashChange, true)}`, "success");
+
+            // Highlight relevant status items
+            highlightStatus('cash-display');
+            highlightStatus('avg-rate-display');
+            highlightStatus('total-loan-display');
+            highlightStatus('total-debt-service-display');
+            highlightStatus('portfolio-dscr-display'); // DSCR will likely change
+
+            // Remove the accepted offer from the list
+            gameState.offers.splice(offerIndex, 1);
+
+            // Check if game should resume now that this offer is handled
+            if (offer.pausesGame) resumeGameIfNeeded();
+
+            updateUI(); // Update the UI
+        }
+
+        /** Handles rejecting a refinance offer or quote. */
+        function rejectRefi(offerId) {
+            const offerIndex = gameState.offers.findIndex(o => o.offerId === offerId);
+            if (offerIndex === -1) { logMessage("Offer not found.", "warning"); return; }
+
+            const offer = gameState.offers[offerIndex];
+            logMessage(`Rejected refi ${offer.source === 'Lender Offer' ? 'offer' : 'quote'} for ${offer.propertyName}.`, "action");
+
+            // Remove the rejected offer
+            gameState.offers.splice(offerIndex, 1);
+
+             // Check if game should resume now that this offer is handled
+             if (offer.pausesGame) resumeGameIfNeeded();
+
+            updateUI(); // Update the UI
+        }
+
+
+        // --- Offer Action Handlers (Called by Buttons via Event Delegation) ---
+
+        /** Generic handler for accepting any type of offer. */
+        function handleAcceptOffer(event) {
+            const button = event.target.closest('button.btn-accept');
+            if (!button || button.disabled) return;
+            const offerId = Number(button.dataset.offerId); // Get ID from button's data attribute
+            if(isNaN(offerId)) return;
+
+            const offer = gameState.offers.find(o => o.offerId === offerId);
+            if (!offer) return;
+
+            // Call the specific accept function based on offer type
+            if (offer.type === 'Refinance' || offer.type === 'Refinance Quote') {
+                acceptRefi(offerId);
+            }
+            // Add other offer types here if needed
+        }
+
+        /** Generic handler for rejecting any type of offer. */
+        function handleRejectOffer(event) {
+            const button = event.target.closest('button.btn-reject');
+            if (!button || button.disabled) return;
+            const offerId = Number(button.dataset.offerId); // Get ID from button's data attribute
+             if(isNaN(offerId)) return;
+
+            const offer = gameState.offers.find(o => o.offerId === offerId);
+            if (!offer) return;
+
+            // Call the specific reject function based on offer type
+            if (offer.type === 'Refinance' || offer.type === 'Refinance Quote') {
+                rejectRefi(offerId);
+            }
+            // Add other offer types here if needed
+        }
+
+        /** Handler for the resume button on pausing offers. */
+        function handleResumeOffer(event) {
+             const button = event.target.closest('button.btn-resume');
+             if (!button || button.disabled) return;
+             // No specific offer ID needed, just try to resume
+             resumeGameIfNeeded();
+        }
+
+        // --- End Conditions & Level Up ---
+
+        /** Checks for game over (bankruptcy) or win conditions (max level). */
+        function checkEndConditions() {
+            if (gameState.gameOver) return; // Don't check if already over
+
+            const currentNetWorth = calculateNetWorth();
+
+            // Bankruptcy Check
+            if (currentNetWorth < BANKRUPTCY_THRESHOLD) {
+                gameState.gameOver = true;
+                gameState.gameWon = false;
+                gameOverTitle.textContent = "BANKRUPTCY";
+                gameOverTitle.className = 'lose'; // Style title for loss
+                gameOverMessage.textContent = `Your net worth (${formatCurrency(currentNetWorth)}) dropped below the bankruptcy threshold (${formatCurrency(BANKRUPTCY_THRESHOLD)})!`;
+                logMessage("GAME OVER - Bankruptcy!", "error");
+                if(gameLoopInterval) clearInterval(gameLoopInterval); // Stop the loop!
+                gameLoopInterval = null;
+                finalDays.textContent = gameState.day;
+                finalNetWorth.textContent = formatCurrency(currentNetWorth);
+                if(gameOverOverlay) gameOverOverlay.style.display = 'flex'; // Show overlay
+            }
+
+            // Win Condition is checked in checkLevelUp after cash flow calculation
+        }
+
+        /** Checks if player's cash flow qualifies for the next level, handles level up & win. */
+        function checkLevelUp() {
+            if (!gameState || gameState.gameOver) return;
+
+            // Calculate annualized cash flow based on the *last month's* performance
+            const currentYearlyCashFlow = lastMonthNetCashFlow * 12;
+            const currentLevelIndex = gameState.playerLevel;
+
+            // Find the highest level the player qualifies for based on cash flow
+            let newLevelIndex = -1;
+            for (let i = 0; i < LEVEL_MILESTONES.length; i++) {
+                 if (currentYearlyCashFlow >= LEVEL_MILESTONES[i].threshold) {
+                     newLevelIndex = i;
+                 } else {
+                     break; // Stop checking once a threshold is not met
+                 }
+            }
+             // If no milestones met, index remains -1, player level is 0. Correct this.
+             if (newLevelIndex === -1) newLevelIndex = 0; // Default to level 0
+
+            // Check if the player reached a *new* higher level
+            if (newLevelIndex > currentLevelIndex) {
+                gameState.playerLevel = newLevelIndex;
+                const newLevel = LEVEL_MILESTONES[newLevelIndex];
+                logMessage(`LEVEL UP! Reached ${newLevel.name} status (${formatCurrency(newLevel.threshold, false, true)}/yr CF)! ${newLevel.icon}`, "success");
+                highlightStatus('level-display'); // Highlight the main level display div
+
+                // Check for Win Condition (reaching the final level)
+                if (newLevelIndex === LEVEL_MILESTONES.length - 1) {
+                    gameState.gameOver = true;
+                    gameState.gameWon = true;
+                    if(gameLoopInterval) clearInterval(gameLoopInterval); // Stop the loop!
+                    gameLoopInterval = null;
+                    gameOverTitle.textContent = "YOU WIN! 🏆";
+                    gameOverTitle.className = 'win'; // Style title for win
+                    gameOverMessage.textContent = `Congratulations! You reached Legendary status with ${formatCurrency(currentYearlyCashFlow)}/yr cash flow!`;
+                    finalDays.textContent = gameState.day;
+                    finalNetWorth.textContent = formatCurrency(calculateNetWorth());
+                    if(gameOverOverlay) gameOverOverlay.style.display = 'flex'; // Show overlay
+                    logMessage("CONGRATULATIONS! YOU REACHED LEGENDARY STATUS!", "success");
+                }
+                updateUI(); // Update level display in UI
+            }
+        }
+
+
+        // --- Main Game Tick Function ---
+
+        /** Executes one cycle of the game loop (one simulated day). */
+        function gameTick() {
+            // Ensure game state exists and not paused/over before proceeding
+            if (!gameState || gameState.isPaused || gameState.gameOver) {
+                 // Log why tick is skipped if debugging needed
+                 // console.log(`Tick skipped: Paused=${gameState?.isPaused}, Over=${gameState?.gameOver}`);
+                 // Ensure interval is cleared if state demands it but interval still exists
+                 if (gameLoopInterval && (gameState.isPaused || gameState.gameOver)) {
+                      console.warn("Clearing stray interval in gameTick check.");
+                      clearInterval(gameLoopInterval);
+                      gameLoopInterval = null;
+                 }
+                 return;
+             }
+
+            // --- Main Tick Logic ---
+            try {
+                // 1. Advance Time
+                gameState.day++;
+                tickCounter++;
+                // Use setDate correctly to advance the day
+                const newSimDate = new Date(gameState.simDate); // Clone date
+                newSimDate.setDate(newSimDate.getDate() + 1);
+                gameState.simDate = newSimDate;
+
+
+                // 2. Decrement Loan Terms Daily
+                const daysInMonthAvg = 365.25 / 12; // More accurate average
+                gameState.properties.forEach(prop => {
+                    if (prop.loan && prop.loan.monthsRemaining > 0) {
+                        prop.loan.monthsRemaining -= (1 / daysInMonthAvg);
+                        // Ensure it doesn't go significantly below 0 due to floating point issues
+                         if (prop.loan.monthsRemaining < 1e-6 && prop.loan.balance > 0.01) {
+                             // This might indicate the last payment is due or paid off logic needs check
+                             // For simplicity, just prevent it going negative unless balance is zero
+                             prop.loan.monthsRemaining = Math.max(0, prop.loan.monthsRemaining);
+                         } else if (prop.loan.balance <= 0.01) {
+                             prop.loan.monthsRemaining = 0; // Ensure term is 0 if balance is 0
+                         }
+                    }
+                });
+
+                // 3. Update Market Conditions (Rate, Value, Rent Indices)
+                updateMarketDaily();
+
+                // 4. Update History Arrays (After market updates, before UI)
+                rateHistory.push(gameState.marketRate);
+                valueHistory.push(gameState.propertyValueMultiplier);
+                rentHistory.push(gameState.rentIndexMultiplier);
+                netWorthHistory.push(calculateNetWorth());
+                // Store *annualized* cash flow daily, updating the value only at month end
+                const currentAnnualCashFlow = lastMonthNetCashFlow * 12;
+                cashFlowHistory.push(currentAnnualCashFlow);
+
+                // Trim history arrays to maintain length
+                const trimHistory = (arr) => { if (arr.length > GRAPH_HISTORY_LENGTH) arr.shift(); };
+                trimHistory(rateHistory);
+                trimHistory(valueHistory);
+                trimHistory(rentHistory);
+                trimHistory(netWorthHistory);
+                trimHistory(cashFlowHistory);
+
+
+                // 5. Generate Potential Unsolicited Offers
+                generateUnsolicitedOffers(); // This function now handles pausing if needed
+
+                 // 6. Process Monthly Events (Check if it's the 1st day of the new month)
+                 // Must check day > 1 to avoid running on initialization day 0->1
+                 if (gameState.simDate.getDate() === 1 && gameState.day > 1) {
+                    processMonthlyEvents(); // Calculates income, payments, updates cash
+                    checkLevelUp(); // Check level *after* monthly cash flow is calculated
+                    // Update cash flow history again with the *new* value for the 1st day of month
+                    cashFlowHistory[cashFlowHistory.length - 1] = lastMonthNetCashFlow * 12;
+                }
+
+                // 7. Periodic Updates & Checks
+                // Update graphs periodically (unless paused)
+                if (tickCounter % GRAPH_UPDATE_INTERVAL === 0) {
+                    updateGraphs();
+                }
+                // Check for bankruptcy periodically (e.g., every 5 days)
+                if (gameState.day % 5 === 0) {
+                    checkEndConditions(); // Checks net worth threshold
+                }
+
+                // 8. Update UI (Unless paused - UI update happens on pause/resume)
+                // Update UI every tick to show daily changes smoothly
+                updateUI();
+
+            } catch (error) {
+                // --- Error Handling within Tick ---
+                console.error(`Error during game tick (Day ${gameState?.day}):`, error);
+                logMessage(`Runtime Error! ${error.message}. Game paused. See console.`, "error");
+                pauseGameLoop(); // Pause on any error within the tick
+                // Optionally update UI one last time to show error state/paused state
+                updateUI();
+            }
+        }
+
+        // --- UI Update Function ---
+
+        /** Updates all dynamic elements in the HTML based on the current gameState. */
+        function updateUI() {
+            // Defend against running with incomplete state (shouldn't happen after init fixes)
+            if (!gameState || typeof gameState.cash === 'undefined' || !gameState.properties || !gameState.offers || !gameState.marketplaceProperties) {
+                console.error("GameState incomplete in updateUI. Skipping update.");
+                logMessage("Error: Game state invalid, UI update skipped.", "error");
+                return;
+            }
+
+             // --- Pre-calculate key metrics ---
+             // Ensure calculations handle potential NaN/Infinity gracefully
+            const currentNetWorth = calculateNetWorth();
+            const currentAvgRate = calculateAverageLoanRate();
+            const totalAnnualNOI = gameState.properties.reduce((sum, prop) => sum + (Number(prop.noi) || 0), 0) * 12;
+            const totalLoanBal = calculateTotalLoanBalance();
+            const totalYearlyDebtSvc = calculateTotalYearlyDebtService();
+            const yearlyCashFlow = lastMonthNetCashFlow * 12; // Use the stored monthly flow * 12
+            const portfolioDSCR = calculatePortfolioDSCR();
+            const totalAUM = calculateTotalAUM();
+            const isPaused = gameState.isPaused; // Cache paused state
+
+            // --- Update Header Stats ---
+            try {
+                if(timeDisplay) timeDisplay.textContent = formatFullDate(gameState.simDate);
+                if(propCountDisplay) propCountDisplay.textContent = `${gameState.properties.length} / ${MAX_PROPERTIES}`;
+                if(totalAumDisplay) totalAumDisplay.textContent = formatCurrency(totalAUM, false, true); // Compact AUM
+                if(netWorthDisplay) {
+                    netWorthDisplay.textContent = formatCurrency(currentNetWorth, false, true); // Compact Net Worth
+                    netWorthDisplay.classList.toggle('negative', currentNetWorth < 0);
+                    netWorthDisplay.classList.remove('positive'); // Only show negative color
+                }
+                if(cashDisplay) cashDisplay.textContent = formatCurrency(gameState.cash, false, true); // Compact Cash
+                if(totalLoanDisplay) totalLoanDisplay.textContent = formatCurrency(totalLoanBal, false, true); // Compact Loans
+                if(totalDebtServiceDisplay) totalDebtServiceDisplay.textContent = formatCurrency(totalYearlyDebtSvc, false, true); // Compact Debt Svc
+                if(portfolioDscrDisplay) {
+                    const dscrValue = portfolioDSCR;
+                    const displayDSCR = isFinite(dscrValue) ? formatDecimal(dscrValue, 2) : "N/A";
+                    portfolioDscrDisplay.textContent = displayDSCR;
+                    const isGoodDSCR = isFinite(dscrValue) && dscrValue >= TARGET_DSCR;
+                    const isOkDSCR = isFinite(dscrValue) && dscrValue >= 1.0 && dscrValue < TARGET_DSCR;
+                    const isBadDSCR = !isFinite(dscrValue) || dscrValue < 1.0;
+                    portfolioDscrDisplay.classList.toggle('positive', isGoodDSCR); // Green for >= Target
+                    portfolioDscrDisplay.classList.toggle('ok', isOkDSCR);         // Gold for 1.0 to Target
+                    portfolioDscrDisplay.classList.toggle('negative', isBadDSCR);  // Red for < 1.0 or N/A
+                }
+                if(avgRateDisplay) avgRateDisplay.textContent = formatPercentRate(currentAvgRate);
+                if(totalNoiDisplay) totalNoiDisplay.textContent = formatCurrency(totalAnnualNOI, false, true); // Compact NOI
+                if(lastCashflowDisplay) {
+                    const el = lastCashflowDisplay;
+                    el.textContent = formatCurrency(yearlyCashFlow, true, true); // Show sign, compact CF
+                    el.classList.toggle('positive', yearlyCashFlow > 0);
+                    el.classList.toggle('negative', yearlyCashFlow < 0);
+                }
+                 if(hdrMarketRateDisplay) { // Update header market rate display
+                     hdrMarketRateDisplay.textContent = formatPercentRate(gameState.marketRate);
+                     // Could add trend indication here if needed
+                 }
+
+
+                // --- Update Level Display ---
+                if (levelIconEl && levelTextEl && goalProgressEl) {
+                    const currentLevelData = LEVEL_MILESTONES[gameState.playerLevel] || LEVEL_MILESTONES[0];
+                    const nextLevelData = LEVEL_MILESTONES[gameState.playerLevel + 1];
+                    levelIconEl.textContent = currentLevelData.icon;
+                    levelTextEl.textContent = currentLevelData.name;
+                    if (nextLevelData) {
+                        goalProgressEl.textContent = `Next: ${formatCurrency(nextLevelData.threshold, false, true)} / Yr CF`; // Compact goal
+                    } else {
+                        goalProgressEl.textContent = "Legend Status Achieved!";
+                    }
+                    // Highlight parent div if needed (e.g., on level up) - handled by highlightStatus('level-display')
+                }
+
+            } catch(e) { console.error("Error updating header/level UI:", e); }
+
+
+            // --- Update Portfolio Properties ---
+             try {
+                if(propertiesArea) {
+                    propertiesArea.innerHTML = ''; // Clear existing cards
+                    if (gameState.properties && gameState.properties.length > 0) {
+                        gameState.properties.forEach(prop => {
+                            if (!prop || !prop.loan) { console.warn("Skipping invalid property in UI:", prop); return; }
+
+                            const card = document.createElement('div');
+                            card.className = 'property-card card';
+
+                            // Calculate display values safely
+                            const propValue = Number(prop.value) || 0;
+                            const propNOI = Number(prop.noi) || 0; // Monthly NOI
+                            const annualNOI = propNOI * 12;
+                            const loanBalance = Number(prop.loan.balance) || 0;
+                            const loanRate = Number(prop.loan.rate) || 0;
+                            const monthsRemRaw = Number(prop.loan.monthsRemaining) || 0;
+                            const monthsRem = Math.ceil(monthsRemRaw); // Display whole months remaining
+
+                            const monthlyPayment = (loanBalance > 0 && monthsRemRaw > 0) ? calculateMonthlyPayment(loanBalance, loanRate, monthsRemRaw) : 0;
+                            const annualDebtService = (loanBalance > 0 && monthsRemRaw > 0) ? calculateAnnualDebtService(loanBalance, loanRate, monthsRemRaw) : 0;
+
+                            // Calculate individual property DSCR
+                            let propertyDSCR = Infinity;
+                            if(annualDebtService > 0) {
+                                propertyDSCR = annualNOI > 0 ? (annualNOI / annualDebtService) : 0;
+                            } else if (annualNOI <= 0 && annualDebtService <= 0){
+                                propertyDSCR = Infinity; // Or N/A
+                            } // Implicitly Infinity if NOI > 0 and Debt Service = 0
+
+                            const capRate = propValue > 0 ? (annualNOI / propValue) : 0;
+
+                            // Determine value trend indicator (compare multipliers)
+                            let propValueTrendIcon = '―';
+                            let propValueTrendClass = 'trend-stable';
+                            if (valueHistory && valueHistory.length >= 2) {
+                                const currentValMult = valueHistory[valueHistory.length - 1];
+                                const prevValMult = valueHistory[valueHistory.length - 2];
+                                if (currentValMult > prevValMult * 1.0001) { propValueTrendIcon = '▲'; propValueTrendClass = 'trend-up'; }
+                                else if (currentValMult < prevValMult * 0.9999) { propValueTrendIcon = '▼'; propValueTrendClass = 'trend-down'; }
+                            }
+
+                            // Determine DSCR styling class
+                            let dscrClass = '';
+                            if (isFinite(propertyDSCR)) {
+                                if (propertyDSCR >= TARGET_DSCR) dscrClass = 'good';
+                                else if (propertyDSCR >= 1.0) dscrClass = 'ok';
+                                else dscrClass = 'bad';
+                            } else {
+                                dscrClass = 'good'; // Treat Infinite DSCR (no debt) as good
+                            }
+
+
+                            // Build card HTML - Ensure all values are formatted
+                            card.innerHTML = `
+                                <div class="card-header">
+                                    <h3>${prop.name || 'Unknown Property'}</h3>
+                                    <span class="card-icon property-icon">${prop.type || '❓'}</span>
+                                </div>
+                                <p><span class="label">Value:</span> <span class="value-info"><span>${formatCurrency(propValue)}</span><span class="trend-indicator ${propValueTrendClass}">${propValueTrendIcon}</span></span></p>
+                                <p><span class="label">Cap Rate:</span> <span>${formatPercent(capRate * 100)}</span></p>
+                                <p><span class="label">NOI/Yr:</span> <span>${formatCurrency(annualNOI)}</span></p>
+                                <p><span class="label">DSCR:</span> <span class="dscr-value ${dscrClass}">${isFinite(propertyDSCR) ? formatDecimal(propertyDSCR, 2) : 'N/A'}</span></p>
+                                <p><span class="label">Loan Bal:</span> <span>${formatCurrency(loanBalance)}</span></p>
+                                <p><span class="label">Loan Rate:</span> <span>${formatPercentRate(loanRate)}</span></p>
+                                <p><span class="label">Pmt/Mo:</span> <span>${formatCurrency(monthlyPayment)}</span></p>
+                                <p><span class="label">Term Rem:</span> <span>${loanBalance > 0 && monthsRem > 0 ? monthsRem + ' mo' : (loanBalance <= 0 ? 'Paid Off' : 'N/A')}</span></p>
+                                <div class="property-actions">
+                                    <button class="btn-refi" data-prop-id="${prop.id}" ${loanBalance <= 0 || isPaused ? 'disabled' : ''}>Refi Quote</button>
+                                    <button class="btn-sell" data-prop-id="${prop.id}" ${isPaused ? 'disabled' : ''}>Sell</button>
+                                </div>
+                            `;
+                            propertiesArea.appendChild(card);
+                        });
+                    } else {
+                        propertiesArea.innerHTML = '<p style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; grid-column: 1 / -1;">No properties in portfolio. Buy from the Marketplace!</p>';
+                    }
+                }
+            } catch(e) { console.error("Error updating portfolio UI:", e); }
+
+
+            // --- Update Marketplace Section ---
+             try {
+                if(marketplaceArea) {
+                   marketplaceArea.innerHTML = ''; // Clear existing cards
+                   if (gameState.marketplaceProperties.length === 0) {
+                       marketplaceArea.innerHTML = '<p style="font-size: 0.8rem; color: var(--text-secondary); text-align: center; grid-column: 1 / -1;">No properties currently on market. Refreshing soon...</p>';
+                   } else {
+                       gameState.marketplaceProperties.forEach(prop => {
+                            if (!prop) { console.warn("Skipping invalid marketplace property:", prop); return; }
+
+                           const card = document.createElement('div');
+                           card.className = 'marketplace-card card';
+
+                           const askingPrice = Number(prop.price) || 0;
+                           const monthlyNOI = Number(prop.noi) || 0;
+                           const annualNOI = monthlyNOI * 12;
+                           const capRate = askingPrice > 0 ? (annualNOI / askingPrice) : 0;
+
+                           // Estimate affordability for button state (mirror purchase logic)
+                           const purchaseRate = Math.max(MIN_RATE, gameState.marketRate + PURCHASE_RATE_PREMIUM);
+                           const maxLoanDSCR = calculateMaxLoanByDSCR(annualNOI, purchaseRate, PURCHASE_LOAN_TERM_MONTHS, TARGET_DSCR);
+                           const maxLoanLTV = askingPrice * MAX_LTV_PURCHASE;
+                           const maxLoanAmount = Math.max(0, Math.min(maxLoanDSCR, maxLoanLTV));
+                           const downPayment = askingPrice - maxLoanAmount;
+                           const estimatedClosingCosts = maxLoanAmount * REFI_CLOSING_COST_PERCENT;
+                           const totalCashNeeded = downPayment + estimatedClosingCosts;
+                           const canAfford = gameState.cash >= totalCashNeeded;
+                           const portfolioFull = gameState.properties.length >= MAX_PROPERTIES;
+
+                           card.innerHTML = `
+                               <div class="card-header">
+                                   <h3>${prop.name || 'Unknown Listing'}</h3>
+                                   <span class="card-icon property-icon">${prop.type || '❓'}</span>
+                               </div>
+                               <p><span class="label">Asking:</span> <span>${formatCurrency(askingPrice)}</span></p>
+                               <p><span class="label">Cap Rate:</span> <span>${formatPercent(capRate * 100)}</span></p>
+                               <p><span class="label">Est. NOI/Yr:</span> <span>${formatCurrency(annualNOI)}</span></p>
+                               <p><span class="label">Affordable:</span> <span style="font-weight: 600; color: ${canAfford ? 'var(--accent-green)' : 'var(--accent-red)'};">${canAfford ? 'Yes' : 'No'}</span></p>
+                               <button class="btn-buy" data-prop-id="${prop.id}" ${!canAfford || portfolioFull || isPaused ? 'disabled' : ''} title="${!canAfford ? `Need ${formatCurrency(totalCashNeeded)} cash` : portfolioFull ? 'Portfolio is full' : isPaused ? 'Game Paused' : `Purchase ${prop.name}`}">
+                                    ${portfolioFull ? 'Portfolio Full' : 'Fund & Purchase'}
+                               </button>
+                           `;
+                           marketplaceArea.appendChild(card);
+                       });
+                   }
+                }
+             } catch(e) { console.error("Error updating marketplace UI:", e); }
+
+
+            // --- Update Refinance Offers Section ---
+             try {
+                if(offersList && noOffersMessage) {
+                    offersList.innerHTML = ''; // Clear existing offers
+                    const activeOffers = gameState.offers.filter(offer => offer.type === 'Refinance' || offer.type === 'Refinance Quote');
+
+                    if (activeOffers.length === 0) {
+                        noOffersMessage.style.display = 'block'; // Show message if no offers
+                    } else {
+                        noOffersMessage.style.display = 'none'; // Hide message
+                        activeOffers.forEach(offer => {
+                             if (!offer) { console.warn("Skipping invalid offer in UI:", offer); return; }
+
+                            const card = document.createElement('div');
+                            const offerTypeClass = offer.type?.toLowerCase().replace(/ /g, '-') || 'unknown';
+                            card.className = `offer-card offer-type-${offerTypeClass}`;
+
+                             // Safely access and format offer details
+                             const monthlyNOI = Number(offer.monthlyNOI) || 0;
+                             const newRate = Number(offer.newRate) || 0;
+                             const currentRate = Number(offer.currentRate) || 0;
+                             const newLoanAmount = Number(offer.newLoanAmount) || 0;
+                             const cashOutAmount = Number(offer.cashOutAmount) || 0;
+                             const newPotentialPayment = Number(offer.newPotentialPayment) || 0;
+                             const currentPayment = Number(offer.currentPayment) || 0;
+                             const newDSCR = Number(offer.newDSCR) || Infinity; // Assume Infinity if not calculable/provided
+                             const newTerm = Number(offer.newTerm) || 0;
+                             const closingCosts = Number(offer.closingCosts) || 0;
+
+                            // Calculate monthly savings display
+                             const monthlySavings = currentPayment - newPotentialPayment;
+                             const savingsDisplay = (monthlySavings > 1 && cashOutAmount <= 0 && currentPayment > 0) // Only show positive savings if no cash out and previous payment existed
+                                ? `<p class="savings">▶ Est. Savings: ${formatCurrency(monthlySavings)}/mo</p>`
+                                : '';
+                             const cashOutDisplay = `<p><span class="label">Cash Out:</span> <strong class="${cashOutAmount > 0 ? 'cash-out' : ''}">${formatCurrency(cashOutAmount)}</strong></p>`;
+
+
+                            // Determine DSCR styling class
+                            let dscrClass = '';
+                            if (isFinite(newDSCR)) {
+                                if (newDSCR >= TARGET_DSCR) dscrClass = 'good';
+                                else if (newDSCR >= 1.0) dscrClass = 'ok';
+                                else dscrClass = 'bad';
+                            } else {
+                                dscrClass = 'good'; // Infinite DSCR is good
+                            }
+
+                            // Button disabling logic: Disable accept/reject if game is paused *unless* this is the pausing offer
+                            const disableActions = isPaused && !offer.pausesGame;
+
+
+                            card.innerHTML = `
+                                <span class="offer-source">(${offer.source || 'Unknown Source'})</span>
+                                <p><span class="label">Property:</span> <strong>${offer.propertyName || 'N/A'}</strong></p>
+                                <p><span class="label">Monthly NOI:</span> <strong>${formatCurrency(monthlyNOI)}</strong></p>
+                                <p><span class="label">New Rate:</span> <strong>${formatPercentRate(newRate)}</strong> (Current: ${formatPercentRate(currentRate)})</p>
+                                <p><span class="label">New Loan:</span> <strong>${formatCurrency(newLoanAmount)}</strong></p>
+                                ${cashOutDisplay}
+                                <p><span class="label">Est. New Pmt:</span> <strong>${formatCurrency(newPotentialPayment)}/mo</strong></p>
+                                <p><span class="label">Est. New DSCR:</span> <strong class="dscr-value ${dscrClass}">${isFinite(newDSCR) ? formatDecimal(newDSCR, 2) : 'N/A'}</strong></p>
+                                <p><span class="label">New Term:</span> <strong>${newTerm} mo</strong></p>
+                                ${savingsDisplay}
+                                <p class="cost"><span class="label">Closing Costs:</span> <span>${formatCurrency(closingCosts)}</span></p>
+                                <div class="offer-actions">
+                                    ${offer.pausesGame ? `<button class="btn-resume" data-offer-id="${offer.offerId}">Resume Game</button>` : ''}
+                                    <button class="btn-accept" data-offer-id="${offer.offerId}" ${disableActions ? 'disabled' : ''}>Accept</button>
+                                    <button class="btn-reject" data-offer-id="${offer.offerId}" ${disableActions ? 'disabled' : ''}>Reject</button>
+                                </div>
+                            `;
+                            offersList.appendChild(card);
+                        });
+                    }
+                }
+            } catch(e) { console.error("Error updating offers UI:", e); }
+
+             // Disable marketplace refresh button if paused
+             if (refreshMarketplaceBtn) {
+                 refreshMarketplaceBtn.disabled = isPaused;
+             }
+
+        } // --- End of updateUI ---
+
+
+        // --- Event Listeners Setup ---
+
+        // Use event delegation for dynamically created buttons within containers
+        if (propertiesArea) {
+            propertiesArea.addEventListener('click', (event) => {
+                 if (event.target.matches('.btn-refi')) {
+                     const propId = Number(event.target.dataset.propId);
+                     if (!isNaN(propId)) requestRefinance(propId);
+                 } else if (event.target.matches('.btn-sell')) {
+                     const propId = Number(event.target.dataset.propId);
+                     if (!isNaN(propId)) sellProperty(propId);
+                 }
+            });
+        } else { console.error("Properties area not found for event delegation!"); }
+
+         if (marketplaceArea) {
+             marketplaceArea.addEventListener('click', (event) => {
+                 if (event.target.matches('.btn-buy')) {
+                     const propId = Number(event.target.dataset.propId);
+                     if (!isNaN(propId)) attemptPurchase(propId);
+                 }
+             });
+         } else { console.error("Marketplace area not found for event delegation!"); }
+
+         if (offersList) {
+             offersList.addEventListener('click', (event) => {
+                 if (event.target.matches('.btn-accept')) {
+                     handleAcceptOffer(event);
+                 } else if (event.target.matches('.btn-reject')) {
+                     handleRejectOffer(event);
+                 } else if (event.target.matches('.btn-resume')) {
+                      handleResumeOffer(event);
+                 }
+             });
+         } else { console.error("Offers list not found for event delegation!"); }
+
+
+        // Standard event listeners for static elements
+        if (restartBtn) {
+            restartBtn.addEventListener('click', initGame);
+        } else { console.error("Restart button not found!"); }
+
+        if(lowerRateOffersToggle) {
+            lowerRateOffersToggle.addEventListener('change', (event) => {
+                if (gameState) {
+                    gameState.receiveLowerRateOffers = event.target.checked;
+                    logMessage(`Preference Update: Receive Lower Rate Offers = ${gameState.receiveLowerRateOffers}`, "action");
+                }
+            });
+        } else { console.error("Lower rate toggle not found!"); }
+
+         if(cashOutOffersToggle) {
+            cashOutOffersToggle.addEventListener('change', (event) => {
+                if (gameState) {
+                    gameState.receiveCashOutOffers = event.target.checked;
+                    logMessage(`Preference Update: Receive Cash-Out Offers = ${gameState.receiveCashOutOffers}`, "action");
+                }
+            });
+        } else { console.error("Cash out toggle not found!"); }
+
+        if(refreshMarketplaceBtn) {
+            refreshMarketplaceBtn.addEventListener('click', refreshMarketplace);
+        } else { console.error("Refresh Marketplace button not found!"); }
+
+
+        // --- Initial Game Start ---
+        window.onload = function() {
+            // Check for essential elements before starting
+            if (!document.getElementById('game-container') || !propertiesArea || !messageLog || !rateLine || !networthLine ) {
+                console.error("Essential game elements not found on page load. Cannot start game.");
+                alert("Error: Critical game components missing. Cannot initialize simulation.");
+                return;
+            }
+            console.log("DOM loaded, initializing game...");
+            // Use setTimeout to ensure rendering engine is ready, especially for graphs
+            setTimeout(initGame, 150);
+        };
+
+    </script>
+
+</body>
+</html>

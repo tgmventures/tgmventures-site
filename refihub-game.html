@@ -69,6 +69,22 @@
         .cta-link { font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.3rem; }
         .cta-link a { color: var(--accent-cyan); text-decoration: none; font-weight: 500; }
         .cta-link a:hover { text-decoration: underline; }
+        /* New style for the centered date display */
+        #current-date-display {
+            text-align: center;
+            margin: 0.75rem 0; /* Add some vertical spacing */
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        #current-date-display .label {
+            font-weight: 500;
+            margin-right: 0.4rem;
+            color: var(--text-tertiary); /* Match label style */
+        }
+        #current-date-display span:not(.label) {
+            font-weight: 600;
+            color: var(--text-primary); /* Match value style */
+        }
         #stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 0.75rem; }
         .status-item { background-color: var(--bg-primary); padding: 0.6rem; border: 1px solid var(--border-color); border-radius: 0.375rem; transition: background-color 0.3s ease; text-align: left; }
         .status-item .label { font-size: 0.7rem; color: var(--text-secondary); display: block; margin-bottom: 0.15rem; font-weight: 500; }
@@ -223,18 +239,22 @@
                 <p id="game-subtitle">Grow your cash flow. Maximize your lifestyle. Achieve total financial freedom.</p>
                 <p class="cta-link">Want to do this in real life? Visit <a href="https://refihub.com" target="_blank">RefiHub.com</a> to start building your real RefiHub.</p>
             </div>
+            <!-- Moved Date Display Here -->
+            <div id="current-date-display">
+                 <!-- Removed Date Label --> <span id="time-display">Loading...</span>
+            </div>
             <div id="stats-grid">
-                 <div class="status-item"><span class="label">Date:</span> <span id="time-display">Loading...</span></div>
+                 <!-- Reordered Stats Again -->
                  <div class="status-item"><span class="label">Properties:</span> <span id="prop-count-display">0 / 9</span></div>
-                 <div class="status-item"><span class="label">Total AUM:</span> <span id="total-aum-display">$0</span></div>
-                 <div class="status-item"><span class="label">Net Worth:</span> <span id="net-worth-display">$0</span></div>
+                 <div class="status-item"><span class="label">Property Value:</span> <span id="total-value-display">$0</span></div>
                  <div class="status-item"><span class="label">Cash:</span> <span id="cash-display">$0</span></div>
                  <div class="status-item"><span class="label">Total Loans:</span> <span id="total-loan-display">$0</span></div>
-                 <div class="status-item"><span class="label">Avg Loan Rate:</span> <span id="avg-rate-display">0%</span></div>
+                 <div class="status-item"><span class="label">Net Worth:</span> <span id="net-worth-display">$0</span></div>
                  <div class="status-item"><span class="label">Yearly NOI:</span> <span id="total-noi-display">$0</span></div>
                  <div class="status-item"><span class="label">Yearly Debt Svc:</span> <span id="total-debt-service-display">$0</span></div>
-                 <div class="status-item"><span class="label">Portfolio DSCR:</span> <span id="portfolio-dscr-display">N/A</span></div>
                  <div class="status-item"><span class="label">Yearly Cash Flow:</span> <span id="last-cashflow-display">$0</span></div>
+                 <div class="status-item"><span class="label">Portfolio DSCR:</span> <span id="portfolio-dscr-display">N/A</span></div>
+                 <div class="status-item"><span class="label">Avg Loan Rate:</span> <span id="avg-rate-display">0%</span></div>
             </div>
             <div id="level-display">
                  <span class="label">Lifestyle Level:</span>
@@ -387,7 +407,7 @@
 
         // --- DOM References --- (Assume they are correctly fetched as before)
         // Header
-        const timeDisplay = document.getElementById('time-display'); const propCountDisplay = document.getElementById('prop-count-display'); const netWorthDisplay = document.getElementById('net-worth-display'); const cashDisplay = document.getElementById('cash-display'); const totalLoanDisplay = document.getElementById('total-loan-display'); const totalDebtServiceDisplay = document.getElementById('total-debt-service-display'); const portfolioDscrDisplay = document.getElementById('portfolio-dscr-display'); const totalAumDisplay = document.getElementById('total-aum-display'); const avgRateDisplay = document.getElementById('avg-rate-display'); const totalNoiDisplay = document.getElementById('total-noi-display'); const lastCashflowDisplay = document.getElementById('last-cashflow-display'); const hdrMarketRateDisplay = document.getElementById('hdr-market-rate'); const levelIconEl = document.getElementById('level-icon'); const levelTextEl = document.getElementById('level-text'); const goalProgressEl = document.getElementById('goal-progress');
+        const timeDisplay = document.getElementById('time-display'); const propCountDisplay = document.getElementById('prop-count-display'); const netWorthDisplay = document.getElementById('net-worth-display'); const cashDisplay = document.getElementById('cash-display'); const totalLoanDisplay = document.getElementById('total-loan-display'); const totalDebtServiceDisplay = document.getElementById('total-debt-service-display'); const portfolioDscrDisplay = document.getElementById('portfolio-dscr-display'); const totalValueDisplay = document.getElementById('total-value-display'); const avgRateDisplay = document.getElementById('avg-rate-display'); const totalNoiDisplay = document.getElementById('total-noi-display'); const lastCashflowDisplay = document.getElementById('last-cashflow-display'); const hdrMarketRateDisplay = document.getElementById('hdr-market-rate'); const levelIconEl = document.getElementById('level-icon'); const levelTextEl = document.getElementById('level-text'); const goalProgressEl = document.getElementById('goal-progress');
         // Content
         const propertiesArea = document.getElementById('properties-area'); const marketplaceArea = document.getElementById('marketplace-area'); const refreshMarketplaceBtn = document.getElementById('refresh-marketplace-btn'); const offersList = document.getElementById('offers-list'); const noOffersMessage = document.getElementById('no-offers-message');
         const lowerRateOffersBtn = document.getElementById('lower-rate-offers-toggle'); // Changed from toggle checkbox
@@ -412,9 +432,10 @@
         function highlightStatus(e){const l=document.getElementById(e)?.parentElement;if(l){l.classList.add('highlight');setTimeout(()=>{l.classList.remove('highlight')},600)}}
 
         // --- Core Calculation Functions --- (Verified)
-        function calculateTotalAUM(){if(!gameState||!gameState.properties)return 0;const p=gameState.properties.reduce((s,x)=>s+(Number(x.value)||0),0);const c=Number(gameState.cash)||0;return p+c}
+        function calculateTotalPropertyValue(){if(!gameState||!gameState.properties)return 0;return gameState.properties.reduce((s,x)=>s+(Number(x.value)||0),0)} // New function for just property value
+        function calculateTotalAUM(){if(!gameState||!gameState.properties)return 0;const p=calculateTotalPropertyValue();const c=Number(gameState.cash)||0;return p+c} // Keep AUM for potential internal use
         function calculateTotalLoanBalance(){if(!gameState||!gameState.properties)return 0;return gameState.properties.reduce((s,p)=>s+(Number(p.loan?.balance)||0),0)}
-        function calculateNetWorth(){return calculateTotalAUM()-calculateTotalLoanBalance()}
+        function calculateNetWorth(){return calculateTotalAUM()-calculateTotalLoanBalance()} // Net Worth still uses AUM (Value + Cash)
         function calculateAverageLoanRate(){if(!gameState||!gameState.properties||gameState.properties.length===0)return 0;let b=0,w=0;gameState.properties.forEach(p=>{const l=Number(p.loan?.balance)||0;const r=Number(p.loan?.rate)||0;if(l>0){b+=l;w+=l*r}});return b>0?(w/b):0}
         function calculateTotalYearlyDebtService(){if(!gameState||!gameState.properties)return 0;return gameState.properties.reduce((s,p)=>{const b=Number(p.loan?.balance)||0;const r=Number(p.loan?.rate)||0;const m=Number(p.loan?.monthsRemaining)||0;const a=(b>0&&m>0)?calculateAnnualDebtService(b,r,m):0;return s+a},0)}
         function calculatePortfolioDSCR(){if(!gameState||!gameState.properties||gameState.properties.length===0)return Infinity;const n=gameState.properties.reduce((s,p)=>s+(Number(p.noi)||0),0)*12;const d=calculateTotalYearlyDebtService();if(n<=0&&d<=0)return Infinity;if(d<=0)return Infinity;if(n<=0)return 0;return n/d}
@@ -552,7 +573,19 @@
              const currentNetWorth = calculateNetWorth(); const currentAvgRate = calculateAverageLoanRate(); const totalAnnualNOI = gameState.properties.reduce((s, p) => s + (Number(p.noi) || 0), 0) * 12; const totalLoanBal = calculateTotalLoanBalance(); const totalYearlyDebtSvc = calculateTotalYearlyDebtService(); const yearlyCashFlow = lastMonthNetCashFlow * 12; const portfolioDSCR = calculatePortfolioDSCR(); const totalAUM = calculateTotalAUM(); const isPausedByError = gameState.isPaused;
 
             // Update Header/Level (Same as v13.1)
-             try { if(timeDisplay) timeDisplay.textContent=formatFullDate(gameState.simDate); if(propCountDisplay) propCountDisplay.textContent=`${gameState.properties.length} / ${MAX_PROPERTIES}`; if(totalAumDisplay) totalAumDisplay.textContent=formatCurrency(totalAUM,false,true); if(netWorthDisplay){netWorthDisplay.textContent=formatCurrency(currentNetWorth,false,true);netWorthDisplay.classList.toggle('negative',currentNetWorth<0);netWorthDisplay.classList.remove('positive')} if(cashDisplay) cashDisplay.textContent=formatCurrency(gameState.cash,false,true); if(totalLoanDisplay) totalLoanDisplay.textContent=formatCurrency(totalLoanBal,false,true); if(totalDebtServiceDisplay) totalDebtServiceDisplay.textContent=formatCurrency(totalYearlyDebtSvc,false,true); if(portfolioDscrDisplay){const v=portfolioDSCR;const d=isFinite(v)?formatDecimal(v,2):"N/A";portfolioDscrDisplay.textContent=d;const g=isFinite(v)&&v>=TARGET_DSCR;const o=isFinite(v)&&v>=1.0&&v<TARGET_DSCR;const b=!isFinite(v)||v<1.0;portfolioDscrDisplay.className=g?'positive':o?'ok':'negative'} if(avgRateDisplay) avgRateDisplay.textContent=formatPercentRate(currentAvgRate); if(totalNoiDisplay) totalNoiDisplay.textContent=formatCurrency(totalAnnualNOI,false,true); if(lastCashflowDisplay){const e=lastCashflowDisplay;e.textContent=formatCurrency(yearlyCashFlow,true,true);e.classList.toggle('positive',yearlyCashFlow>0);e.classList.toggle('negative',yearlyCashFlow<0)} if(levelIconEl&&levelTextEl&&goalProgressEl){const c=LEVEL_MILESTONES[gameState.playerLevel]||LEVEL_MILESTONES[0];const n=LEVEL_MILESTONES[gameState.playerLevel+1];levelIconEl.textContent=c.icon;levelTextEl.textContent=c.name;if(n){goalProgressEl.textContent=`Next: ${formatCurrency(n.threshold,false,true)} / Yr CF`}else{goalProgressEl.textContent="Legend Status!"}}} catch(e) { console.error("Header UI Error:", e); }
+             try {
+                 if(timeDisplay) timeDisplay.textContent=formatFullDate(gameState.simDate);
+                 if(propCountDisplay) propCountDisplay.textContent=`${gameState.properties.length} / ${MAX_PROPERTIES}`;
+                 if(totalValueDisplay) totalValueDisplay.textContent=formatCurrency(calculateTotalPropertyValue(),false,true); // Update display element
+                 if(netWorthDisplay){netWorthDisplay.textContent=formatCurrency(currentNetWorth,false,true);netWorthDisplay.classList.toggle('negative',currentNetWorth<0);netWorthDisplay.classList.remove('positive')}
+                 if(cashDisplay) cashDisplay.textContent=formatCurrency(gameState.cash,false,true);
+                 if(totalLoanDisplay) totalLoanDisplay.textContent=formatCurrency(totalLoanBal,false,true);
+                 if(totalDebtServiceDisplay) totalDebtServiceDisplay.textContent=formatCurrency(totalYearlyDebtSvc,false,true);
+                 if(portfolioDscrDisplay){const v=portfolioDSCR;const d=isFinite(v)?formatDecimal(v,2):"N/A";portfolioDscrDisplay.textContent=d;const g=isFinite(v)&&v>=TARGET_DSCR;const o=isFinite(v)&&v>=1.0&&v<TARGET_DSCR;const b=!isFinite(v)||v<1.0;portfolioDscrDisplay.className=g?'positive':o?'ok':'negative'}
+                 if(avgRateDisplay) avgRateDisplay.textContent=formatPercentRate(currentAvgRate);
+                 if(totalNoiDisplay) totalNoiDisplay.textContent=formatCurrency(totalAnnualNOI,false,true);
+                 if(lastCashflowDisplay){const e=lastCashflowDisplay;e.textContent=formatCurrency(yearlyCashFlow,true,true);e.classList.toggle('positive',yearlyCashFlow>0);e.classList.toggle('negative',yearlyCashFlow<0)}
+                 if(levelIconEl&&levelTextEl&&goalProgressEl){const c=LEVEL_MILESTONES[gameState.playerLevel]||LEVEL_MILESTONES[0];const n=LEVEL_MILESTONES[gameState.playerLevel+1];levelIconEl.textContent=c.icon;levelTextEl.textContent=c.name;if(n){goalProgressEl.textContent=`Next: ${formatCurrency(n.threshold,false,true)} / Yr CF`}else{goalProgressEl.textContent="Legend Status!"}}} catch(e) { console.error("Header UI Error:", e); }
 
             // Update Portfolio (Same as v13.1)
              try { if(propertiesArea){propertiesArea.innerHTML='';if(gameState.properties&&gameState.properties.length>0){gameState.properties.forEach(p=>{if(!p||!p.loan){console.warn("Invalid prop UI:",p);return}const c=document.createElement('div');c.className='property-card card';const v=Number(p.value)||0;const n=Number(p.noi)||0;const a=n*12;const lB=Number(p.loan.balance)||0;const lR=Number(p.loan.rate)||0;const mR=Number(p.loan.monthsRemaining)||0;const m=Math.ceil(mR);const pM=(lB>0&&mR>0)?calculateMonthlyPayment(lB,lR,mR):0;const aD=(lB>0&&mR>0)?calculateAnnualDebtService(lB,lR,mR):0;let dS=Infinity;if(aD>0){dS=a>0?(a/aD):0}else if(a<=0&&aD<=0){dS=Infinity}const cR=v>0?(a/v):0;let vT='―',vC='trend-stable';if(valueHistory&&valueHistory.length>=2){const cV=valueHistory[valueHistory.length-1];const pV=valueHistory[valueHistory.length-2];if(cV>pV*1.0001){vT='▲';vC='trend-up'}else if(cV<pV*0.9999){vT='▼';vC='trend-down'}}let dC='';if(isFinite(dS)){if(dS>=TARGET_DSCR)dC='good';else if(dS>=1.0)dC='ok';else dC='bad'}else{dC='good'}c.innerHTML=`<div class="card-header"><h3>${p.name||'Unk'}</h3><span class="card-icon">${p.type||'❓'}</span></div><p><span class="label">Value:</span><span class="value-info"><span>${formatCurrency(v)}</span><span class="trend-indicator ${vC}">${vT}</span></span></p><p><span class="label">Cap:</span><span>${formatPercent(cR*100)}</span></p><p><span class="label">NOI/Yr:</span><span>${formatCurrency(a)}</span></p><p><span class="label">DSCR:</span><span class="dscr-value ${dC}">${isFinite(dS)?formatDecimal(dS,2):'N/A'}</span></p><p><span class="label">Loan:</span><span>${formatCurrency(lB)}</span></p><p><span class="label">Rate:</span><span>${formatPercentRate(lR)}</span></p><p><span class="label">Pmt/Mo:</span><span>${formatCurrency(pM)}</span></p><p><span class="label">Term:</span><span>${lB>0&&m>0?m+' mo':(lB<=0?'Paid':'N/A')}</span></p><div class="property-actions"><button class="btn-refi" data-prop-id="${p.id}" ${lB<=0||isPausedByError?'disabled':''}>Refi Quote</button><button class="btn-sell" data-prop-id="${p.id}" ${isPausedByError?'disabled':''}>Sell</button></div>`;propertiesArea.appendChild(c)})}else{propertiesArea.innerHTML='<p style="font-size:0.8rem;color:var(--text-secondary);text-align:center;grid-column:1 / -1;">No properties. Buy from Marketplace!</p>'}} } catch(e) { console.error("Portfolio UI Error:", e); }

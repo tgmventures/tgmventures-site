@@ -42,19 +42,21 @@
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            overflow: hidden;
             background: linear-gradient(135deg, #111827, #1a1a1a 70%);
-            display: flex; /* Use flexbox for layout */
-            flex-direction: column; /* Stack header and game */
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto; /* Allow vertical scrolling */
+            position: relative; /* For proper positioning of fixed elements */
         }
 
         /* Apply max-width and centering */
         #game-header,
-        body > #game-container { /* Select game-container directly under body */
+        body > #game-container {
             max-width: 1400px;
             margin-left: auto;
             margin-right: auto;
-            width: 100%; /* Important for responsiveness */
+            width: 100%;
+            padding: 1rem;
         }
 
         /* --- Game Header Styles --- */
@@ -112,12 +114,13 @@
 
         /* --- Game Container --- */
         #game-container {
-            width: 100%;
-            flex-grow: 1; /* Takes remaining space */
-            display: flex; /* Changed to Flexbox */
-            flex-direction: column; /* Stack vertically */
+            flex: 1;
+            display: flex;
+            flex-direction: column;
             gap: 1rem;
-            padding: 1rem;
+            overflow-y: auto; /* Allow container to scroll */
+            min-height: 0; /* Allow container to shrink */
+            padding-bottom: 2rem; /* Add some bottom padding */
         }
 
         /* --- Desktop Environment --- */
@@ -161,29 +164,47 @@
             flex-grow: 1;
         }
 
+        /* --- File Item Styles --- */
         .file-item {
             background-color: var(--bg-secondary);
             border: 1px solid var(--border-color);
-            border-radius: 0.5rem; /* Rounded corners */
-            padding: 1rem 0.75rem; /* Keep padding for internal spacing */
-            height: 150px; /* *** ADDED: Set a fixed height *** */
-            cursor: move;
+            border-radius: 0.5rem;
+            padding: 1rem 0.75rem;
+            height: 150px;
+            cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center; /* *** ADDED: Center content vertically *** */
+            justify-content: center;
             gap: 0.5rem;
-            position: relative; /* For pseudo-elements */
-            overflow: hidden; /* For pseudo-elements */
+            position: relative;
+            overflow: hidden;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            user-select: none;
         }
 
-        .file-item:hover {
+        .file-item:hover,
+        .file-item:focus {
             transform: translateY(-2px);
             box-shadow: 0 8px 15px var(--shadow-color);
             border-color: var(--file-hover);
+            outline: none;
         }
+
+        .file-item:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 8px var(--shadow-color);
+        }
+
+        /* Add touch feedback for mobile */
+        @media (hover: none) {
+            .file-item:active {
+                background-color: rgba(59, 130, 246, 0.1);
+                border-color: var(--file-hover);
+            }
+        }
+        /* --- End File Item Styles --- */
 
         .file-icon {
             width: 48px;
@@ -516,27 +537,14 @@
             padding: 1.5rem;
             cursor: pointer;
             transition: all 0.2s ease;
-            width: 220px;
+            width: 260px;
             text-align: center;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-
-        .goal-option input[type="radio"] {
-            display: none; /* Hide actual radio button */
-        }
-
-        .goal-option .goal-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-
-        .goal-option .goal-description {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            line-height: 1.4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
         }
 
         .goal-option:hover {
@@ -545,19 +553,41 @@
             box-shadow: 0 6px 12px rgba(0,0,0,0.3);
         }
 
-        .goal-option input[type="radio"]:checked + .goal-content {
-            border-color: var(--accent-green);
-            background-color: rgba(34, 197, 94, 0.1);
-            box-shadow: 0 0 10px var(--success-glow);
+        .goal-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
         }
 
-        .goal-content {
-            padding: inherit;
-            margin: -1.5rem;
-            border: inherit;
-            border-radius: inherit;
-            transition: all 0.2s ease;
-            border-width: 2px;
+        .goal-option input[type="radio"]:checked + .goal-title {
+            color: var(--accent-green);
+        }
+
+        .goal-option input[type="radio"]:checked ~ .goal-description {
+            color: var(--text-primary);
+        }
+
+        .goal-option:has(input[type="radio"]:checked) {
+            border-color: var(--accent-green);
+            background-color: rgba(34, 197, 94, 0.1);
+            box-shadow: 0 0 15px var(--success-glow);
+        }
+
+        .goal-option .goal-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            transition: color 0.2s ease;
+        }
+
+        .goal-option .goal-description {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            max-width: 200px;
+            transition: color 0.2s ease;
         }
 
         /* --- Offers View Styles (Keep as overlay) --- */
@@ -732,11 +762,15 @@
 
         /* --- Offer Selection Notification --- */
         #offer-selection-notification {
-            display: none; /* Hidden by default */
-            position: sticky; /* Stick to the bottom of the offers view */
-            bottom: 1rem; /* Spacing from bottom */
-            left: 50%; /* Center horizontally */
-            transform: translateX(-50%); /* Correct centering */
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            margin: 0 auto;
+            width: fit-content;
+            min-width: 200px;
+            max-width: min(90%, 400px);
             background-color: var(--accent-green);
             color: white;
             padding: 0.75rem 1.5rem;
@@ -744,10 +778,28 @@
             font-weight: 600;
             text-align: center;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            z-index: 15; /* Ensure it's above offer cards */
-            width: auto; /* Adjust width based on content */
-            max-width: 90%; /* Prevent it becoming too wide */
-            margin-top: 1rem; /* Add some space above if needed */
+            z-index: 1000;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #offer-selection-notification {
+                bottom: 16px;
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+                margin: 0 16px;
+            }
         }
 
     </style>
@@ -917,18 +969,7 @@
                 <div class="file-browser-title">Your Existing Loans</div>
             </div>
             <div class="file-item-list">
-                 <div class="file-item" draggable="true" data-file="office-loan-123-main.pdf">
-                     <div class="file-icon">📄</div>
-                     <div class="file-name">Office Loan - 123 Main.pdf</div>
-                 </div>
-                 <div class="file-item" draggable="true" data-file="multifamily-loan-456-oak.pdf">
-                     <div class="file-icon">📄</div>
-                     <div class="file-name">Multifamily Loan - 456 Oak.pdf</div>
-                 </div>
-                 <div class="file-item" draggable="true" data-file="warehouse-loan-789-ind.pdf">
-                    <div class="file-icon">📄</div>
-                    <div class="file-name">Warehouse Loan - 789 Ind.pdf</div>
-                </div>
+                <!-- Files will be populated dynamically -->
             </div>
         </div>
 
@@ -940,24 +981,18 @@
         <div class="goal-options">
             <label class="goal-option" for="goal-all">
                 <input type="radio" id="goal-all" name="refi-goal" value="all" checked>
-                <div class="goal-content">
-                    <span class="goal-title">All Offers</span>
-                    <span class="goal-description">See all available refinancing options from our lender network.</span>
-                </div>
+                <span class="goal-title">All Offers</span>
+                <span class="goal-description">See all available refinancing options from our lender network.</span>
             </label>
             <label class="goal-option" for="goal-rate">
                 <input type="radio" id="goal-rate" name="refi-goal" value="rate">
-                <div class="goal-content">
-                    <span class="goal-title">Lowest Rate</span>
-                    <span class="goal-description">Prioritize offers with the lowest possible interest rate.</span>
-                </div>
+                <span class="goal-title">Lowest Rate</span>
+                <span class="goal-description">Prioritize offers with the lowest possible interest rate.</span>
             </label>
             <label class="goal-option" for="goal-cashout">
                 <input type="radio" id="goal-cashout" name="refi-goal" value="cashout">
-                <div class="goal-content">
-                    <span class="goal-title">Maximize Cash Out</span>
-                    <span class="goal-description">Prioritize offers that allow you to borrow more against your equity.</span>
-                </div>
+                <span class="goal-title">Maximize Cash Out</span>
+                <span class="goal-description">Prioritize offers that allow you to borrow more against your equity.</span>
             </label>
         </div>
         <div class="game-controls" style="margin-top: 2rem;">
@@ -1097,7 +1132,8 @@
         function setupEventListeners() {
             fileItems.forEach(file => {
                 file.addEventListener('dragstart', handleDragStart);
-                file.addEventListener('dragend', handleDragEnd); // Add drag end listener
+                file.addEventListener('dragend', handleDragEnd);
+                file.addEventListener('click', handleFileClick); // Add click handler
             });
             dropZone.addEventListener('dragover', handleDragOver);
             dropZone.addEventListener('drop', handleDrop);
@@ -1105,9 +1141,49 @@
             dropZone.addEventListener('dragleave', handleDragLeave);
             confirmGoalBtn.addEventListener('click', handleConfirmAndSetGoal);
             findOffersBtn.addEventListener('click', handleFindOffers);
-            // Use event delegation for offer selection
             offersContainer.addEventListener('click', handleSelectOffer);
-            // Back button not explicitly needed as reset happens via "Process Another Loan"
+        }
+
+        // New function to handle file clicks
+        function handleFileClick(e) {
+            if (gameState.currentStep !== 0) {
+                return; // Only allow selection in initial state
+            }
+            const fileItem = e.currentTarget;
+            const fileName = fileItem.dataset.file;
+            console.log("File clicked:", fileName);
+            processSelectedFile(fileName);
+        }
+
+        // New function to handle file processing (used by both click and drop)
+        function processSelectedFile(fileName) {
+            if (!fileName || gameState.currentStep !== 0) {
+                console.error("Invalid file or wrong game state");
+                return;
+            }
+
+            const fileData = mockExtractedData[fileName];
+            if (!fileData) {
+                console.error("No data found for file:", fileName);
+                alert("Error: Could not process data for this file.");
+                return;
+            }
+
+            gameState.selectedFile = fileName;
+            gameState.confirmedLoanData = fileData;
+
+            console.log("Processing file:", fileName);
+            
+            // Update UI for processing state
+            instructionsPanel.style.display = 'none';
+            dropZone.style.display = 'none';
+            inlineSpinner.style.display = 'block';
+            currentLoanInfoContainer.style.display = 'block';
+            clearInfoFields();
+            confirmGoalBtn.disabled = true;
+
+            // Start sequential population
+            populateFieldsSequentially(fileData);
         }
 
         // ==========================================
@@ -1155,29 +1231,7 @@
             dropZone.classList.remove('active');
 
             if (gameState.selectedFile && gameState.currentStep === 0) {
-                const fileData = mockExtractedData[gameState.selectedFile];
-                if (!fileData) {
-                    console.error("No data found for dropped file:", gameState.selectedFile);
-                    alert("Error: Could not process data for this file.");
-                    gameState.selectedFile = null; // Reset selected file
-                    return;
-                }
-                gameState.confirmedLoanData = fileData; // Store data immediately
-
-                console.log("Starting inline processing for:", gameState.selectedFile);
-                // Update UI for processing state
-                instructionsPanel.style.display = 'none';
-                dropZone.style.display = 'none';
-                inlineSpinner.style.display = 'block';
-                currentLoanInfoContainer.style.display = 'block';
-                clearInfoFields();
-                confirmGoalBtn.disabled = true;
-
-                // Start sequential population
-                populateFieldsSequentially(fileData);
-
-            } else {
-                console.log("Drop ignored: Not in correct step or no file selected.");
+                processSelectedFile(gameState.selectedFile);
             }
         }
 
@@ -1601,76 +1655,66 @@
         document.addEventListener('DOMContentLoaded', () => {
             setupEventListeners(); // Setup listeners once DOM is ready
             initGame(); // Initialize game state
-            populateFileBrowser(); // Explicitly call after init to ensure it runs with loaded data
+            populateFileBrowser(); // Explicitly populate the file browser
+            console.log("Game initialized and file browser populated");
         });
 
         // Function to populate file browser
         function populateFileBrowser() {
-            console.log("--- Starting populateFileBrowser ---"); // Added log
-            const fileItemList = document.getElementById('file-item-list'); // Get list container
+            console.log("--- Starting populateFileBrowser ---");
+            const fileItemList = document.querySelector('.file-item-list');
             if (!fileItemList) {
-                console.error("File item list container not found!"); // Added error log
-                return; 
+                console.error("File item list container not found!");
+                return;
             }
 
-            fileItemList.innerHTML = ''; // Clear existing files
-            console.log("Cleared file item list."); // Added log
+            fileItemList.innerHTML = '';
+            console.log("Cleared file item list.");
 
             const availableFiles = Object.keys(mockExtractedData);
-            console.log(`Found ${availableFiles.length} keys in mockExtractedData.`); // Added log
-
-            // Simple shuffle function
-            const shuffleArray = (array) => {
-                for (let i = array.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
-                }
-                return array;
-            };
-
-            const shuffledFiles = shuffleArray([...availableFiles]);
-            // Show up to 9 files, or fewer if less data exists
+            const shuffledFiles = [...availableFiles].sort(() => Math.random() - 0.5);
             const numFilesToShow = Math.min(9, shuffledFiles.length);
-            console.log(`Will attempt to show ${numFilesToShow} files.`); // Added log
 
             for (let i = 0; i < numFilesToShow; i++) {
                 const fileNameKey = shuffledFiles[i];
-                const fileData = mockExtractedData[fileNameKey]; // Get the data object
-                console.log(`Loop ${i + 1}: Processing key '${fileNameKey}'...`); // Added log
+                const fileData = mockExtractedData[fileNameKey];
                 
                 if (!fileData) {
-                    console.warn(`Loop ${i + 1}: No fileData found for key '${fileNameKey}'. Skipping.`); // Added warn log
-                    continue; // Skip if data missing for some reason
+                    console.warn(`No data found for file: ${fileNameKey}`);
+                    continue;
                 }
 
-                // Create the file item element dynamically
                 const fileItem = document.createElement('div');
                 fileItem.className = 'file-item';
                 fileItem.draggable = true;
-                fileItem.dataset.file = fileNameKey; // Store the key used to retrieve data
+                fileItem.dataset.file = fileNameKey;
+                fileItem.role = 'button';
+                fileItem.tabIndex = '0';
 
-                const icon = document.createElement('div');
-                icon.className = 'file-icon';
-                icon.textContent = '📄'; // Generic document icon
+                fileItem.innerHTML = `
+                    <div class="file-icon">📄</div>
+                    <div class="file-name">${fileNameKey.replace(/[-_]/g, ' ')
+                        .replace(/\.pdf$/i, '')
+                        .split(' ')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ')}.pdf</div>
+                `;
 
-                const name = document.createElement('div');
-                name.className = 'file-name';
-                // Generate a user-friendly name from the key or data
-                let displayName = fileNameKey.replace(/[-_]/g, ' ').replace(/\.pdf$/i, '');
-                // Capitalize first letter of each word (simple approach)
-                displayName = displayName.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-                name.textContent = displayName + '.pdf';
-
-                fileItem.appendChild(icon);
-                fileItem.appendChild(name);
-
-                // Add drag listeners to the newly created item
-                 fileItem.addEventListener('dragstart', handleDragStart);
-                 fileItem.addEventListener('dragend', handleDragEnd);
+                // Add event listeners
+                fileItem.addEventListener('dragstart', handleDragStart);
+                fileItem.addEventListener('dragend', handleDragEnd);
+                fileItem.addEventListener('click', handleFileClick);
+                
+                // Add keyboard support
+                fileItem.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleFileClick(e);
+                    }
+                });
 
                 fileItemList.appendChild(fileItem);
             }
-            console.log("File browser populated with", numFilesToShow, "files.");
         }
 
         // Added missing function for the Cancel button in offers view

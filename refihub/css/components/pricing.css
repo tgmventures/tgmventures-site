@@ -1,0 +1,152 @@
+/* css/components/pricing.css */
+
+.pricing-section {
+    padding: var(--space-lg, 2rem) var(--space-md, 1.5rem) var(--space-xl, 4rem); /* Reduced top padding */
+    background-color: var(--color-background-light, #ffffff);
+}
+
+.pricing-section .section-container {
+    max-width: 1300px; /* Further increased container width */
+    margin: 0 auto;
+    text-align: center;
+}
+
+.pricing-section .section-header {
+    margin-bottom: var(--space-lg, 3rem); /* Reduced bottom margin */
+}
+
+.pricing-section .section-header-headline {
+    font-size: var(--font-size-xxl, 3rem);
+    font-weight: var(--font-weight-bold, 700);
+    color: var(--color-text-heading, #111);
+    margin-bottom: var(--space-lg, 3rem); /* Increased margin below headline */
+}
+
+.pricing-details {
+    display: grid;
+    grid-template-columns: 1fr; /* Default: single column for mobile */
+    gap: var(--space-lg, 3rem); /* Gap for stacked mobile layout */
+    margin-top: 0;
+    margin-bottom: var(--space-xl, 4rem);
+    align-items: stretch; /* Stretch items to fill height */
+}
+
+@media (min-width: 768px) { /* Apply grid layout on medium screens and up */
+    .pricing-details {
+        grid-template-columns: 1.5fr 1fr; /* Adjusted ratio - More space for lenders */
+        gap: var(--space-xl, 4rem); /* Wider gap for side-by-side */
+    }
+}
+
+/* New rule for the cards */
+.pricing-card {
+    background-color: var(--color-background-secondary, #f8f9fa);
+    padding: var(--space-lg, 3rem);
+    border-radius: var(--border-radius-lg, 12px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    height: 100%; /* Ensure cards have same height in a row */
+    text-align: left;
+}
+
+/* Apply larger padding to cards on larger screens */
+@media (min-width: 768px) {
+    .pricing-card {
+        padding: var(--space-xl, 4rem);
+    }
+}
+
+/* Update selectors for content within cards */
+.pricing-card h3 {
+    font-size: var(--font-size-xl, 1.75rem);
+    font-weight: var(--font-weight-semibold, 600);
+    color: var(--color-text-heading, #111);
+    margin-bottom: var(--space-lg, 2rem);
+}
+
+.price-tag.free {
+    font-size: var(--font-size-xxl, 3rem);
+    font-weight: var(--font-weight-bold, 700);
+    color: var(--color-success, #198754);
+    margin-bottom: var(--space-lg, 2rem);
+    display: block;
+    line-height: 1.1;
+}
+
+/* Style for Contact Us tag */
+.price-tag.contact {
+    font-size: var(--font-size-xl, 1.75rem); /* Slightly smaller than Free */
+    font-weight: var(--font-weight-semibold, 600);
+    color: var(--color-text-secondary, #6c757d); /* Use secondary/grey color */
+    margin-bottom: var(--space-lg, 2rem);
+    display: block;
+    line-height: 1.1;
+}
+
+.pricing-explanation {
+    text-align: left;
+}
+
+.pricing-explanation p {
+    margin-bottom: var(--space-md, 1.5rem);
+    color: var(--color-text-secondary, #555);
+    line-height: 1.7;
+    font-size: var(--font-size-base, 1rem);
+}
+.pricing-explanation p:last-child {
+    margin-bottom: 0;
+}
+
+.pricing-explanation strong {
+    color: var(--color-text-primary, #111);
+    font-weight: var(--font-weight-semibold, 600);
+}
+
+/* Update selectors for lender card specifics */
+.pricing-card-lenders p {
+    font-size: var(--font-size-md, 1.1rem);
+    color: var(--color-text-secondary, #555);
+    margin-bottom: var(--space-md, 1.5rem);
+}
+
+.pricing-card-lenders ul {
+    list-style: disc;
+    margin-left: var(--space-md, 1.5rem);
+    padding-left: 0;
+    margin-bottom: var(--space-lg, 2rem);
+    color: var(--color-text-secondary, #555);
+}
+
+.pricing-card-lenders li {
+    margin-bottom: var(--space-sm, 0.75rem);
+    font-size: var(--font-size-base, 1rem);
+}
+
+.lender-cta {
+    margin-top: var(--space-lg, 2rem); /* Space above the button */
+}
+
+/* Assuming .button.button-secondary styles exist */
+.lender-cta .button-secondary {
+    /* Add specific overrides if needed */
+    /* e.g., display: inline-block; */
+}
+
+/* CTA Button Styling */
+/* .pricing-cta {
+    text-align: center;
+    margin-top: 0; 
+} */
+
+/* .pricing-cta .button-primary {
+    padding: var(--space-sm, 0.75rem) var(--space-lg, 3rem);
+    font-size: var(--font-size-md, 1.1rem);
+} */
+
+.investor-cta {
+    margin-top: var(--space-lg, 2rem); /* Space above the button */
+}
+
+/* Assuming .button.button-primary styles exist */
+.investor-cta .button-primary {
+    /* Add specific overrides if needed */
+} 

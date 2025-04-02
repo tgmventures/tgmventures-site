@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RefiHub: AI-Powered Commercial Lending & Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components/buttons.css">
+    <link rel="stylesheet" href="css/components/hero.css">
+    <link rel="stylesheet" href="css/components/key-highlights.css">
+    <link rel="stylesheet" href="css/components/feature-hero.css">
+    <link rel="stylesheet" href="css/components/testimonials.css">
+    <link rel="stylesheet" href="css/components/cta.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/components/feature-scroll.css">
+    <link rel="stylesheet" href="css/components/pricing.css">
+    <link rel="stylesheet" href="css/components/founder-video.css">
+</head>
+<body>
+    <refihub-nav></refihub-nav>
+    <script src="js/refihub-nav.js"></script>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Real Estate Investing. Reimagined.</h1>
+                <p>RefiHub seamlessly integrates AI-powered lending, analysis, and management — freeing you to focus on your next deal.</p>
+                <div class="cta-buttons">
+                    <a href="#feature-refi-autopilot" class="button button-ai-animated button-ai-primary">Activate Refi Autopilot</a>
+                    <a href="refihub-deal-analyzer.html" class="button button-secondary button-ai-animated">Analyze a Deal</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Founder Story Video Section -->
+        <section id="founder-story" class="founder-story-section">
+            <div class="video-player-container">
+                <!-- Placeholder for video -->
+                <div class="video-placeholder" style="background-image: url('https://via.placeholder.com/1200x675.png/CCCCCC/FFFFFF?text=Founder+Video+Placeholder');">
+                    <button class="play-button" aria-label="Play Founder Story Video">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="80px" height="80px">
+                            <path fill-rule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653z" clip-rule="evenodd" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature Scroll Section (Moved up) -->
+        <section class="feature-scroll">
+            <div class="section-container">
+                <header class="section-header">
+                    <h2 class="section-header-headline">Get to know RefiHub.</h2>
+                </header>
+            </div>
+            <div class="feature-scroll-gallery">
+                <div class="feature-scroll-container">
+                    <ul class="feature-card-set">
+                        <!-- Refi Autopilot Cards Moved to Front -->
+                        <li class="feature-scroll-item" data-target-section="feature-refi-autopilot">
+                            <div class="card">
+                                <div class="card-content">
+                                    <span class="card-label">Refi Autopilot</span>
+                                    <h3 class="card-headline">Unlock lower rates automatically.</h3>
+                                </div>
+                                <div class="card-image-container">
+                                    <img src="https://via.placeholder.com/300x250.png/cccccc/333333?text=AI+Alerts" alt="Refinance Autopilot illustration" class="card-image">
+                                </div>
+                            </div>
+                        </li>
+                        <li class="feature-scroll-item" data-target-section="feature-refi-autopilot">
+                            <div class="card">
+                                <div class="card-content">
+                                    <span class="card-label">Refi Autopilot</span>
+                                    <h3 class="card-headline">Drag-and-drop or email docs.</h3>
+                                </div>
+                                <div class="card-image-container">
+                                    <img src="https://via.placeholder.com/300x250.png/bbbbbb/333333?text=Easy+Setup" alt="Easy Document Upload illustration" class="card-image">
+                                </div>
+                            </div>
+                        </li>
+                        <li class="feature-scroll-item" data-target-section="feature-refi-autopilot">
+                            <div class="card">
+                                <div class="card-content">
+                                    <span class="card-label">Refi Autopilot</span>
+                                    <h3 class="card-headline">AI scans for savings 24/7.</h3>
+                                </div>
+                                <div class="card-image-container">
+                                    <img src="https://via.placeholder.com/300x250.png/999999/FFFFFF?text=AI+Scan" alt="AI Monitoring illustration" class="card-image">
+                                </div>
+                            </div>
+                        </li>
+                        <li class="feature-scroll-item" data-target-section="feature-refi-autopilot">
+                            <div class="card">
+                                <div class="card-content">
+                                    <span class="card-label">Refi Autopilot</span>
+                                    <h3 class="card-headline">Get alerts when you can refi & save.</h3>
+                                </div>
+                                <div class="card-image-container">
+                                    <img src="https://via.placeholder.com/300x250.png/888888/FFFFFF?text=Privacy" alt="Privacy illustration" class="card-image">
+                                </div>
+                            </div>
+                        </li>
+                        <!-- Other Feature Cards -->
+                        <li class="feature-scroll-item" data-target-section="feature-purchase-loans">
+                            <div class="card">
+                                <div class="card-content">
+                                    <span class="card-label">Purchase Loans</span>
+                                    <h3 class="card-headline">Direct access to competing lenders.</h3>
+                                </div>
+                                <div class="card-image-container">
+                                    <img src="https://via.placeholder.com/300x250.png/aaaaaa/333333?text=Marketplace" alt="Loan Marketplace illustration" class="card-image">
+                                </div>
+                            </div>
+                        </li>
+                        <li class="feature-scroll-item" data-target-section="feature-deal-analyzer">
+                            <div class="card">
+                                <div class="card-content">
+                                    <span class="card-label">Deal Analyzer</span>
+                                    <h3 class="card-headline">Analyze deals in seconds.</h3>
+                                </div>
+                                <div class="card-image-container">
+                                    <img src="https://via.placeholder.com/300x250.png/eeeeee/333333?text=Analysis" alt="Deal Analyzer illustration" class="card-image">
+                                </div>
+                            </div>
+                        </li>
+                        <li class="feature-scroll-item" data-target-section="feature-deal-analyzer">
+                            <div class="card">
+                                <div class="card-content">
+                                    <span class="card-label">Deal Analyzer</span>
+                                    <h3 class="card-headline">Instantly request loans on deals.</h3>
+                                </div>
+                                <div class="card-image-container">
+                                    <img src="https://via.placeholder.com/300x250.png/dddddd/333333?text=Analysis" alt="Deal Analyzer sending loan request" class="card-image">
+                                </div>
+                            </div>
+                        </li>
+                        <li class="feature-scroll-item" data-target-section="feature-asset-management">
+                            <div class="card">
+                                <div class="card-content">
+                                    <span class="card-label">Asset Management</span>
+                                    <h3 class="card-headline">Automate the operational drag.</h3>
+                                </div>
+                                <div class="card-image-container">
+                                    <img src="https://via.placeholder.com/300x250.png/f0f0f0/333333?text=Management" alt="Asset Management illustration" class="card-image">
+                                </div>
+                            </div>
+                        </li>
+                        <li class="feature-scroll-item" data-target-section="feature-purchase-loans">
+                            <div class="card">
+                                <div class="card-content">
+                                    <span class="card-label">Purchase Loans</span>
+                                    <h3 class="card-headline">Instantly build loan requests.</h3>
+                                </div>
+                                <div class="card-image-container">
+                                    <img src="https://via.placeholder.com/300x250.png/c0c0c0/333333?text=Loan+Request" alt="Loan Request illustration" class="card-image">
+                                </div>
+                            </div>
+                        </li>
+                        <li class="feature-scroll-item" data-target-section="feature-purchase-loans">
+                            <div class="card">
+                                <div class="card-content">
+                                    <span class="card-label">Purchase Loans</span>
+                                    <h3 class="card-headline">Faster closing with direct communication.</h3>
+                                </div>
+                                <div class="card-image-container">
+                                    <img src="https://via.placeholder.com/300x250.png/a0a0a0/FFFFFF?text=Fast+Close" alt="Faster Closing illustration" class="card-image">
+                                </div>
+                            </div>
+                        </li>
+                        <li class="feature-scroll-item" data-target-section="feature-deal-analyzer">
+                            <div class="card">
+                                <div class="card-content">
+                                    <span class="card-label">Deal Analyzer</span>
+                                    <h3 class="card-headline">Instant cash flow & ROI forecasts.</h3>
+                                </div>
+                                <div class="card-image-container">
+                                    <img src="https://via.placeholder.com/300x250.png/909090/FFFFFF?text=Forecast" alt="Financial Projections illustration" class="card-image">
+                                </div>
+                            </div>
+                        </li>
+                        <li class="feature-scroll-item" data-target-section="feature-asset-management">
+                            <div class="card">
+                                <div class="card-content">
+                                    <span class="card-label">Asset Management</span>
+                                    <h3 class="card-headline">AI-powered checks & reminders.</h3>
+                                </div>
+                                <div class="card-image-container">
+                                    <img src="https://via.placeholder.com/300x250.png/e8e8e8/333333?text=Compliance" alt="Compliance Check illustration" class="card-image">
+                                </div>
+                            </div>
+                        </li>
+                        <li class="feature-scroll-item" data-target-section="feature-asset-management">
+                            <div class="card">
+                                <div class="card-content">
+                                    <span class="card-label">Asset Management</span>
+                                    <h3 class="card-headline">Automated financial data gathering.</h3>
+                                </div>
+                                <div class="card-image-container">
+                                    <img src="https://via.placeholder.com/300x250.png/777777/FFFFFF?text=Data+Gather" alt="Data Collection illustration" class="card-image">
+                                </div>
+                            </div>
+                        </li>
+                        <li class="feature-scroll-item" data-target-section="feature-asset-management">
+                            <div class="card">
+                                <div class="card-content">
+                                    <span class="card-label">Asset Management</span>
+                                    <h3 class="card-headline">Less time on ops, more on scaling.</h3>
+                                </div>
+                                <div class="card-image-container">
+                                    <img src="https://via.placeholder.com/300x250.png/b0b0b0/333333?text=Growth" alt="Business Growth illustration" class="card-image">
+                                </div>
+                            </div>
+                        </li>
+                        <li class="feature-scroll-item" data-target-section="feature-deal-analyzer">
+                            <div class="card">
+                                <div class="card-content">
+                                    <span class="card-label">Deal Analyzer</span>
+                                    <h3 class="card-headline">Evaluate deals against market data.</h3>
+                                </div>
+                                <div class="card-image-container">
+                                    <img src="https://via.placeholder.com/300x250.png/d0d0d0/333333?text=Comparison" alt="Market Comparison illustration" class="card-image">
+                                </div>
+                            </div>
+                        </li>
+                        <li class="feature-scroll-item" data-target-section="feature-deal-analyzer">
+                            <div class="card">
+                                <div class="card-content">
+                                    <span class="card-label">Deal Analyzer</span>
+                                    <h3 class="card-headline">Scale with data-driven decisions.</h3>
+                                </div>
+                                <div class="card-image-container">
+                                    <img src="https://via.placeholder.com/300x250.png/f5f5f5/333333?text=Confidence" alt="Portfolio Confidence illustration" class="card-image">
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="feature-scroll-paddles">
+                     <button class="feature-scroll-paddle feature-scroll-paddle-left" aria-label="Previous" disabled>
+                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><path d="M21.559,12.062 L15.618,17.984 L21.5221,23.944 C22.105,24.533 22.1021,25.482 21.5131,26.065 C21.2211,26.355 20.8391,26.4999987 20.4571,26.4999987 C20.0711,26.4999987 19.6851,26.352 19.3921,26.056 L12.4351,19.034 C11.8531,18.446 11.8551,17.4999987 12.4411,16.916 L19.4411,9.938 C20.0261,9.353 20.9781,9.354 21.5621,9.941 C22.1471,10.528 22.1451,11.478 21.5591,12.062 L21.559,12.062 Z"></path></svg>
+                     </button>
+                     <button class="feature-scroll-paddle feature-scroll-paddle-right" aria-label="Next">
+                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36"><path d="M23.5587,16.916 C24.1447,17.4999987 24.1467,18.446 23.5647,19.034 L16.6077,26.056 C16.3147,26.352 15.9287,26.4999987 15.5427,26.4999987 C15.1607,26.4999987 14.7787,26.355 14.4867,26.065 C13.8977,25.482 13.8947,24.533 14.4777,23.944 L20.3818,17.984 L14.4408,12.062 C13.8548,11.478 13.8528,10.5279 14.4378,9.941 C15.0218,9.354 15.9738,9.353 16.5588,9.938 L23.5588,16.916 L23.5587,16.916 Z"></path></svg>
+                     </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature Hero 1: Refinancing Autopilot -->
+        <section class="feature-hero" id="feature-refi-autopilot">
+            <div class="feature-hero-content">
+                <div class="feature-hero-text">
+                    <h2>Refi Autopilot.</h2>
+                    <p>Simply drag-and-drop your loan document, or email it to <a href="mailto:sara@refihub.com?subject=Loan%20Document%20for%20RefiHub%20Autopilot&body=Please%20find%20my%20loan%20document%20attached%20for%20RefiHub%20Autopilot%20monitoring.%20Thanks!">sara@refihub.com</a>. Our AI scans the market 24/7 and notifies you when a lender in our network offers you a lower rate or cash-out refi. We filter for you - no spam, no sharing personal details.</p>
+                    <ul>
+                        <li>Effortless setup via drag-and-drop or email.</li>
+                        <li>24/7 AI monitoring for better terms.</li>
+                        <li>Filtered offers - no spam, details kept private.</li>
+                        <li>Never miss a savings opportunity again.</li>
+                    </ul>
+                     <a href="#learn-more-autopilot" class="button button-secondary button-ai-animated">Activate Autopilot</a>
+                </div>
+                <div class="feature-hero-image">
+                    <!-- Updated Image -->
+                    <img src="img/refihub-how-it-works.png" alt="RefiHub Autopilot alert showing a $2,500,000 offer with lower rate and cash out options on a phone screen">
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature Hero 2: Purchase Loan Requests -->
+        <section class="feature-hero feature-hero-reversed" id="feature-purchase-loans">
+            <div class="feature-hero-content">
+                <div class="feature-hero-text">
+                    <h2>Purchase Loans.</h2>
+                    <p>Have a deal you want to purchase? Drag-and-drop the OM or other files. We instantly build your loan request and publish it to our marketplace where direct lenders compete for your business. Skip the broker fees and delays.</p>
+                    <ul>
+                        <li>Streamlined requests via drag-and-drop.</li>
+                        <li>Direct access to competing lenders.</li>
+                        <li>Eliminate broker fees and save 1%+.</li>
+                        <li>Faster closing with direct communication.</li>
+                    </ul>
+                    <a href="refihub-loan-request.html" class="button button-secondary">Request Purchase Loan</a>
+                </div>
+                <div class="feature-hero-image">
+                    <!-- Placeholder: Image representing purchase deal/marketplace connection -->
+                    <img src="https://via.placeholder.com/500x400.png/E7F1FF/0052CC?text=Purchase+Loan+Marketplace" alt="Purchase loan request connecting with lenders">
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature Hero 3: Deal Analyzer -->
+        <section class="feature-hero" id="feature-deal-analyzer">
+             <div class="feature-hero-content">
+                <div class="feature-hero-text">
+                    <h2>Instant Deal Analyzer.</h2>
+                    <p>Evaluate new opportunities faster than ever. Get comprehensive property analysis, cash flow projections, and ROI calculations instantly. Love the deal? One-click sends it to the lending marketplace.</p>
+                     <ul>
+                        <li>Comprehensive property analysis.</li>
+                        <li>Instant cash flow & ROI projections.</li>
+                        <li>Market comparison tools.</li>
+                        <li>One-click submission to marketplace.</li>
+                    </ul>
+                     <a href="refihub-deal-analyzer.html" class="button button-secondary">Analyze a Deal</a>
+                </div>
+                 <div class="feature-hero-image">
+                    <!-- Updated Image -->
+                    <img src="img/deal-analyzer-multifamily-hero.png" alt="RefiHub Deal Analyzer showing multifamily property analysis results on a laptop screen">
+                 </div>
+            </div>
+        </section>
+
+        <!-- Feature Hero 4: Automated Asset Management -->
+         <section class="feature-hero feature-hero-reversed" id="feature-asset-management">
+            <div class="feature-hero-content">
+                <div class="feature-hero-text">
+                    <h2>Automated Asset Management.</h2>
+                    <p>Centralize documents, track insurance, monitor covenants, and collect financials effortlessly. RefiHub handles the operational drag, freeing you to focus on scaling your portfolio and maximizing cash flow.</p>
+                    <ul>
+                        <li>Centralized hub for all documents.</li>
+                        <li>AI-powered compliance checks & reminders.</li>
+                        <li>Automated financial data collection.</li>
+                        <li>Focus on growth, not operational tasks.</li>
+                    </ul>
+                     <a href="#learn-more-asset-management" class="button button-secondary">Streamline Management</a>
+                </div>
+                 <div class="feature-hero-image">
+                     <!-- Placeholder: Image representing organized documents/dashboard/compliance check -->
+                     <img src="https://via.placeholder.com/500x400.png/E7F1FF/0052CC?text=Centralized+Management+Visual" alt="Dashboard showing organized asset documents and compliance status">
+                </div>
+            </div>
+        </section>
+
+        <section class="testimonials">
+            <!-- Added Section Header -->
+            <div class="section-container">
+                 <header class="section-header">
+                     <h2 class="section-header-headline">Designed to be loved ❤️.</h2>
+                 </header>
+            </div>
+
+            <div class="testimonial-scroll-gallery">
+                <div class="testimonial-scroll-container">
+                    <div class="testimonial-card-set">
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "RefiHub's marketplace helped me secure financing for my commercial property in record time. The deal analysis tools gave me confidence in my investment decision."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">JD</div>
+                                <div>
+                                    <strong>John Doe</strong>
+                                    <div>Portfolio Value: $5M+</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "The automated refinancing alerts saved me thousands. I was able to refinance at the perfect time thanks to RefiHub's portfolio management tools."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">AS</div>
+                                <div>
+                                    <strong>Alice Smith</strong>
+                                    <div>Commercial Investor</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "The deal analysis tools are comprehensive and user-friendly. They help me quickly evaluate potential investments and make data-driven decisions."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">RJ</div>
+                                <div>
+                                    <strong>Robert Johnson</strong>
+                                    <div>Multi-Property Owner</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "The deal analyzer is incredibly fast. Cut my underwriting time in half, easily. Finding financing through the marketplace was seamless."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">MC</div>
+                                <div>
+                                    <strong>Michael Chen</strong>
+                                    <div>Portfolio Value: $12M+</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "RefiHub's autopilot caught a rate drop I would've missed. The process was automated and saved me significant money on my loan."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">SP</div>
+                                <div>
+                                    <strong>Sarah Patel</strong>
+                                    <div>Portfolio Value: $8M+</div>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "Managing loan covenants and insurance across multiple properties used to be a headache. RefiHub automated it all."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">DR</div>
+                                <div>
+                                    <strong>David Rodriguez</strong>
+                                    <div>Portfolio Value: $25M+</div>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "Getting multiple lender quotes directly without a broker saved me time and at least 1% on fees. Highly recommend."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">EW</div>
+                                <div>
+                                    <strong>Emily White</strong>
+                                    <div>Portfolio Value: $6M+</div>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "The AI Copilot for lenders seems to work – got competitive term sheets way faster than going bank to bank."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">BG</div>
+                                <div>
+                                    <strong>Brian Green</strong>
+                                    <div>Portfolio Value: $10M+</div>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "RefiHub makes tracking portfolio performance and upcoming loan maturities simple. The dashboard is clean and intuitive."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">JL</div>
+                                <div>
+                                    <strong>Jessica Lee</strong>
+                                    <div>Portfolio Value: $15M+</div>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "Uploading loan docs via email for the Autopilot is genius. Set it and forget it until a better deal pops up."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">KY</div>
+                                <div>
+                                    <strong>Kevin Young</strong>
+                                    <div>Portfolio Value: $18M+</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "The ability to instantly push an analyzed deal to the lending marketplace is a game-changer for moving quickly on opportunities."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">OM</div>
+                                <div>
+                                    <strong>Olivia Martinez</strong>
+                                    <div>Portfolio Value: $22M+</div>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "Comparing financing options side-by-side within RefiHub helped me secure the best possible terms for my latest acquisition."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">DK</div>
+                                <div>
+                                    <strong>Daniel Kim</strong>
+                                    <div>Portfolio Value: $9M+</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "RefiHub provides the portfolio overview and individual asset tracking we need, simplifying reporting for our LPs."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">SN</div>
+                                <div>
+                                    <strong>Sophia Nguyen</strong>
+                                    <div>Portfolio Value: $50M+</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "No hidden fees, no subscriptions for borrowers. It's refreshing to see a platform aligned with the investor."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">EG</div>
+                                <div>
+                                    <strong>Ethan Garcia</strong>
+                                    <div>Portfolio Value: $7M+</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "The automated compliance reminders ensure we never miss critical dates. It's like having an extra asset manager."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">IB</div>
+                                <div>
+                                    <strong>Isabella Brown</strong>
+                                    <div>Portfolio Value: $30M+</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "We use RefiHub to manage financing across our entire development pipeline. The efficiency gains are substantial."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">MD</div>
+                                <div>
+                                    <strong>Mason Davis</strong>
+                                    <div>Portfolio Value: $40M+</div>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "Even for smaller portfolios, the organizational benefits and access to lenders are worth it. And it's free for us!"
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">AW</div>
+                                <div>
+                                    <strong>Ava Wilson</strong>
+                                    <div>Portfolio Value: $5M+</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-card">
+                            <div class="testimonial-content">
+                                "RefiHub's focus on commercial real estate means the tools and lender network are actually relevant to our business needs."
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">NM</div>
+                                <div>
+                                    <strong>Noah Miller</strong>
+                                    <div>Portfolio Value: $60M+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="cta-content">
+                <h2>Ready to Scale Your Portfolio?</h2>
+                <p>Join thousands of successful real estate investors who are using RefiHub to grow their commercial property portfolio.</p>
+                <div class="cta-buttons">
+                    <a href="refihub-loan-request.html" class="button button-primary">Get Started</a>
+                    <a href="refihub-deal-analyzer.html" class="button button-secondary">Learn More</a>
+                 </div>
+            </div>
+        </section>
+
+        <!-- Transparent Pricing Section -->
+        <section class="pricing-section">
+            <div class="section-container">
+                <header class="section-header">
+                    <h2 class="section-header-headline">Pricing.</h2>
+                </header>
+                <div class="pricing-details">
+                    <div class="pricing-card pricing-card-investors">
+                        <h3>Owners, Investors, Borrowers.</h3>
+                        <p class="price-tag free">Free</p>
+                        <div class="pricing-explanation">
+                             <p>RefiHub was built by investors, for investors. We serve <strong>you</strong>, the investor, and we charge lenders and financial service providers for the opportunity to win your business.</p>
+                             <p>We do not charge investors any fees at this time. <strong>No loan fees. No closing fees. No markups. No subscriptions.</strong> Definitely no 1% fees (sorry brokers... but we're tired of that).</p>
+                             <p>Lenders pay RefiHub for the opportunity to provide you with financing quotes. If they meet your filters of a lower rate or desired cash out, we notify you. Simple. Transparent. As it should be.</p>
+                         </div>
+                        <div class="investor-cta">
+                            <a href="refihub-loan-request.html" class="button button-primary">Get Started</a>
+                        </div>
+                    </div>
+                    <div class="pricing-card pricing-card-lenders">
+                         <h3>Lenders.</h3>
+                         <p class="price-tag contact">Contact Us</p>
+                         <p>Access qualified deal flow matching your exact criteria. Our AI Copilot instantly identifies opportunities, allowing you to generate term sheets and close more deals faster.</p>
+                         <ul>
+                            <li>Targeted deal flow (size, type, region)</li>
+                            <li>Instant notifications via AI Copilot</li>
+                            <li>One-click preliminary pricing</li>
+                            <li>Streamlined term sheet generation</li>
+                         </ul>
+                         <div class="lender-cta">
+                              <a href="#book-lender-demo" class="button button-secondary">Book a Demo</a>
+                         </div>
+                     </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    <script src="js/components/feature-scroll.js"></script>
+    <script src="js/components/testimonial-scroll.js"></script>
+</body>
+</html> 

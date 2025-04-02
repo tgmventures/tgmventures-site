@@ -1,0 +1,45 @@
+/* === CTA Section === */
+.cta-section {
+    text-align: center;
+    padding: 5rem 2rem;
+    background: var(--rh-surface);
+    position: relative; /* Added from earlier definition */
+    overflow: hidden; /* Added from earlier definition */
+}
+
+.cta-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><rect width="1" height="1" fill="%232563eb" fill-opacity="0.03"/></svg>'); /* Opacity 0.03 from earlier def */
+    opacity: 0.5;
+    z-index: 0;
+}
+
+.cta-content {
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative; /* Added from earlier definition */
+    z-index: 1; /* Added from earlier definition */
+    animation: fadeInUp 0.8s ease-out; /* Reference animation */
+}
+
+.cta-section h2 {
+    margin-bottom: 1.5rem;
+    /* font-size: 3rem; /* Use base h2 style */
+}
+
+.cta-content p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    margin-top: 2rem;
+} 

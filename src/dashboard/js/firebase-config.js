@@ -1,15 +1,14 @@
 // Firebase Configuration for TGM Ventures Dashboard
 // Using CDN approach to match existing contact form pattern
+// SECURITY: API keys are now loaded from external config file
 
-const firebaseConfig = {
-    apiKey: "AIzaSyAffXsVM8HjEVlDc8kX9Wzkv9muD_zFWGA",
-    authDomain: "tgm-ventures-site.firebaseapp.com",
-    projectId: "tgm-ventures-site",
-    storageBucket: "tgm-ventures-site.firebasestorage.app",
-    messagingSenderId: "411860917330",
-    appId: "1:411860917330:web:15501bfa6d8b6ff892138b",
-    measurementId: "G-V6Q536QH5Z"
-};
+// Check if config is loaded
+if (!window.TGMConfig || !window.TGMConfig.firebase) {
+    console.error('TGM Config not loaded! Please ensure config.js is included before this file.');
+    throw new Error('Firebase configuration not available');
+}
+
+const firebaseConfig = window.TGMConfig.firebase;
 
 // Initialize Firebase (will be called after CDN scripts load)
 let auth, provider;

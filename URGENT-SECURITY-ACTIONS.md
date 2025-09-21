@@ -3,13 +3,13 @@
 ## ⚠️ IMMEDIATE ACTIONS NEEDED (DO THIS NOW!)
 
 ### 1. **REVOKE THE COMPROMISED FIREBASE API KEY**
-The exposed key was: `AIzaSyAffXsVM8HjEVlDc8kX9Wzkv9muD_zFWGA`
+The exposed key was: `AIzaSyAffXsVM8HjEVlDc8kX9Wzkv9muD_zFWGA` (showing for identification only)
 
 **Steps to revoke:**
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
 2. Select project: `tgm-ventures-site`
 3. Navigate to: **APIs & Services** > **Credentials**
-4. Find the API key: `AIzaSyAffXsVM8HjEVlDc8kX9Wzkv9muD_zFWGA`
+4. Find the API key starting with: `AIzaSyAffXsVM8HjEVlDc8kX9Wzkv9muD_zFWGA`
 5. **DELETE** or **DISABLE** this key immediately
 6. **Generate a new API key** to replace it
 

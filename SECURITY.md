@@ -69,7 +69,7 @@ const apiKey = process.env.FIREBASE_API_KEY;
 ### **DON'T DO THIS:**
 ```javascript
 // ❌ NEVER hardcode API keys
-const apiKey = "AIzaSyAffXsVM8HjEVlDc8kX9Wzkv9muD_zFWGA";
+const apiKey = "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"; // Example - never use real keys
 
 // ❌ NEVER commit secrets in comments
 // TODO: Replace with actual key: sk_test_123456789

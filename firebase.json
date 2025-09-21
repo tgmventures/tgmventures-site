@@ -1,24 +1,13 @@
 {
   "hosting": {
-    "public": "public",
+    "source": ".",
+    "frameworksBackend": {
+      "region": "us-central1"
+    },
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**",
-      "functions/**",
-      "src/**",
-      ".next/**"
-    ],
-    "headers": [
-      {
-        "source": "**/*.@(jpg|jpeg|gif|png|svg|webp)",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "max-age=604800"
-          }
-        ]
-      }
+      "**/node_modules/**"
     ]
   },
   "functions": {

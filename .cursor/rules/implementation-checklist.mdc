@@ -1,0 +1,58 @@
+---
+description: AI must always check and update the implementation checklist when working on this project
+globs:
+- "**/*"
+alwaysApply: true
+---
+
+# 📋 IMPLEMENTATION CHECKLIST RULE
+
+## 🚨 CRITICAL REQUIREMENT
+**ALWAYS** check the implementation checklist before starting any work:
+
+**File Location**: `planning/IMPLEMENTATION-CHECKLIST.md`
+
+## 🔄 MANDATORY WORKFLOW
+
+### **Before Starting Work:**
+1. **READ** `planning/IMPLEMENTATION-CHECKLIST.md` to understand current status
+2. **IDENTIFY** which checklist items you'll be working on
+3. **MARK** relevant items as in-progress
+
+### **During Development:**
+1. **UPDATE** checklist items as you complete them
+2. **CHECK OFF** completed items with `[x]`
+3. **ADD** any new tasks discovered during implementation
+
+### **After Completing Work:**
+1. **VERIFY** all completed items actually work
+2. **TEST** functionality thoroughly
+3. **UPDATE** checklist with final status
+4. **COMMIT** checklist changes to git
+
+## ✅ CHECKLIST UPDATE FORMAT
+
+**When marking items complete:**
+```markdown
+- [x] **Task Name**: Brief description of what was completed
+```
+
+**When adding new tasks:**
+```markdown
+- [ ] **New Task**: Description of what needs to be done
+```
+
+## 🎯 CURRENT FOCUS AREAS
+
+**Phase 2 (Current)**: Domain migration and final testing
+**Phase 3 (Next)**: Team dashboard with Google OAuth authentication
+
+## 📞 SUPPORT REFERENCE
+
+**Key Project Files:**
+- `README.md` - Core project rules
+- `planning/IMPLEMENTATION-CHECKLIST.md` - Master task list
+- `planning/phase-3-dashboard.md` - Dashboard implementation plan
+- `planning/technical-specifications.md` - Technical details
+
+**Remember**: This checklist is the single source of truth for project status and next steps. Always keep it updated!

@@ -104,3 +104,45 @@ footer p {
     color: #666;
 }
 
+/* Team Login Button */
+.team-login-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 10;
+}
+
+.team-login-btn {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Poppins', sans-serif;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.team-login-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+}
+
+/* Mobile responsiveness for team login */
+@media (max-width: 768px) {
+    .team-login-container {
+        top: 15px;
+        right: 15px;
+    }
+    
+    .team-login-btn {
+        font-size: 12px;
+        padding: 6px 12px;
+    }
+}
+

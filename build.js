@@ -31,12 +31,35 @@ function buildSite() {
         }
     });
     
+    // Copy dashboard HTML files
+    const dashboardFiles = [
+        'src/dashboard/login.html',
+        'src/dashboard/dashboard.html'
+    ];
+    
+    dashboardFiles.forEach(file => {
+        if (fs.existsSync(file)) {
+            const filename = path.basename(file);
+            copyFile(file, `public/dashboard/${filename}`);
+        }
+    });
+    
     // Copy CSS files
     if (fs.existsSync('src/css')) {
         const cssFiles = fs.readdirSync('src/css');
         cssFiles.forEach(file => {
             if (file.endsWith('.css')) {
                 copyFile(`src/css/${file}`, `public/css/${file}`);
+            }
+        });
+    }
+    
+    // Copy dashboard CSS files
+    if (fs.existsSync('src/dashboard/css')) {
+        const dashboardCssFiles = fs.readdirSync('src/dashboard/css');
+        dashboardCssFiles.forEach(file => {
+            if (file.endsWith('.css')) {
+                copyFile(`src/dashboard/css/${file}`, `public/dashboard/css/${file}`);
             }
         });
     }
@@ -51,7 +74,17 @@ function buildSite() {
         });
     }
     
-    console.log('\n✅ Build complete! Run "npm run dev" to start the development server.');
+    // Copy dashboard JS files
+    if (fs.existsSync('src/dashboard/js')) {
+        const dashboardJsFiles = fs.readdirSync('src/dashboard/js');
+        dashboardJsFiles.forEach(file => {
+            if (file.endsWith('.js')) {
+                copyFile(`src/dashboard/js/${file}`, `public/dashboard/js/${file}`);
+            }
+        });
+    }
+    
+    console.log('\n✅ Build complete! Dashboard files included. Run "npm run dev" to start the development server.');
 }
 
 buildSite();

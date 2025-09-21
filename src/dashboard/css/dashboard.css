@@ -1,0 +1,505 @@
+/* TGM Ventures Dashboard Styles */
+/* iOS-inspired design with TGM branding */
+
+/* Dashboard Container */
+.dashboard-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Header Styles */
+.dashboard-header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header-left .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.header-left .logo img {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+}
+
+.header-left .logo h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #000;
+    margin: 0;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+}
+
+.user-info span {
+    font-size: 0.9rem;
+    color: #333;
+    font-weight: 500;
+}
+
+.user-email {
+    font-size: 0.8rem !important;
+    color: #666 !important;
+    font-weight: 400 !important;
+}
+
+.sign-out-btn {
+    background: #ff3b30;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.sign-out-btn:hover {
+    background: #d70015;
+    transform: translateY(-1px);
+}
+
+/* Main Content */
+.dashboard-main {
+    flex: 1;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Welcome Section */
+.welcome-section {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.welcome-section h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #000;
+    margin: 0 0 0.5rem 0;
+}
+
+.welcome-section p {
+    font-size: 1.1rem;
+    color: #666;
+    margin: 0;
+}
+
+/* App Grid */
+.app-grid-section {
+    margin-bottom: 3rem;
+}
+
+.app-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1.5rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* App Cards - iOS Style */
+.app-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 1.5rem 1rem;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    min-height: 140px;
+    justify-content: center;
+}
+
+.app-card:hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.app-card:active {
+    transform: translateY(-4px) scale(1.02);
+}
+
+/* App Icons */
+.app-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.app-icon svg {
+    width: 36px;
+    height: 36px;
+}
+
+/* Specific App Icon Backgrounds */
+.gmail-icon {
+    background: linear-gradient(135deg, #EA4335 0%, #FBBC05 100%);
+}
+
+.drive-icon {
+    background: linear-gradient(135deg, #4285F4 0%, #34A853 100%);
+}
+
+.rentmanager-icon {
+    background: linear-gradient(135deg, #2E7D32 0%, #66BB6A 100%);
+}
+
+.asana-icon {
+    background: linear-gradient(135deg, #F06A6A 0%, #F093FB 100%);
+}
+
+/* App Names */
+.app-name {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #000;
+    text-align: center;
+}
+
+/* Login Styles */
+.login-main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.login-content {
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.login-card h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #000;
+    margin: 0 0 0.5rem 0;
+}
+
+.login-subtitle {
+    font-size: 1rem;
+    color: #666;
+    margin: 0 0 2rem 0;
+}
+
+/* Google Sign-In Button */
+.google-signin-btn {
+    width: 100%;
+    background: #4285f4;
+    color: white;
+    border: none;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.google-signin-btn:hover {
+    background: #3367d6;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(66, 133, 244, 0.3);
+}
+
+.google-signin-btn:active {
+    transform: translateY(0);
+}
+
+.google-signin-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.google-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.login-note {
+    font-size: 0.85rem;
+    color: #666;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Error Messages */
+.error-message {
+    background: #ffebee;
+    color: #c62828;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    border: 1px solid #ffcdd2;
+    font-size: 0.9rem;
+}
+
+/* Success States */
+.auth-success-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 2.5rem;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.success-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #4caf50;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0 auto 1rem auto;
+}
+
+/* Info Section */
+.info-section {
+    margin-bottom: 2rem;
+}
+
+.info-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.info-card h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #000;
+    margin: 0 0 1rem 0;
+}
+
+.info-card ul {
+    margin: 0;
+    padding-left: 1.5rem;
+    color: #666;
+}
+
+.info-card li {
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+/* Session Warning */
+.session-warning {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.warning-content {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    margin: 1rem;
+}
+
+.warning-content h3 {
+    color: #ff3b30;
+    margin: 0 0 1rem 0;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.warning-content p {
+    color: #666;
+    margin: 0 0 2rem 0;
+}
+
+.extend-btn, .logout-btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    margin: 0 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.extend-btn {
+    background: #007aff;
+    color: white;
+}
+
+.extend-btn:hover {
+    background: #0056b3;
+}
+
+.logout-btn {
+    background: #f5f5f5;
+    color: #333;
+}
+
+.logout-btn:hover {
+    background: #e0e0e0;
+}
+
+/* Footer */
+.dashboard-footer {
+    background: rgba(255, 255, 255, 0.9);
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.dashboard-footer a {
+    color: #007aff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.dashboard-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-header {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .header-right {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .dashboard-main {
+        padding: 1rem;
+    }
+
+    .welcome-section h2 {
+        font-size: 1.5rem;
+    }
+
+    .welcome-section p {
+        font-size: 1rem;
+    }
+
+    .app-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .app-card {
+        padding: 1rem 0.75rem;
+        min-height: 120px;
+    }
+
+    .app-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .app-icon svg {
+        width: 28px;
+        height: 28px;
+    }
+
+    .login-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .dashboard-footer {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-grid {
+        grid-template-columns: 1fr 1fr;
+        max-width: 300px;
+    }
+
+    .header-left .logo h1 {
+        font-size: 1.2rem;
+    }
+
+    .welcome-section h2 {
+        font-size: 1.3rem;
+    }
+}

@@ -1,184 +1,108 @@
-# TGM Ventures Implementation Checklist
+# TGM Ventures - Implementation Checklist
 
-> **For AI Assistants**: This is the master implementation checklist. Check boxes as tasks are completed and verified. Always refer to this document for project status and next steps.
+> **AI Instructions**: Always read this checklist first. Check off items as completed. This is the single source of truth for project status.
 
-## 📊 **Current Project Status (Phase 2 Complete)**
+## 🏁 **CURRENT STATUS: Phase 2 Complete (95%)**
 
-### ✅ **COMPLETED - Phase 2: Modern Web App**
-- [x] **Project Structure**: Organized src/, public/, projects/ directories
-- [x] **Firebase Hosting**: Deployed at tgm-ventures-site.web.app
-- [x] **Contact Form**: Professional form with validation
-- [x] **reCAPTCHA Enterprise**: Invisible spam protection working
-- [x] **SendGrid Email**: Professional emails to management@tgmventures.com
-- [x] **Legacy Projects**: Safely moved to projects/ directory (RefiHub, games)
-- [x] **Cursor Rules**: Proper .cursor/rules/ structure with protection rules
-- [x] **GitHub Integration**: V2 committed and pushed
-- [x] **Privacy Compliance**: Removed email addresses from legal pages
-- [x] **Contact Reasons**: 5 options with "General Inquiry" first
+### ✅ **WORKING PERFECTLY**
+- [x] **Modern Web App**: Firebase hosting at tgm-ventures-site.web.app
+- [x] **Contact Form**: reCAPTCHA Enterprise + SendGrid email to management@tgmventures.com
+- [x] **Professional Design**: Mobile responsive, TGM branding maintained
+- [x] **Legacy Projects**: Protected in projects/ directory (RefiHub, games)
+- [x] **GitHub**: All changes committed and pushed
+- [x] **Documentation**: README.md and .cursor/rules/ configured
 
-### 🔄 **IN PROGRESS - Phase 2.5: Domain Migration**
-- [x] **Firebase Domain Setup**: tgmventures.com added to Firebase
-- [x] **DNS Records**: TXT record verified, A record configured
-- [ ] **Domain Verification**: Waiting for Firebase to complete verification
-- [ ] **SSL Certificate**: Will auto-provision after domain verification
-- [ ] **Live Site Testing**: Test all functionality on tgmventures.com
-
-### 📋 **PENDING - Phase 3: Team Dashboard**
-- [ ] **Authentication Setup**: Google OAuth with @tgmventures.com restriction
-- [ ] **Dashboard Layout**: iOS-style app grid interface
-- [ ] **Core Apps Integration**: Gmail, Drive, Rent Manager, Asana
-- [ ] **User Management**: Role-based access (admin, manager, user)
-- [ ] **Security Implementation**: Domain restriction and session management
+### 🔄 **PENDING**
+- [ ] **Custom Domain**: tgmventures.com DNS verification (Firebase setup done, waiting for propagation)
+- [ ] **SSL Certificate**: Auto-provisions after domain verification
 
 ---
 
-## 🚀 **NEXT STEPS - Phase 3 Implementation**
+## 🚀 **NEXT PHASE: Team Dashboard**
 
-### **Step 3.1: Authentication Foundation**
+### **🎯 Goal**: Secure login for @tgmventures.com users with iOS-style app grid (Gmail, Drive, Rent Manager, Asana)
+
+### **Step 1: Authentication**
 - [ ] **Enable Firebase Authentication** in Firebase Console
-- [ ] **Configure Google OAuth Provider** with domain restriction
-- [ ] **Create authentication middleware** in Firebase Functions
-- [ ] **Test @tgmventures.com login restriction**
-- [ ] **Implement secure logout functionality**
+- [ ] **Add Google OAuth provider** with @tgmventures.com domain restriction
+- [ ] **Create login page** (src/dashboard/login.html)
+- [ ] **Test domain restriction** (only @tgmventures.com emails can log in)
 
-### **Step 3.2: Dashboard Interface**
-- [ ] **Create dashboard.html** with app grid layout
-- [ ] **Design app card components** (140x140px with hover effects)
-- [ ] **Implement responsive grid** (4-3-2-1 columns by screen size)
-- [ ] **Add TGM Ventures branding** consistent with main site
-- [ ] **Test mobile responsiveness** across devices
+### **Step 2: Dashboard Interface**
+- [ ] **Create dashboard page** (src/dashboard/dashboard.html)
+- [ ] **Add "Team Login" button** to homepage (top-right or above footer)
+- [ ] **Design app grid** (4 cards: Gmail, Drive, Rent Manager, Asana)
+- [ ] **Style iOS-like cards** (140x140px, hover effects, TGM branding)
 
-### **Step 3.3: Core Apps Integration**
-- [ ] **Gmail Integration**: Direct link to gmail.com
-- [ ] **Google Drive Integration**: Direct link to drive.google.com
-- [ ] **Rent Manager Integration**: Link to company Rent Manager URL
-- [ ] **Asana Integration**: Link to company Asana workspace
-- [ ] **Test all app launches** in new tabs with proper security
+### **Step 3: App Integration**
+- [ ] **Gmail**: Link to gmail.com (new tab)
+- [ ] **Google Drive**: Link to drive.google.com (new tab)
+- [ ] **Rent Manager**: Link to company Rent Manager URL (new tab)
+- [ ] **Asana**: Link to company Asana workspace (new tab)
 
-### **Step 3.4: User Management System**
-- [ ] **Create user profiles** in Firestore database
-- [ ] **Implement role assignment** (admin, manager, user)
-- [ ] **Add user preferences** (dashboard layout, favorite apps)
-- [ ] **Create admin panel** for user management
-- [ ] **Test role-based access control**
-
-### **Step 3.5: Security & Analytics**
-- [ ] **Implement session timeout** (auto-logout after inactivity)
-- [ ] **Add usage analytics** (track app usage patterns)
-- [ ] **Create audit logging** (authentication events)
-- [ ] **Test security restrictions** (unauthorized access attempts)
-- [ ] **Verify data privacy compliance**
+### **Step 4: Security & Testing**
+- [ ] **User roles**: Admin, manager, user permissions
+- [ ] **Session timeout**: Auto-logout after inactivity
+- [ ] **Mobile responsive**: Dashboard works on all devices
+- [ ] **Security test**: Verify only @tgmventures.com users can access
 
 ---
 
-## 🔧 **TECHNICAL IMPLEMENTATION DETAILS**
+## 🔧 **TECHNICAL REFERENCE**
 
-### **Required Firebase Services**
-- [ ] **Authentication**: Google OAuth provider enabled
-- [ ] **Firestore**: Database rules configured for @tgmventures.com users
-- [ ] **Functions**: Authentication validation middleware
-- [ ] **Hosting**: Dashboard pages deployed alongside public site
-
-### **File Structure to Create**
-```
-/src/dashboard/
-├── [ ] dashboard.html          # Main dashboard page
-├── [ ] login.html             # Authentication page  
-├── [ ] css/
-│   ├── [ ] dashboard.css      # Dashboard-specific styles
-│   └── [ ] auth.css          # Authentication styles
-├── [ ] js/
-│   ├── [ ] auth.js           # Authentication handling
-│   ├── [ ] dashboard.js      # Dashboard functionality
-│   └── [ ] app-launcher.js   # App launching logic
-└── [ ] icons/                # App icons (SVG format)
-    ├── [ ] gmail.svg
-    ├── [ ] drive.svg
-    ├── [ ] building.svg      # Rent Manager
-    └── [ ] asana.svg
-```
-
-### **Database Collections to Create**
-- [ ] **users**: User profiles and preferences
-- [ ] **apps**: App configurations and settings
-- [ ] **appUsage**: Usage analytics and tracking
-- [ ] **auditLog**: Security and authentication events
-
----
-
-## 🎯 **TESTING CHECKLIST**
-
-### **Phase 2 Testing (Current)**
-- [x] **Homepage**: Loads correctly with warehouse background
-- [x] **Contact Form**: Submits successfully with reCAPTCHA
-- [x] **Email Delivery**: Arrives at management@tgmventures.com
-- [x] **Privacy Policy**: Links to contact form instead of email
-- [x] **Terms of Service**: Links to contact form instead of email
-- [x] **Mobile Responsive**: All pages work on mobile devices
-- [ ] **Custom Domain**: tgmventures.com (pending DNS verification)
-- [ ] **SSL Certificate**: HTTPS working (auto-provisions after domain)
-
-### **Phase 3 Testing (Future)**
-- [ ] **Authentication**: Only @tgmventures.com emails can log in
-- [ ] **Dashboard Access**: Authenticated users see app grid
-- [ ] **App Launching**: All company tools open correctly
-- [ ] **User Roles**: Different access levels work properly
-- [ ] **Session Security**: Auto-logout and secure sessions
-- [ ] **Mobile Dashboard**: Dashboard works on mobile devices
-
----
-
-## 📞 **SUPPORT & RESOURCES**
-
-### **Current Configuration**
+### **Current Setup**
 - **Firebase Project**: `tgm-ventures-site`
 - **Live Site**: https://tgm-ventures-site.web.app
-- **Custom Domain**: tgmventures.com (pending verification)
-- **Email Delivery**: management@tgmventures.com via SendGrid
-- **reCAPTCHA**: Enterprise with site key 6LfMddArAAAAAJCNFWRRz0lW5FlD7BJTvR5UIX9W
+- **Contact Email**: management@tgmventures.com
+- **reCAPTCHA**: 6LfMddArAAAAAJCNFWRRz0lW5FlD7BJTvR5UIX9W
 
-### **Important Files**
-- **README.md**: Core project rules and preservation guidelines
-- **.cursor/rules/**: AI development rules and protected file lists
-- **firebase.json**: Firebase hosting and functions configuration
-- **src/**: Source code for all pages
-- **functions/**: Contact form backend with reCAPTCHA and email
-- **projects/**: Protected legacy projects (do not modify)
+### **Protected Files (Never Modify)**
+- `src/index.html` - Homepage
+- `src/privacy-policy.html` - Legal document
+- `src/terms-of-service.html` - Legal document
+- `src/css/style.css` - Core styling
+- `projects/` - All legacy projects
 
 ### **Key Commands**
 ```bash
-# Build and deploy
-npm run build
-firebase deploy
+npm run build && firebase deploy    # Build and deploy
+firebase functions:log              # Check backend logs
+curl -I https://tgmventures.com    # Test domain status
+```
 
-# Local development
-npm run dev
-
-# Check Firebase status
-firebase projects:list
-firebase hosting:sites:list
+### **File Structure**
+```
+src/                 # Edit these files
+public/              # Auto-generated (don't edit)
+functions/           # Contact form backend
+projects/            # Legacy projects (protected)
+planning/            # This checklist
+.cursor/rules/       # AI development rules
 ```
 
 ---
 
-## 🏁 **PROJECT HANDOFF SUMMARY**
+## 🎯 **FOR NEXT AI SESSION**
 
-### **What Works Perfectly**
-✅ **Professional contact form** with enterprise security  
-✅ **Email delivery system** with branded templates  
-✅ **Modern web app structure** ready for scaling  
-✅ **Legacy project protection** (RefiHub, games preserved)  
-✅ **Mobile responsive design** across all pages  
-✅ **GitHub version control** with clean commit history  
+### **Start Here:**
+1. **Read this checklist** to understand current status
+2. **Test domain**: Visit https://tgmventures.com (should work or show progress)
+3. **Choose path**:
+   - If domain works → Begin dashboard implementation
+   - If domain pending → Help troubleshoot or continue with Firebase URL
 
-### **What's Pending**
-🔄 **Custom domain verification** (DNS propagation timing issue)  
-📋 **Phase 3 dashboard** (comprehensive plan created)  
+### **Dashboard Implementation Order:**
+1. Firebase Authentication setup
+2. Login page creation
+3. Dashboard page with app grid
+4. Security and testing
 
-### **Next Session Instructions**
-1. **Read this checklist first** to understand current status
-2. **Check domain status** at tgmventures.com
-3. **If domain is live**: Begin Phase 3 dashboard implementation
-4. **If domain pending**: Help troubleshoot DNS or proceed with Phase 3 on Firebase URL
+### **Remember:**
+- Update this checklist as you work
+- Follow .cursor/rules/ for development guidelines
+- Preserve core page designs
+- Test everything before deployment
 
-**This checklist serves as the single source of truth for all future development work on the TGM Ventures website and dashboard system.**
+---
+
+**This single checklist contains everything needed to continue the TGM Ventures project. No other planning documents needed.**

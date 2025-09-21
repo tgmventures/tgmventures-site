@@ -1,0 +1,122 @@
+/* === Responsive Design === */
+
+/* Tablet and Smaller Desktops */
+@media (max-width: 1024px) {
+    /* Feature Hero Adjustments */
+    .feature-hero-content {
+        gap: 4rem; /* Keep gap consistent with original */
+    }
+    .feature-hero-text h2 {
+         font-size: 2rem; /* Adjusted from 2.25rem in conflicting rule */
+    }
+}
+
+@media (max-width: 992px) {
+    /* Feature Hero Adjustments */
+    .feature-hero-content {
+        gap: 2rem;
+    }
+    .feature-hero-text h2 {
+        font-size: 1.8rem;
+    }
+    .feature-hero-text p {
+        font-size: 1rem;
+    }
+}
+
+/* Mobile Devices */
+@media (max-width: 768px) {
+    html { 
+        font-size: 15px;
+    }
+    
+    /* Hero Adjustments */
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+    .hero p {
+        font-size: 1.1rem;
+    }
+
+    /* Feature Hero Adjustments */
+    .feature-hero {
+        padding: 4rem 1rem;
+    }
+    .feature-hero-content {
+        flex-direction: column !important; /* Stack image and text */
+        gap: 2.5rem;
+    }
+    .feature-hero-text,
+    .feature-hero-image {
+        width: 100%;
+        max-width: 500px; /* Limit width on mobile */
+        margin: 0 auto;
+        text-align: center; /* Center text on mobile */
+    }
+    .feature-hero-text h2 {
+        font-size: 2rem;
+    }
+    .feature-hero-text ul {
+        text-align: left; /* Keep list items left-aligned */
+        max-width: 400px; /* Limit list width */
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .feature-hero-text .button {
+        margin-left: auto;
+        margin-right: auto;
+    }
+     /* Ensure reversed image comes first on mobile */
+    .feature-hero-reversed .feature-hero-content .feature-hero-image {
+        order: -1;
+    }
+
+    /* Testimonial Adjustments */
+    .testimonials-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Highlights Adjustments */
+    .highlights-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+         gap: 1rem;
+    }
+    .highlight-item h3 {
+        font-size: 1rem;
+    }
+
+    /* CTA Adjustments */
+    .cta-section h2 {
+        font-size: 2.5rem;
+    }
+    .cta-buttons {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    /* Button Adjustments */
+    .button {
+        width: 100%; /* Make buttons full width */
+    }
+}
+
+/* Smaller Mobile Devices */
+@media (max-width: 480px) {
+    /* Hero Adjustments */
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+    .hero p {
+        font-size: 1.125rem;
+    }
+    
+    /* Feature Hero Adjustments */
+    .feature-hero-text h2 {
+        font-size: 1.75rem;
+    }
+    
+    /* CTA Adjustments */
+    .cta-section h2 {
+        font-size: 2rem;
+    }
+} 

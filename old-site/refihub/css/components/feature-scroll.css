@@ -1,0 +1,281 @@
+/* Feature Scroll Section Styles */
+.feature-scroll {
+    padding: 4rem 0;
+    background-color: var(--background-alt);
+    overflow: hidden; /* Prevent scrollbars on the section itself */
+}
+
+.feature-scroll .section-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 0 var(--container-padding);
+}
+
+.feature-scroll .section-header-headline {
+    font-size: 2.5rem; /* Adjust as needed */
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.feature-scroll-gallery {
+    position: relative;
+    /* Revert margin change, allow container to handle alignment */
+    /* margin: 0 var(--container-padding); */
+}
+
+.feature-scroll-container {
+    /* Change overflow to scroll explicitly */
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    padding: 1rem 0 2rem 0; /* Vertical padding remains */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+    position: relative;
+    /* Re-apply negative margin and specific padding-left/right */
+    margin: 0 calc(var(--container-padding) * -1);
+    padding-left: var(--container-padding); /* Use padding to align first item */
+    padding-right: var(--container-padding); /* Add padding for last item spacing */
+    cursor: grab; /* Set initial cursor here */
+    touch-action: pan-y; /* Allow vertical page scroll, handle horizontal here */
+    -webkit-overflow-scrolling: touch; /* Momentum scrolling on iOS */
+}
+
+.feature-scroll-container.active { /* Style when dragging */
+    cursor: grabbing;
+    user-select: none;
+}
+
+.feature-scroll-container::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+}
+
+.feature-card-set {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: inline-block; /* Allow items to sit side-by-side */
+    font-size: 0; /* Hack to remove whitespace between inline-block elements */
+    /* Ensure drag events go to container */
+    /* pointer-events: none; */ /* Removing this - might interfere */
+}
+
+.feature-scroll-item {
+    display: inline-block;
+    width: 300px; /* Adjust card width as needed */
+    margin-right: 1.5rem;
+    vertical-align: top;
+    white-space: normal; /* Reset white-space for card content */
+    font-size: 1rem; /* Reset font size */
+    /* Allow events on items */
+    /* pointer-events: auto; */ /* Removing this - might interfere */
+}
+
+.feature-scroll-item:last-child {
+    margin-right: 0;
+}
+
+.feature-scroll .card {
+    background-color: var(--background-light);
+    border-radius: 12px;
+    padding: 1.5rem;
+    height: 450px; /* Fixed height for cards */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Pushes image towards bottom */
+    overflow: hidden; /* Ensure content fits */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+/* Grayscale theme variations */
+.feature-scroll-item:nth-child(1) .card, .feature-scroll-item.card-theme-1 .card {
+    background-color: #333333; /* Dark Gray */
+    color: #ffffff;
+}
+
+.feature-scroll-item:nth-child(2) .card, .feature-scroll-item.card-theme-2 .card {
+    background-color: #555555; /* Medium Dark Gray */
+    color: #ffffff;
+}
+
+.feature-scroll-item:nth-child(3) .card, .feature-scroll-item.card-theme-3 .card {
+    background-color: #777777; /* Medium Gray */
+    color: #ffffff;
+}
+
+.feature-scroll-item:nth-child(4) .card, .feature-scroll-item.card-theme-4 .card {
+    background-color: #999999; /* Lighter Medium Gray */
+    color: #ffffff;
+}
+
+.feature-scroll-item:nth-child(5) .card, .feature-scroll-item.card-theme-5 .card {
+    background-color: #bbbbbb; /* Light Gray */
+    color: #333333;
+}
+
+.feature-scroll-item:nth-child(6) .card, .feature-scroll-item.card-theme-6 .card {
+    background-color: #dddddd; /* Lighter Gray */
+    color: #333333;
+}
+
+/* Repeat grayscale sequence for subsequent cards */
+.feature-scroll-item:nth-child(7) .card, .feature-scroll-item.card-theme-7 .card {
+    background-color: #444444; /* Dark Gray variant */
+    color: #ffffff;
+}
+.feature-scroll-item:nth-child(8) .card, .feature-scroll-item.card-theme-8 .card {
+    background-color: #666666; /* Medium Gray variant */
+    color: #ffffff;
+}
+.feature-scroll-item:nth-child(9) .card, .feature-scroll-item.card-theme-9 .card {
+    background-color: #888888; /* Medium Light Gray variant */
+    color: #ffffff;
+}
+.feature-scroll-item:nth-child(10) .card, .feature-scroll-item.card-theme-10 .card {
+    background-color: #aaaaaa; /* Light Gray variant */
+    color: #333333;
+}
+.feature-scroll-item:nth-child(11) .card, .feature-scroll-item.card-theme-11 .card {
+    background-color: #cccccc; /* Lighter Gray variant */
+    color: #333333;
+}
+.feature-scroll-item:nth-child(12) .card, .feature-scroll-item.card-theme-12 .card {
+    background-color: #eeeeee; /* Very Light Gray */
+    color: #333333;
+}
+.feature-scroll-item:nth-child(13) .card, .feature-scroll-item.card-theme-13 .card {
+    background-color: #3a3a3a; /* Repeat Dark Gray */
+    color: #ffffff;
+}
+.feature-scroll-item:nth-child(14) .card, .feature-scroll-item.card-theme-14 .card {
+    background-color: #5a5a5a; /* Repeat Medium Dark Gray */
+    color: #ffffff;
+}
+.feature-scroll-item:nth-child(15) .card, .feature-scroll-item.card-theme-15 .card {
+    background-color: #7a7a7a; /* Repeat Medium Gray */
+    color: #ffffff;
+}
+.feature-scroll-item:nth-child(16) .card, .feature-scroll-item.card-theme-16 .card {
+    background-color: #9a9a9a; /* Repeat Lighter Medium Gray */
+    color: #ffffff;
+}
+
+.feature-scroll .card-content {
+    flex-grow: 1;
+}
+
+.feature-scroll .card-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.feature-scroll .card-headline {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.feature-scroll .card-image-container {
+    margin-top: 1rem;
+    height: 250px; /* Adjust image container height */
+    display: flex;
+    align-items: center; /* Center image vertically */
+    justify-content: center; /* Center image horizontally */
+    overflow: hidden;
+    position: relative;
+}
+
+.feature-scroll .card-image {
+    max-width: 100%;
+    max-height: 100%;
+    height: auto;
+    width: auto;
+    display: block;
+    object-fit: contain; /* Or 'cover' depending on desired effect */
+}
+
+/* Basic Paddles - Hidden by default, functionality requires JS */
+.feature-scroll-paddles {
+    display: flex; /* Use flexbox for centering */
+    justify-content: center; /* Center paddles horizontally */
+    margin-top: 1rem; /* Space above paddles */
+    position: relative;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.5rem 0;
+}
+
+.feature-scroll-paddle {
+    background-color: rgba(200, 200, 200, 0.5);
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0.5rem;
+    transition: background-color 0.2s ease;
+    opacity: 0.7;
+}
+
+.feature-scroll-paddle:hover {
+    background-color: rgba(150, 150, 150, 0.7);
+    opacity: 1;
+}
+
+.feature-scroll-paddle:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.feature-scroll-paddle svg {
+    width: 12px;
+    height: 12px;
+    fill: #333;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .feature-scroll .section-header-headline {
+        font-size: 2rem;
+    }
+    .feature-scroll-item {
+        width: 260px;
+        margin-right: 1rem;
+    }
+    .feature-scroll .card {
+        height: 400px;
+        padding: 1rem;
+    }
+    .feature-scroll .card-headline {
+        font-size: 1.25rem;
+    }
+    .feature-scroll .card-image-container {
+        height: 200px;
+    }
+    .feature-scroll-paddles {
+        display: none; /* Hide paddles on smaller screens where touch scroll is common */
+    }
+}
+
+@media (max-width: 480px) {
+    .feature-scroll .section-header-headline {
+        font-size: 1.8rem;
+    }
+    .feature-scroll-item {
+        width: calc(100vw - 4rem); /* Almost full width */
+    }
+    .feature-scroll .card {
+        height: 380px;
+    }
+} 

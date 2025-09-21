@@ -1,0 +1,51 @@
+/* === Key Highlights Section === */
+.key-highlights {
+    padding: 3rem 2rem;
+    background-color: var(--rh-surface);
+    border-bottom: 1px solid var(--rh-border);
+}
+
+.highlights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.highlight-item {
+    padding: 0.5rem;
+    animation: fadeInUp 0.8s ease-out; /* Reference animation */
+}
+
+.highlight-icon-wrapper {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 1rem auto;
+    background: linear-gradient(135deg, var(--rh-primary), var(--rh-accent));
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.highlight-item:hover .highlight-icon-wrapper {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+}
+
+.highlight-icon-svg {
+    width: 32px;
+    height: 32px;
+    color: white;
+}
+
+.highlight-item h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--rh-text);
+    margin-bottom: 0;
+} 

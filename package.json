@@ -1,25 +1,47 @@
 {
-  "name": "tgmventures-site",
+  "name": "tgm-ventures-site",
   "version": "2.0.0",
-  "description": "TGM Ventures professional management company website",
-  "main": "public/index.html",
+  "description": "TGM Ventures modern business platform",
+  "private": true,
   "scripts": {
-    "dev": "python -m http.server 8000 --directory public",
-    "build": "node build.js",
-    "start": "npm run build && npm run dev",
-    "deploy": "npm run build && firebase deploy",
-    "serve": "firebase serve"
+    "dev": "next dev --turbo",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "^15.5.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "next-auth": "^4.24.10",
+    "@supabase/supabase-js": "^2.46.1",
+    "framer-motion": "^11.11.17",
+    "react-hook-form": "^7.54.0",
+    "zod": "^3.23.8",
+    "@headlessui/react": "^2.2.0",
+    "@heroicons/react": "^2.2.0",
+    "openai": "^4.73.1",
+    "react-dropzone": "^14.3.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "@types/node": "^22.10.2",
+    "@types/react": "^18.3.17",
+    "@types/react-dom": "^18.3.5",
+    "tailwindcss": "^3.4.17",
+    "postcss": "^8.5.1",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "^15.5.3"
   },
   "keywords": [
     "tgm-ventures",
     "management-company",
     "real-estate",
-    "business-management"
+    "business-management",
+    "nextjs",
+    "ai-integration"
   ],
   "author": "TGM Ventures, Inc.",
-  "license": "UNLICENSED",
-  "private": true,
-  "dependencies": {
-    "@sendgrid/mail": "^8.1.6"
-  }
+  "license": "UNLICENSED"
 }

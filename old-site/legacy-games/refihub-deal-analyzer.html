@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RefiHub Deal Analyzer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- Base Styles & Variables --- */
+        :root {
+            --bg-primary: #111827; /* Dark Gray/Navy */
+            --bg-secondary: #1f2937; /* Medium Dark Gray/Navy */
+            --bg-tertiary: #374151; /* Lighter Gray */
+            --border-color: #4b5563; /* Gray Border */
+            --text-primary: #f3f4f6; /* Light Gray/White Text */
+            --text-secondary: #9ca3af; /* Medium Gray Text */
+            --text-tertiary: #6b7280; /* Darker Gray Text */
+            --accent-blue: #3b82f6; /* Bright Blue */
+            --accent-green: #22c55e; /* Bright Green */
+            --accent-red: #ef4444; /* Bright Red */
+            --accent-gold: #f59e0b; /* Gold/Amber */
+            --accent-purple: #a855f7; /* Purple */
+            --shadow-color: rgba(0, 0, 0, 0.4); /* Darker shadow */
+            --input-bg: #374151;
+            --input-border: #4b5563;
+            --chart-grid: #374151;
+            --chart-value: var(--accent-blue);
+            --chart-noi: var(--accent-green);
+            --chart-loan: var(--accent-red);
+            --chart-cashflow: var(--accent-gold);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { font-size: 14px; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        #game-container {
+            width: 100%;
+            max-width: 1200px; /* Adjusted width for layout */
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px -5px var(--shadow-color);
+            padding: 1.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* --- Header --- */
+        #header { text-align: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1rem; }
+        #header h1 { font-size: 1.75rem; font-weight: 800; color: #ffffff; letter-spacing: -0.02em; margin-bottom: 0.25rem; }
+        #header p { font-size: 1rem; color: var(--text-secondary); margin-bottom: 0.5rem; } /* Default p style */
+        /* NEW Header Top Styles */
+        #header-top { margin-bottom: 1.5rem; }
+        .game-slogan { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.3rem; }
+        #game-subtitle { font-size: 0.9rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto 0.75rem auto; /* Center and limit width */ }
+        .cta-link { font-size: 0.8rem; color: var(--text-tertiary); }
+        .cta-link a { color: var(--accent-blue); text-decoration: none; font-weight: 500; }
+        .cta-link a:hover { text-decoration: underline; }
+        /* End NEW Header Top Styles */
+        .score-display { display: flex; justify-content: center; gap: 2rem; margin-top: 1rem; }
+        .score-item { background-color: var(--bg-primary); padding: 0.5rem 1rem; border-radius: 0.375rem; border: 1px solid var(--border-color); }
+        .score-item .label { font-size: 0.75rem; color: var(--text-secondary); display: block; }
+        .score-item .value { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); }
+        .score-item .value.positive { color: var(--accent-green); }
+        .score-item .value.negative { color: var(--accent-red); }
+
+        /* --- Step Navigation --- */
+        #step-nav-bar {
+            display: flex;
+            justify-content: center;
+            gap: 0.4rem;
+            padding: 0.75rem;
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            max-width: fit-content; /* ADDED: Make width fit content */
+            margin: 0 auto 0.75rem auto; /* ADDED: Center horizontally and keep bottom margin - REDUCED margin */
+        }
+        .step-item {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem; /* Slightly larger padding */
+            border-radius: 0.25rem;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+            display: flex; /* Align icon and text */
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .step-item.active {
+            /* Updated styling: Less like a button */
+            color: var(--accent-blue);
+            /* background-color: var(--accent-blue); REMOVED */
+            font-weight: 700; /* Increased weight slightly */
+            /* box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3); REMOVED */
+            border-bottom: 2px solid var(--accent-blue); /* Added underline */
+        }
+
+        /* --- Main Views (Tab-like structure) --- */
+        .view { display: none; /* Hidden by default */ flex-direction: column; gap: 1.5rem; }
+        .view.active { display: flex; /* Show active view */ }
+
+        /* --- Marketplace View --- */
+        #marketplace-view h2 { font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-bottom: 0.5rem; /* Reduced bottom margin */ text-align: center; }
+        /* NEW: Subtitle style */
+        .marketplace-subtitle {
+            font-size: 1.0rem; /* Increased size */
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 0.75rem; /* Space before listings - REDUCED */
+            max-width: 500px; /* Limit width */
+            margin-left: auto; /* Center */
+            margin-right: auto; /* Center */
+        }
+        .marketplace-source-header {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px dashed var(--border-color);
+        }
+        /* REMOVED rule for .marketplace-source-header span */
+        /* .marketplace-source-header span {
+            font-weight: 700;
+            color: var(--accent-gold);
+        } */
+        /* UPDATED: #marketplace-deals is no longer direct parent, style the subgrids */
+        .deals-grid { /* New class for sub-grids */
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 1rem; 
+            min-height: 150px; /* Reduced min-height slightly */
+            margin-bottom: 1.5rem; /* Space between grids */
+        }
+        /* NEW: Style for source section headers */
+        .source-section-header {
+            display: flex; /* ADDED */
+            justify-content: space-between; /* ADDED */
+            align-items: center; /* ADDED */
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            /* text-align: left; REMOVED */
+            margin-top: 1rem;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .deal-card {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent-gold);
+            border-radius: 0.375rem;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            font-size: 0.8rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }
+        .deal-card:hover { transform: translateY(-3px); box-shadow: 0 4px 8px var(--shadow-color); }
+        /* Add source-specific styling */
+        .deal-card.source-drexi { border-left-color: var(--accent-purple); }
+        .deal-card.source-moopnet { border-left-color: var(--accent-cyan); }
+        .deal-card .deal-source {
+            font-size: 0.65rem;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            text-align: right;
+            margin-top: -0.5rem; /* Pull up slightly */
+            margin-bottom: 0.3rem;
+        }
+        .deal-card.source-drexi .deal-source { color: var(--accent-purple); }
+        .deal-card.source-moopnet .deal-source { color: var(--accent-cyan); }
+        .deal-card h3 { font-size: 1rem; font-weight: 600; color: var(--accent-gold); margin-bottom: 0.2rem; }
+        .deal-card p { display: flex; justify-content: space-between; color: var(--text-secondary); }
+        .deal-card p .label { color: var(--text-tertiary); margin-right: 0.5rem; }
+        .deal-card p span:not(.label) { font-weight: 500; color: var(--text-primary); }
+
+        /* --- Analysis View --- */
+        #analysis-view { display: grid; grid-template-columns: 1fr 350px; /* Main analysis area and sidebar */ gap: 1.5rem; }
+        #analysis-main { display: flex; flex-direction: column; gap: 1.5rem; }
+        /* Style for the top row container */
+        #analysis-top-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Back to equal width */
+            gap: 1.5rem;
+            align-items: start; /* Align items to the top */
+        }
+        #analysis-sidebar { display: flex; flex-direction: column; gap: 1rem; } /* Keep sidebar layout */
+        #analysis-view h2, #analysis-sidebar h3 { font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-bottom: 1rem; text-align: center; }
+        #analysis-sidebar h3 { font-size: 1.1rem; margin-bottom: 0.75rem; }
+
+        /* Deal Info */
+        #deal-info-panel { background-color: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 0.375rem; padding: 1rem; }
+        #deal-info-panel h3 { font-size: 1.1rem; margin-bottom: 0.75rem; color: var(--accent-blue); text-align: left; }
+        .info-grid { display: grid; grid-template-columns: auto 1fr; gap: 0.5rem 1rem; font-size: 0.85rem; }
+        .info-grid .label { color: var(--text-secondary); font-weight: 500; text-align: right; }
+        .info-grid .value { color: var(--text-primary); font-weight: 600; }
+
+        /* Analysis Inputs */
+        #analysis-inputs-panel { background-color: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 0.375rem; padding: 1rem; }
+        #analysis-inputs-panel h3 { font-size: 1.1rem; margin-bottom: 1rem; color: var(--accent-purple); text-align: left; }
+        .input-group { margin-bottom: 1rem; }
+        .input-group label { display: block; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.3rem; }
+        .input-slider-group { display: flex; align-items: center; gap: 0.75rem; }
+        .input-slider-group input[type="range"] { flex-grow: 1; cursor: pointer; accent-color: var(--accent-purple); height: 6px; }
+        .input-slider-group .value-display { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); min-width: 45px; text-align: right; background-color: var(--bg-secondary); padding: 0.2rem 0.4rem; border-radius: 0.25rem; border: 1px solid var(--border-color); }
+        /* Style Range Inputs Nicely */
+        input[type=range] { -webkit-appearance: none; appearance: none; background: var(--bg-tertiary); border-radius: 3px; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; background: var(--accent-purple); border-radius: 50%; cursor: pointer; border: 2px solid var(--bg-primary); }
+        input[type=range]::-moz-range-thumb { width: 16px; height: 16px; background: var(--accent-purple); border-radius: 50%; cursor: pointer; border: 2px solid var(--bg-primary); }
+
+
+        /* Projected Metrics */
+        #metrics-panel { background-color: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 0.375rem; padding: 1rem; }
+        #metrics-panel h3 { font-size: 1.1rem; margin-bottom: 0.75rem; color: var(--accent-green); text-align: left; }
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 0.75rem; }
+        .metric-item { background-color: var(--bg-secondary); padding: 0.6rem; border: 1px solid var(--border-color); border-radius: 0.25rem; }
+        .metric-item .label { font-size: 0.7rem; color: var(--text-tertiary); display: block; margin-bottom: 0.15rem; }
+        .metric-item .value { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); display: block; }
+        .metric-item .value.good { color: var(--accent-green); }
+        .metric-item .value.ok { color: var(--accent-gold); }
+        .metric-item .value.bad { color: var(--accent-red); }
+
+        /* AI Co-pilot */
+        #copilot-panel { background-color: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 0.375rem; padding: 1rem; min-height: 80px; }
+        #copilot-panel h3 { font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--accent-cyan); text-align: left; }
+        #copilot-feedback { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.4; }
+
+        /* Charts */
+        #charts-panel { background-color: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 0.375rem; padding: 1rem; }
+        #charts-panel h3 { font-size: 1.1rem; margin-bottom: 1rem; color: var(--text-primary); text-align: left; }
+        .charts-grid {
+            display: grid; /* Back to grid */
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive 2-column layout */
+            gap: 1.5rem; /* Adjust gap as needed */
+         }
+        .chart-container { }
+        .chart-container h4 { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 0.5rem; text-align: center; }
+        .chart-svg { display: block; width: 100%; height: 350px; /* INCREASED HEIGHT FURTHER */ background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 0.25rem; }
+        .chart-line { fill: none; stroke-width: 2px; vector-effect: non-scaling-stroke; }
+        .value-line { stroke: var(--chart-value); }
+        .noi-line { stroke: var(--chart-noi); }
+        .loan-line { stroke: var(--chart-loan); }
+        .cashflow-line { stroke: var(--chart-cashflow); }
+        .axis-label { font-family: 'Inter', sans-serif; font-size: 9px; fill: var(--text-tertiary); }
+        .grid-line { stroke: var(--chart-grid); stroke-width: 0.5px; stroke-dasharray: 2,2; }
+        .zero-line { stroke: var(--text-tertiary); stroke-width: 1px; }
+
+
+        /* Analysis Actions */
+        #analysis-actions { margin-top: 1rem; display: flex; justify-content: space-between; gap: 1rem; }
+
+        /* --- Funding View --- */
+        #funding-view h2 { font-size: 1.25rem; font-weight: 700; color: #ffffff; margin-bottom: 1.5rem; text-align: center; }
+        #lender-results { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+        .lender-card { background-color: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 0.375rem; padding: 1rem; text-align: center; }
+        .lender-card h3 { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.75rem; }
+        .lender-status { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.75rem; padding: 0.4rem; border-radius: 0.25rem; }
+        .lender-status.approved { color: #ffffff; background-color: var(--accent-green); }
+        .lender-status.declined { color: #ffffff; background-color: var(--accent-red); }
+        .lender-feedback { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.3; }
+        .lender-feedback p { margin-bottom: 0.3rem; }
+        .lender-feedback .reason { font-weight: 500; color: var(--text-primary); }
+        #funding-summary { margin-top: 1.5rem; text-align: center; font-size: 1.1rem; font-weight: 600; padding: 1rem; background-color: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 0.375rem; }
+        #funding-summary.funded { color: var(--accent-green); border-left: 4px solid var(--accent-green); }
+        #funding-summary.not-funded { color: var(--accent-red); border-left: 4px solid var(--accent-red); }
+        #funding-actions { margin-top: 1.5rem; text-align: center; }
+
+        /* --- Buttons --- */
+        button { font-family: 'Inter', sans-serif; font-size: 0.9rem; padding: 0.6rem 1.2rem; border: 1px solid transparent; cursor: pointer; transition: all 0.15s ease; border-radius: 0.375rem; font-weight: 600; box-shadow: 0 1px 2px 0 var(--shadow-color); }
+        button:disabled { cursor: not-allowed; opacity: 0.6; }
+        button:active:not(:disabled) { transform: translateY(1px); }
+        .btn-primary { background-color: var(--accent-blue); border-color: var(--accent-blue); color: #ffffff; } .btn-primary:hover:not(:disabled) { background-color: #2563eb; }
+        .btn-secondary { background-color: var(--bg-tertiary); border-color: var(--border-color); color: var(--text-primary); } .btn-secondary:hover:not(:disabled) { background-color: var(--border-color); }
+        .btn-success { background-color: var(--accent-green); border-color: var(--accent-green); color: #ffffff; } .btn-success:hover:not(:disabled) { background-color: #16a34a; }
+        .btn-danger { background-color: var(--accent-red); border-color: var(--accent-red); color: #ffffff; } .btn-danger:hover:not(:disabled) { background-color: #dc2626; }
+        /* NEW: Small Button Style */
+        .btn-small {
+            padding: 0.3rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        /* --- Upload/Analyze View --- */
+        #upload-analyze-view {
+            /* Uses .view styles for display toggle */
+            align-items: center; /* Center content vertically */
+            justify-content: center; /* Center content horizontally */
+            min-height: 400px; /* Give it some space */
+            text-align: center;
+            background-color: var(--bg-primary); /* Slightly different background */
+            border: 1px dashed var(--border-color);
+            border-radius: 0.5rem;
+            padding: 2rem;
+        }
+        #upload-analyze-content {
+             /* Re-use styles from previous overlay */
+             padding: 2rem;
+             background-color: var(--bg-secondary);
+             border-radius: 0.5rem;
+             border: 1px solid var(--border-color);
+             box-shadow: 0 5px 15px var(--shadow-color);
+             max-width: 400px;
+         }
+         #upload-analyze-spinner { /* Reuse spinner style */
+              width: 40px;
+             height: 40px;
+             border: 4px solid var(--bg-tertiary);
+             border-top-color: var(--accent-blue);
+             border-radius: 50%;
+             animation: spin 1s linear infinite;
+             margin: 0 auto 1rem auto;
+         }
+         #upload-analyze-text {
+             font-size: 1.1rem;
+             font-weight: 600;
+             margin-bottom: 0.5rem;
+             color: var(--text-primary);
+         }
+         #upload-analyze-subtext {
+             font-size: 0.9rem;
+             color: var(--text-secondary);
+         }
+
+         .deal-card .om-indicator {
+             display: flex;
+             align-items: center;
+             gap: 0.3rem;
+             font-size: 0.7rem;
+             color: var(--text-tertiary);
+             margin-top: 0.5rem; /* Space above indicator */
+             padding-top: 0.5rem;
+             border-top: 1px dashed var(--border-color);
+         }
+         .deal-card .om-indicator .icon { font-size: 1rem; } /* Style for document icon */
+
+        /* --- Progress Bar Styles --- */
+        #om-progress-bar-container {
+            width: 80%; /* Adjust width as needed */
+            height: 20px;
+            background-color: var(--bg-tertiary);
+            border-radius: 10px;
+            margin: 1rem auto; /* Center and add space */
+            overflow: hidden; /* Keep the fill inside */
+            position: relative; /* For positioning the percentage text */
+            border: 1px solid var(--border-color);
+        }
+        #om-progress-bar-fill {
+            height: 100%;
+            width: 0%; /* Start at 0% */
+            background-color: var(--accent-blue);
+            border-radius: 8px; /* Slightly smaller radius than container */
+            transition: width 3.5s linear; /* Animate width over 3.5 seconds */
+        }
+        #om-progress-percentage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-primary); /* White text */
+            mix-blend-mode: difference; /* Make text visible on both bg and fill */
+            line-height: 20px; /* Match container height */
+        }
+
+         /* Remove Spinner Animation if no longer needed */
+         /* @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } } */
+
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <!-- Header -->
+        <header id="header">
+            <!-- NEW Header Content -->
+            <div id="header-top">
+                <h1>RefiHub Deal Analyzer</h1>
+                <p class="game-slogan">Analyze. Fund. Succeed.</p>
+                <p id="game-subtitle">Evaluate deals, adjust assumptions, and secure funding for your vision.</p>
+                <p class="cta-link">Ready for real-world deals? Visit <a href="https://refihub.com" target="_blank" style="color: var(--accent-blue); text-decoration: none;">RefiHub.com</a>.</p>
+            </div>
+            <!-- Existing Score Display -->
+            <div class="score-display">
+                <div class="score-item">
+                    <span class="label">Deal Reputation</span>
+                    <span id="reputation-score" class="value">100</span>
+                </div>
+                <div class="score-item">
+                    <span class="label">Deals Funded</span>
+                    <span id="deals-funded-count" class="value">0 / 10</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Step Navigation -->
+        <div id="step-nav-bar">
+            <span id="step-1" class="step-item">1: Find Deal</span>
+            <span id="step-2" class="step-item">2: Upload & Analyze</span>
+            <span id="step-3" class="step-item">3: Seek Funding</span>
+        </div>
+
+        <!-- Marketplace View -->
+        <div id="marketplace-view" class="view active">
+            <!-- REMOVED H2 and Central Refresh Button -->
+            <h2>Select a Deal to Analyze</h2> <!-- RE-ADDED H2 -->
+            <p class="marketplace-subtitle">Browse <strong>Drexi</strong> & <strong>MoopNet</strong> listings. Find a deal to analyze.</p>
+
+            <!-- Drexi Section -->
+            <h3 class="source-section-header">
+                <span>Drexi Listings</span>
+                <button class="btn-secondary btn-small btn-refresh-deals">Refresh</button>
+            </h3>
+            <div id="marketplace-deals-drexi" class="deals-grid">
+                <!-- Drexi deal cards populated by JS -->
+            </div>
+
+            <!-- MoopNet Section -->
+            <h3 class="source-section-header">
+                <span>MoopNet Listings</span>
+                <button class="btn-secondary btn-small btn-refresh-deals">Refresh</button>
+            </h3>
+            <div id="marketplace-deals-moopnet" class="deals-grid">
+                <!-- MoopNet deal cards populated by JS -->
+            </div>
+
+             <!-- REMOVED Refresh Button Div from here -->
+        </div>
+
+        <!-- Upload/Analyze Intermediate View -->
+        <div id="upload-analyze-view" class="view">
+            <div id="upload-analyze-content">
+                <!-- Progress Bar -->
+                <div id="om-progress-bar-container">
+                    <div id="om-progress-bar-fill"></div>
+                    <span id="om-progress-percentage">0%</span>
+                </div>
+                <!-- End Progress Bar -->
+                <div id="upload-analyze-text">Processing OM...</div>
+                <div id="upload-analyze-subtext">Your RefiHub AI Co-Pilot is analyzing the deal...</div>
+            </div>
+        </div>
+
+        <!-- Analysis View -->
+        <div id="analysis-view" class="view">
+            <!-- Main Content -->
+            <div id="analysis-main">
+                <!-- NEW: Top Row Container -->
+                <div id="analysis-top-row">
+                    <div> <!-- Wrapper for Left Column Content -->
+                        <div id="deal-info-panel">
+                            <h3>Deal Information (<span id="deal-name-info">...</span>)</h3>
+                            <div class="info-grid">
+                                <span class="label">Asking Price:</span> <span class="value" id="info-asking-price">$0</span>
+                                <span class="label">Property Type:</span> <span class="value" id="info-property-type">N/A</span>
+                                <span class="label">Current NOI:</span> <span class="value" id="info-current-noi">$0</span>
+                                <span class="label">Current Cap:</span> <span class="value" id="info-current-cap">%</span>
+                                <span class="label">Location:</span> <span class="value" id="info-location">N/A</span>
+                                <span class="label">SqFt / Units:</span> <span class="value" id="info-size">N/A</span>
+                            </div>
+                        </div>
+                        <!-- MOVED Copilot Here -->
+                        <div id="copilot-panel" style="margin-top: 1.5rem;">
+                           <h3>AI Co-pilot</h3>
+                           <div id="copilot-feedback">Adjust assumptions to see feedback...</div>
+                       </div>
+                   </div>
+
+                    <!-- MOVED: Assumptions Panel -->
+                    <div id="analysis-inputs-panel">
+                        <h3>Adjust Assumptions (10yr)</h3>
+                        <!-- START: Moved Appreciation Slider -->
+                        <div class="input-group">
+                            <label for="appreciation-slider">Annual Appreciation</label> <!-- Removed Avg. -->
+                            <div class="input-slider-group">
+                                <input type="range" id="appreciation-slider" min="-5" max="15" step="0.1" value="3">
+                                <span class="value-display" id="appreciation-value">3.0%</span>
+                            </div>
+                        </div>
+                        <!-- END: Moved Appreciation Slider -->
+                        <div class="input-group">
+                            <label for="rent-growth-slider">Annual Rent Growth</label> <!-- Removed Avg. -->
+                            <div class="input-slider-group">
+                                <input type="range" id="rent-growth-slider" min="-5" max="15" step="0.1" value="3">
+                                <span class="value-display" id="rent-growth-value">3.0%</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="expense-growth-slider">Annual Expense Growth</label> <!-- Removed Avg. -->
+                            <div class="input-slider-group">
+                                <input type="range" id="expense-growth-slider" min="-5" max="15" step="0.1" value="2.5">
+                                <span class="value-display" id="expense-growth-value">2.5%</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="exit-cap-slider">Exit Cap Rate (Year 10)</label>
+                             <div class="input-slider-group">
+                                <input type="range" id="exit-cap-slider" min="2" max="15" step="0.05" value="6.5">
+                                <span class="value-display" id="exit-cap-value">6.50%</span>
+                            </div>
+                        </div>
+                         <div class="input-group">
+                            <label for="loan-rate-slider">Loan Interest Rate</label>
+                            <div class="input-slider-group">
+                                <input type="range" id="loan-rate-slider" min="2" max="15" step="0.125" value="6.5">
+                                <span class="value-display" id="loan-rate-value">6.500%</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="loan-ltv-slider">Loan LTV (Loan-to-Value)</label>
+                            <div class="input-slider-group">
+                                <input type="range" id="loan-ltv-slider" min="0" max="100" step="1" value="70"> <!-- Updated min/max -->
+                                <span class="value-display" id="loan-ltv-value">70%</span>
+                            </div>
+                        </div>
+                        <!-- NEW: Amortization Slider -->
+                        <div class="input-group">
+                            <label for="loan-amortization-slider">Loan Amortization Period</label>
+                            <div class="input-slider-group">
+                                <input type="range" id="loan-amortization-slider" min="20" max="30" step="5" value="30">
+                                <span class="value-display" id="loan-amortization-value">30 Yrs</span>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- END: Top Row Container -->
+
+                <!-- Copilot Panel MOVED FROM HERE -->
+                <!-- <div id="copilot-panel">
+                   <h3>AI Co-pilot</h3>
+                   <div id="copilot-feedback">Adjust assumptions to see feedback...</div>
+               </div> -->
+
+                <!-- Metrics Panel Remains Below Top Row -->
+                <div id="metrics-panel">
+                    <h3>Projected Metrics</h3>
+                    <div class="metrics-grid">
+                        <!-- Reordered and New Metrics -->
+                        <div class="metric-item">
+                            <span class="label">Est. Purchase Price</span>
+                            <span class="value" id="metric-purchase-price">$0</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="label">Est. Loan Amount</span>
+                            <span class="value" id="metric-loan-amount">$0</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="label">Down Payment / Equity</span> <!-- Updated Label -->
+                            <span class="value" id="metric-equity-req">$0</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="label">Year 1 DSCR</span>
+                            <span class="value" id="metric-y1-dscr">N/A</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="label">Year 1 Cash-on-Cash</span>
+                            <span class="value" id="metric-y1-coc">%</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="label">Year 1 IRR (Simple)</span>
+                            <span class="value" id="metric-y1-irr">%</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="label">Avg. Cash-on-Cash (10yr)</span>
+                            <span class="value" id="metric-avg-coc">%</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="label">Projected IRR (10yr)</span>
+                            <span class="value" id="metric-irr">%</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="label">Est. Sale Price (Yr 10)</span>
+                            <span class="value" id="metric-sale-price">$0</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="label">Total Principal Paid (10yr)</span>
+                            <span class="value" id="metric-principal-paid">$0</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="label">Total Cash Flow (10yr)</span>
+                            <span class="value" id="metric-total-cashflow">$0</span>
+                        </div>
+                        <div class="metric-item">
+                            <span class="label">Total Profit (10yr)</span>
+                            <span class="value" id="metric-total-profit">$0</span>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Charts Panel (Stays Here) -->
+                 <div id="charts-panel">
+                     <h3>10-Year Projections</h3>
+                     <div class="charts-grid">
+                         <div class="chart-container">
+                             <h4>Value</h4>
+                             <svg id="value-chart" class="chart-svg" viewBox="-10 -5 120 60" preserveAspectRatio="none">
+                                <g class="grid-lines"></g><g class="chart-content"></g><g class="axis-labels"></g><line class="zero-line" x1="0" x2="100" y1="25" y2="25"></line>
+                             </svg>
+                         </div>
+                         <div class="chart-container">
+                             <h4>NOI</h4>
+                             <svg id="noi-chart" class="chart-svg" viewBox="-10 -5 120 60" preserveAspectRatio="none">
+                                <g class="grid-lines"></g><g class="chart-content"></g><g class="axis-labels"></g><line class="zero-line" x1="0" x2="100" y1="25" y2="25"></line>
+                             </svg>
+                         </div>
+                         <div class="chart-container">
+                             <h4>Loan Balance</h4>
+                             <svg id="loan-chart" class="chart-svg" viewBox="-10 -5 120 60" preserveAspectRatio="none">
+                                <g class="grid-lines"></g><g class="chart-content"></g><g class="axis-labels"></g><line class="zero-line" x1="0" x2="100" y1="25" y2="25"></line>
+                             </svg>
+                         </div>
+                         <div class="chart-container">
+                             <h4>Cash Flow (Pre-Tax)</h4>
+                             <svg id="cashflow-chart" class="chart-svg" viewBox="-10 -5 120 60" preserveAspectRatio="none">
+                                <g class="grid-lines"></g><g class="chart-content"></g><g class="axis-labels"></g><line class="zero-line" x1="0" x2="100" y1="25" y2="25"></line>
+                             </svg>
+                         </div>
+                     </div>
+                 </div>
+            </div>
+
+            <!-- Sidebar (Now empty or for future use) -->
+            <aside id="analysis-sidebar">
+                 <!-- Assumptions Panel MOVED FROM HERE -->
+                 <!-- Metrics Panel MOVED FROM HERE -->
+                 <!-- Copilot Panel MOVED FROM HERE -->
+            </aside>
+
+            <!-- Analysis Actions (Remains in main, below charts) -->
+            <div id="analysis-actions" style="margin-top: 1.5rem;"> <!-- Added margin-top here -->
+                <button id="back-to-market-btn" class="btn-secondary">Back to Market</button>
+                <button id="analyze-funding-btn" class="btn-success">Analyze & Seek Funding</button>
+            </div>
+        </div>
+
+        <!-- Funding View -->
+        <div id="funding-view" class="view">
+            <h2>Funding Simulation Results for <span id="funding-deal-name">...</span></h2>
+            <div id="lender-results">
+                <!-- Lender cards populated by JS -->
+                <div class="lender-card placeholder">Running simulations...</div>
+            </div>
+            <div id="funding-summary" class="not-funded">Calculating...</div>
+            <div id="funding-actions">
+                 <button id="revise-deal-btn" class="btn-secondary">Revise Assumptions</button>
+                 <button id="new-deal-btn" class="btn-primary">Find New Deal</button>
+            </div>
+        </div>
+
+    </div> <!-- End #game-container -->
+
+    <!-- Game Over / Win Overlay -->
+    <div id="game-over-overlay" style="display: none;"> <!-- Ensure this overlay is hidden too -->
+        <h2 id="game-over-title">GAME OVER</h2>
+        <p id="game-over-message">Your reputation tanked!</p>
+        <button id="restart-btn" class="btn-primary">Play Again</button>
+    </div>
+
+    <!-- NEW: Tooltip Element -->
+    <div id="chart-tooltip" style="position: absolute; display: none; background-color: var(--bg-secondary); color: var(--text-primary); padding: 8px 12px; border-radius: 6px; font-size: 0.75rem; pointer-events: none; white-space: nowrap; z-index: 10; border: 1px solid var(--border-color); text-align: center; line-height: 1.3;">Tooltip</div>
+
+    <!-- OM Processing Overlay -->
+    <div id="om-processing-overlay" style="display: none;"> <!-- Added display: none here -->
+        <div id="om-processing-content">
+            <!-- Content moved to #upload-analyze-view, this overlay might be removable later -->
+            <!-- Keeping structure for now in case needed for other modal popups -->
+            <p>Processing...</p>
+        </div>
+    </div>
+
+    <script>
+        // --- Game Config ---
+        const INITIAL_REPUTATION = 100;
+        const MIN_REPUTATION = 50; // Lose condition
+        const DEALS_TO_WIN = 10;
+        const LOAN_TERM_YEARS = 10; // Projection period, also used for loan amortization calc? (Or assume 30yr amort?) Let's use 30 for payment calc.
+        const LOAN_AMORTIZATION_YEARS = 30;
+        const SELLING_COST_PERCENT = 0.05; // 5% cost to sell at exit
+
+        // Mock Lender Criteria
+        const LENDERS = [
+            { name: "National Bank", minDSCR: 1.25, maxLTV: 0.75, rateAdjustment: 0.0 }, // Standard
+            { name: "Regional Credit Union", minDSCR: 1.20, maxLTV: 0.80, rateAdjustment: 0.125 }, // Slightly looser LTV/DSCR, higher rate
+            { name: "Aggressive Debt Fund", minDSCR: 1.10, maxLTV: 0.70, rateAdjustment: 1.0 }, // Low DSCR tolerance, lower LTV, higher rate
+            { name: "Conservative Life Co", minDSCR: 1.40, maxLTV: 0.65, rateAdjustment: -0.250 } // Strict DSCR/LTV, better rate
+        ];
+
+        // --- Game State ---
+        let gameState = {
+            reputation: INITIAL_REPUTATION,
+            dealsFunded: 0,
+            currentView: 'marketplace', // 'marketplace', 'analysis', 'funding'
+            marketplaceDeals: [],
+            selectedDeal: null, // Holds the data of the deal being analyzed
+            currentAnalysis: { // Holds the results of the latest calculation
+                inputs: {}, // Stores the slider values used
+                metrics: {}, // Stores calculated metrics (loan, equity, dscr, coc, irr, profit)
+                projections: { // Stores year-by-year data for charts
+                    years: [], value: [], noi: [], loanBalance: [], cashFlow: []
+                },
+                fundingResults: [] // Stores results from runFundingSimulation
+            }
+        };
+
+        // --- DOM References ---
+        const gameContainer = document.getElementById('game-container');
+        // Views
+        const marketplaceView = document.getElementById('marketplace-view');
+        const analysisView = document.getElementById('analysis-view');
+        const fundingView = document.getElementById('funding-view');
+        const uploadAnalyzeView = document.getElementById('upload-analyze-view'); // New view reference
+        // Header
+        const reputationScoreEl = document.getElementById('reputation-score');
+        const dealsFundedCountEl = document.getElementById('deals-funded-count');
+        // Step Navigation
+        const stepNavItem1 = document.getElementById('step-1');
+        const stepNavItem2 = document.getElementById('step-2');
+        const stepNavItem3 = document.getElementById('step-3');
+        // Marketplace
+        const marketplaceDealsDrexiContainer = document.getElementById('marketplace-deals-drexi'); // UPDATED
+        const marketplaceDealsMoopNetContainer = document.getElementById('marketplace-deals-moopnet'); // NEW
+        const refreshDealsBtn = document.getElementById('refresh-deals-btn');
+        // Analysis - Info
+        const dealNameInfoEl = document.getElementById('deal-name-info');
+        const infoAskingPriceEl = document.getElementById('info-asking-price');
+        const infoPropertyTypeEl = document.getElementById('info-property-type');
+        const infoCurrentNoiEl = document.getElementById('info-current-noi');
+        const infoCurrentCapEl = document.getElementById('info-current-cap');
+        const infoLocationEl = document.getElementById('info-location');
+        const infoSizeEl = document.getElementById('info-size');
+        // Analysis - Inputs
+        const rentGrowthSlider = document.getElementById('rent-growth-slider');
+        const rentGrowthValueEl = document.getElementById('rent-growth-value');
+        const expenseGrowthSlider = document.getElementById('expense-growth-slider');
+        const expenseGrowthValueEl = document.getElementById('expense-growth-value');
+        const appreciationSlider = document.getElementById('appreciation-slider'); // NEW
+        const appreciationValueEl = document.getElementById('appreciation-value'); // NEW
+        const exitCapSlider = document.getElementById('exit-cap-slider');
+        const exitCapValueEl = document.getElementById('exit-cap-value');
+        const loanRateSlider = document.getElementById('loan-rate-slider');
+        const loanRateValueEl = document.getElementById('loan-rate-value');
+        const loanLtvSlider = document.getElementById('loan-ltv-slider');
+        const loanLtvValueEl = document.getElementById('loan-ltv-value');
+        const loanAmortizationSlider = document.getElementById('loan-amortization-slider'); // NEW
+        const loanAmortizationValueEl = document.getElementById('loan-amortization-value'); // NEW
+        // Analysis - Metrics
+        const metricLoanAmountEl = document.getElementById('metric-loan-amount');
+        const metricEquityReqEl = document.getElementById('metric-equity-req');
+        const metricY1DscrEl = document.getElementById('metric-y1-dscr');
+        const metricAvgCocEl = document.getElementById('metric-avg-coc');
+        const metricIrrEl = document.getElementById('metric-irr');
+        const metricTotalProfitEl = document.getElementById('metric-total-profit');
+        const metricSalePriceEl = document.getElementById('metric-sale-price'); // NEW
+        const metricPrincipalPaidEl = document.getElementById('metric-principal-paid'); // NEW
+        const metricTotalCashflowEl = document.getElementById('metric-total-cashflow'); // NEW
+        const metricPurchasePriceEl = document.getElementById('metric-purchase-price'); // NEW
+        const metricY1CocEl = document.getElementById('metric-y1-coc'); // NEW
+        const metricY1IrrEl = document.getElementById('metric-y1-irr'); // NEW
+        // Analysis - Copilot
+        const copilotFeedbackEl = document.getElementById('copilot-feedback');
+        // Analysis - Charts (SVG elements for drawing)
+        const valueChartSVG = document.getElementById('value-chart');
+        const noiChartSVG = document.getElementById('noi-chart');
+        const loanChartSVG = document.getElementById('loan-chart');
+        const cashflowChartSVG = document.getElementById('cashflow-chart');
+        // Analysis - Actions
+        const backToMarketBtn = document.getElementById('back-to-market-btn');
+        const analyzeFundingBtn = document.getElementById('analyze-funding-btn');
+        // Funding
+        const fundingDealNameEl = document.getElementById('funding-deal-name');
+        const lenderResultsContainer = document.getElementById('lender-results');
+        const fundingSummaryEl = document.getElementById('funding-summary');
+        const reviseDealBtn = document.getElementById('revise-deal-btn');
+        const newDealBtn = document.getElementById('new-deal-btn');
+        // Game Over
+        const gameOverOverlay = document.getElementById('game-over-overlay');
+        const gameOverTitle = document.getElementById('game-over-title');
+        const gameOverMessage = document.getElementById('game-over-message');
+        const restartBtn = document.getElementById('restart-btn');
+        // OM Processing Overlay
+        const omProcessingOverlay = document.getElementById('om-processing-overlay'); // Keep if used for other modals
+        // Progress Bar Elements
+        const omProgressBarFill = document.getElementById('om-progress-bar-fill');
+        const omProgressPercentage = document.getElementById('om-progress-percentage');
+
+
+        // --- Utility Functions ---
+        function formatCurrency(value, compact = false) {
+            if (isNaN(value)) return '$NaN';
+            const options = { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 };
+            if (compact && Math.abs(value) >= 1000) {
+                const suffixes = ["", "K", "M", "B", "T"];
+                let suffixIndex = 0;
+                let scaledValue = value;
+                while (Math.abs(scaledValue) >= 1000 && suffixIndex < suffixes.length - 1) {
+                    scaledValue /= 1000;
+                    suffixIndex++;
+                }
+                const precision = Math.abs(scaledValue) >= 100 ? 0 : Math.abs(scaledValue) >= 10 ? 1 : 1;
+                return (value < 0 ? '-' : '') + '$' + Math.abs(scaledValue).toFixed(precision) + suffixes[suffixIndex];
+            }
+            return value.toLocaleString('en-US', options);
+        }
+
+        function formatPercent(value, decimals = 1) {
+            if (isNaN(value)) return 'NaN%';
+            return (value).toFixed(decimals) + '%';
+        }
+
+         function formatPercentRate(value, decimals = 3) { // Higher precision for rates
+            if (isNaN(value)) return 'NaN%';
+            return (value).toFixed(decimals) + '%';
+        }
+
+        function formatDecimal(value, decimals = 2) {
+            if (isNaN(value)) return 'NaN';
+             // Handle Infinity specifically for DSCR
+            if (!isFinite(value)) return '∞';
+            return value.toFixed(decimals);
+        }
+
+        // --- Charting Function (Revised for Bar Charts) ---
+         function updateChart(svgElement, dataPoints, colorVarName) {
+            const chartContentGroup = svgElement.querySelector('.chart-content') || createGroup(svgElement, 'chart-content');
+            const gridLinesGroup = svgElement.querySelector('.grid-lines') || createGroup(svgElement, 'grid-lines');
+            const axisLabelsGroup = svgElement.querySelector('.axis-labels') || createGroup(svgElement, 'axis-labels');
+            const zeroLine = svgElement.querySelector('.zero-line') || createLine(svgElement, 0, 0, 100, 0, 'zero-line');
+            const tooltipElement = document.getElementById('chart-tooltip'); // Get tooltip element
+
+            // Clear previous contents
+            chartContentGroup.innerHTML = '';
+            gridLinesGroup.innerHTML = '';
+            axisLabelsGroup.innerHTML = '';
+
+            if (!dataPoints || dataPoints.length === 0) {
+                 console.warn("No data points for chart:", svgElement.id);
+                 // Optionally draw empty state text
+                 return;
+            }
+
+             // --- Data Preparation ---
+             const validDataPoints = dataPoints.filter(p => p && !isNaN(p.y));
+             if (validDataPoints.length === 0) {
+                  console.warn("All data points are invalid/NaN for chart:", svgElement.id);
+                  // Optionally draw empty state text
+                  return;
+             }
+
+             const values = validDataPoints.map(p => p.y);
+             let minValue = Math.min(0, ...values); // Ensure 0 is included for baseline
+             let maxValue = Math.max(0, ...values); // Ensure 0 is included
+
+             // Add buffer and ensure range isn't zero
+             const range = maxValue - minValue;
+             const buffer = range === 0 ? Math.max(1, Math.abs(maxValue * 0.1)) : range * 0.1; // 10% buffer or 1
+             minValue -= buffer;
+             maxValue += buffer;
+             const effectiveRange = maxValue - minValue;
+
+             // --- Chart Dimensions & Scaling ---
+             const svgWidth = 100; // Using viewBox units
+             const svgHeight = 50; // Using viewBox units
+             const barPadding = 0.2; // Percentage of bar width for padding
+             const numBars = validDataPoints.length;
+             const totalBarWidth = svgWidth / numBars;
+             const barWidth = totalBarWidth * (1 - barPadding);
+             const barSpacing = totalBarWidth * barPadding;
+
+             // Function to scale Y value to SVG coordinates
+             const scaleY = (value) => {
+                 if (effectiveRange === 0) return svgHeight / 2; // Middle if no range
+                 return svgHeight - ((value - minValue) / effectiveRange) * svgHeight; // Inverted Y
+             };
+
+             const zeroY = scaleY(0); // Y position of the zero line
+
+             // --- Draw Elements ---
+             // Zero Line
+             zeroLine.setAttribute('x1', '0');
+             zeroLine.setAttribute('x2', svgWidth);
+             zeroLine.setAttribute('y1', zeroY);
+             zeroLine.setAttribute('y2', zeroY);
+             zeroLine.style.stroke = `var(${colorVarName})`;
+             zeroLine.style.strokeWidth = '0.5px';
+
+             // Bars
+             validDataPoints.forEach((point, index) => {
+                 const x = index * totalBarWidth + barSpacing / 2;
+                 const yValue = point.y;
+                 const scaledY = scaleY(yValue);
+
+                 const barHeight = Math.abs(scaledY - zeroY);
+                 const barY = (yValue >= 0) ? scaledY : zeroY; // Bar starts at zeroY for negative values
+
+                 const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                 rect.setAttribute('x', x.toFixed(2));
+                 rect.setAttribute('y', barY.toFixed(2));
+                 rect.setAttribute('width', barWidth.toFixed(2));
+                 rect.setAttribute('height', barHeight.toFixed(2));
+                 rect.setAttribute('fill', `var(${colorVarName})`); // Use CSS variable for color
+                 chartContentGroup.appendChild(rect);
+
+                 // Add Tooltip Events
+                 rect.addEventListener('mouseover', (event) => {
+                     if (!tooltipElement) return;
+                     console.log('Mouseover bar:', { year: point.x, value: point.y }); // Log event
+                     // Format like mockup: Yr X $Y.Y M
+                     tooltipElement.innerHTML = `Yr ${point.x}<br><span style="font-size: 1.1em; font-weight: 600;">${formatCurrency(point.y, true)}</span>`;
+                     tooltipElement.style.display = 'block';
+                     // Position tooltip near mouse - adjust offsets as needed
+                     tooltipElement.style.left = `${event.pageX + 10}px`;
+                     tooltipElement.style.top = `${event.pageY - 15}px`;
+                 });
+                 rect.addEventListener('mousemove', (event) => {
+                     if (!tooltipElement) return;
+                     // console.log('Mousemove on bar'); // Optional detailed log
+                     // Update position as mouse moves
+                     tooltipElement.style.left = `${event.pageX + 10}px`;
+                     tooltipElement.style.top = `${event.pageY - 15}px`;
+                 });
+                 rect.addEventListener('mouseout', () => {
+                     if (!tooltipElement) return;
+                     console.log('Mouseout bar'); // Log event
+                     tooltipElement.style.display = 'none';
+                 });
+             });
+
+             // Grid Lines & Labels (Simplified Y-axis)
+             const numGridLines = 1; // Reduced to just top/bottom essentially (plus zero)
+             for (let i = 0; i <= numGridLines; i++) {
+                 const yVal = minValue + (effectiveRange / numGridLines) * i;
+                 const yPos = scaleY(yVal);
+
+                 // Grid line
+                 const line = createLine(gridLinesGroup, 0, yPos, svgWidth, yPos, 'grid-line');
+                 line.style.stroke = `var(--chart-grid)`;
+                 line.style.strokeWidth = '0.25px';
+                 line.style.strokeDasharray = '2,2';
+
+                 // Axis Label (avoid overlap with zero line)
+                 if (Math.abs(yPos - zeroY) > 2) { // Only label if sufficiently far from zero
+                    const text = createText(axisLabelsGroup, -2, yPos + 1, formatCurrency(yVal, true), 'axis-label'); // Position Y labels to the left (x=-2)
+                    text.style.fontSize = '4px'; // Increased font size
+                    text.style.fill = 'var(--text-tertiary)';
+                    text.style.textAnchor = 'end'; // Align text to the right of the coordinate
+                 }
+             }
+             // Add Zero Label
+              const zeroLabel = createText(axisLabelsGroup, -2, zeroY + 1, '$0', 'axis-label'); // Position Y labels to the left (x=-2)
+              zeroLabel.style.fontSize = '4px'; // Increased font size
+              zeroLabel.style.fill = 'var(--text-tertiary)';
+              zeroLabel.style.textAnchor = 'end'; // Align text to the right of the coordinate
+
+              // X-Axis Labels (Years) - Show all years
+              validDataPoints.forEach((point, index) => {
+                   // if (index % 2 === 0) { // Label every other year to prevent clutter - REMOVED condition
+                       const x = index * totalBarWidth + totalBarWidth / 2; // Center label under bar
+                       const text = createText(axisLabelsGroup, x, svgHeight + 4, `${point.x}`, 'axis-label'); // REMOVED 'Yr '
+                       text.style.fontSize = '4px'; // Increased font size
+                       text.style.textAnchor = 'middle';
+                       text.style.fill = 'var(--text-tertiary)';
+                   // }
+              });
+
+             console.log(`Bar chart updated: ${svgElement.id}`);
+        }
+
+        // Helper functions for creating SVG elements
+        function createGroup(parent, className) {
+            const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            g.setAttribute('class', className);
+            parent.appendChild(g);
+            return g;
+        }
+
+        function createLine(parent, x1, y1, x2, y2, className) {
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute('x1', x1);
+            line.setAttribute('y1', y1);
+            line.setAttribute('x2', x2);
+            line.setAttribute('y2', y2);
+            line.setAttribute('class', className);
+            parent.appendChild(line);
+            return line;
+        }
+         function createText(parent, x, y, content, className) {
+            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            text.setAttribute('x', x);
+            text.setAttribute('y', y);
+            text.setAttribute('class', className);
+            text.textContent = content;
+            parent.appendChild(text);
+            return text;
+        }
+
+        // --- Core Calculation Logic ---
+
+        // Calculates the monthly payment for a loan (like PMT in Excel)
+        function calculateMonthlyPayment(rate, nper, pv) {
+            rate = Number(rate);
+            nper = Number(nper);
+            pv = Number(pv);
+            // Ensure inputs are valid numbers and loan has principal and term
+            if (isNaN(rate) || isNaN(nper) || isNaN(pv) || nper <= 0 || pv <= 0) return 0;
+            // Convert annual rate percentage to monthly decimal rate
+            const monthlyRate = rate / 100 / 12;
+            // Handle zero interest rate scenario
+            if (monthlyRate === 0) return pv / nper;
+            // Calculate monthly payment using the standard formula
+            const payment = pv * (monthlyRate * Math.pow(1 + monthlyRate, nper)) / (Math.pow(1 + monthlyRate, nper) - 1);
+            // Return 0 if calculation results in NaN or Infinity
+            return isNaN(payment) || !isFinite(payment) ? 0 : payment;
+        }
+
+        // Placeholder for IRR - Requires iterative numerical method for accuracy
+        function calculateIRR(cashFlows, guess = 0.1) {
+            // Basic validation
+            if (!cashFlows || cashFlows.length <= 1 || cashFlows.every(cf => cf === 0)) return 0;
+
+            // Simplified placeholder logic (NOT ACCURATE FOR REAL IRR)
+            // Attempts a very rough approximation. Replace with iterative method for accuracy.
+            try {
+                const investment = Math.abs(cashFlows[0]); // Initial investment (Year 0)
+                // Handle edge cases: no investment or no positive returns
+                if (investment === 0) return cashFlows.slice(1).some(cf => cf > 0) ? Infinity : 0;
+                if (cashFlows.slice(1).every(cf => cf <= 0)) return -1; // Investment but no positive returns
+
+                // Sum positive future cash flows
+                const positiveFlows = cashFlows.slice(1).reduce((sum, cf) => sum + Math.max(0, cf), 0);
+                const numYears = cashFlows.length - 1;
+
+                // If total positive flows don't exceed investment, IRR is likely negative
+                if (positiveFlows <= investment) return -0.1; // Guess a negative IRR
+
+                // Very rough heuristic - treat as average annual return (mathematically flawed for IRR)
+                const approxRate = Math.pow(positiveFlows / investment, 1 / numYears) - 1;
+
+                // Clamp result between -1 (100% loss) and large positive number for this placeholder
+                return Math.max(-1, approxRate);
+
+            } catch (e) {
+                console.error("IRR Placeholder Error:", e);
+                return NaN; // Indicate calculation failure
+            }
+             // A proper implementation would use Newton-Raphson or similar.
+        }
+
+
+        // --- Main Calculation Function ---
+        function updateCalculations() {
+            console.log("[updateCalculations] Entered.");
+            if (!gameState.selectedDeal) {
+                console.log("No deal selected, skipping calculation.");
+                return;
+            }
+
+            // 1. Get Inputs
+            const inputs = {
+                rentGrowth: parseFloat(rentGrowthSlider.value) / 100,
+                expenseGrowth: parseFloat(expenseGrowthSlider.value) / 100, // Note: Currently only used for Co-pilot hint, not in NOI calc below
+                exitCap: parseFloat(exitCapSlider.value) / 100,
+                loanRate: parseFloat(loanRateSlider.value) / 100,
+                loanLtv: parseFloat(loanLtvSlider.value) / 100,
+                askingPrice: gameState.selectedDeal.price,
+                initialNoi: gameState.selectedDeal.noi * 12, // Annualize
+                amortizationYears: parseInt(loanAmortizationSlider.value),
+                appreciationRate: parseFloat(appreciationSlider.value) / 100 // NEW
+            };
+            // Basic input validation
+             if (isNaN(inputs.askingPrice) || inputs.askingPrice <= 0 || isNaN(inputs.initialNoi)) {
+                 copilotFeedbackEl.innerHTML = `<span style="color: var(--accent-red)">Invalid deal data (Price/NOI). Cannot calculate.</span>`;
+                 return;
+             }
+
+
+            // 2. Initial Loan & Equity Calculation
+            const loanAmount = inputs.askingPrice * inputs.loanLtv;
+             // Simplification: Ignoring closing costs for equity calculation
+            const equityRequired = inputs.askingPrice - loanAmount;
+             if (equityRequired < 0) { // Cannot have negative equity
+                  copilotFeedbackEl.innerHTML = `<span style="color: var(--accent-red)">Loan amount exceeds asking price based on LTV. Invalid scenario.</span>`;
+                 // Reset metrics UI? Or just show error? Let's show error and stop.
+                 return;
+             }
+
+            const loanTermMonths = inputs.amortizationYears * 12; // Use input value
+            const monthlyPayment = calculateMonthlyPayment(inputs.loanRate * 100, loanTermMonths, loanAmount);
+            const annualDebtService = monthlyPayment * 12;
+
+            // 3. Generate 10-Year Projections
+            const projections = {
+                years: Array.from({ length: LOAN_TERM_YEARS + 1 }, (_, i) => i), // 0 to 10
+                noi: [],
+                loanBalance: [],
+                cashFlow: [],
+                value: [] // Optional: For chart
+            };
+
+            let currentLoanBalance = loanAmount;
+            let cumulativeCashFlow = 0; // For Avg CoC calc
+            let totalInterestPaid = 0; // For potential future use
+
+            for (let year = 0; year <= LOAN_TERM_YEARS; year++) {
+                let projectedNoi;
+                let principalPaidThisYear = 0;
+                let interestPaidThisYear = 0;
+
+                if (year === 0) {
+                    projectedNoi = inputs.initialNoi;
+                    projections.loanBalance.push(currentLoanBalance);
+                     // Value at year 0 is the asking price
+                     projections.value.push(inputs.askingPrice);
+
+                } else {
+                     // Project NOI: Simple model - NOI grows by rentGrowth rate
+                     // Assumes rent growth directly impacts NOI, ignoring expense ratio changes for simplicity
+                     // Refinement: Could use initialNOI * (1 + rentGrowth)^year
+                     projectedNoi = projections.noi[year - 1] * (1 + inputs.rentGrowth);
+
+                    // --- Project Value based on Appreciation Rate --- 
+                    const priorValue = projections.value[year - 1];
+                    const appreciatedValue = priorValue * (1 + inputs.appreciationRate); // Renamed variable
+                    projections.value.push(appreciatedValue);
+                    // --- End Value Projection ---
+
+                    // Calculate Loan Amortization for the year
+                    let balanceAtYearStart = projections.loanBalance[year - 1];
+                     if (balanceAtYearStart > 0) {
+                         // Calculate total interest and principal paid over the 12 months of *this* year
+                         let monthlyBalance = balanceAtYearStart;
+                         for (let month = 1; month <= 12; month++) {
+                              // Check if loan is already paid off mid-year (unlikely with 30yr term in 10yr hold)
+                              if (monthlyBalance <= 0) break;
+
+                             const monthlyInterest = monthlyBalance * (inputs.loanRate / 12);
+                             const monthlyPrincipal = Math.min(monthlyBalance, monthlyPayment - monthlyInterest); // Ensure principal doesn't exceed balance
+
+                             interestPaidThisYear += monthlyInterest;
+                              // Only track principal if the payment covers interest
+                              if (monthlyPayment >= monthlyInterest) {
+                                   principalPaidThisYear += monthlyPrincipal;
+                                   monthlyBalance -= monthlyPrincipal;
+                              } else {
+                                   // Handle case where payment doesn't cover interest (negative amortization - should not happen with standard loans but good check)
+                                   // If needed, balance would increase here. For simplicity, assume payment >= interest.
+                              }
+                         }
+                         currentLoanBalance = Math.max(0, balanceAtYearStart - principalPaidThisYear); // Ensure balance doesn't go below zero
+                     } else {
+                          currentLoanBalance = 0; // Loan already paid off
+                     }
+                     projections.loanBalance.push(currentLoanBalance);
+
+                     // --- Optional: Project Value ---
+                     // Simple value projection based on current NOI and *initial* cap rate for chart visualisation
+                     // const initialCapRate = inputs.initialNoi / inputs.askingPrice;
+                     // const projectedValue = (initialCapRate > 0) ? (projectedNoi / initialCapRate) : projections.value[year-1]; // Use previous value if cap rate is zero/invalid
+                     // projections.value.push(projectedValue);
+                     // --- End Optional Value ---
+                }
+
+                projections.noi.push(projectedNoi);
+
+                // Calculate Cash Flow for the year
+                const cashFlowThisYear = projectedNoi - annualDebtService;
+                projections.cashFlow.push(cashFlowThisYear);
+
+                 // Add to cumulative cash flow (starting from Year 1) for CoC calc
+                 if (year > 0) {
+                    cumulativeCashFlow += cashFlowThisYear;
+                 }
+                 totalInterestPaid += interestPaidThisYear;
+            }
+
+            // 4. Calculate Exit Metrics (at end of Year 10)
+            const noiYear10 = projections.noi[LOAN_TERM_YEARS];
+            const noiYear11 = noiYear10 * (1 + inputs.rentGrowth); // Project NOI for one more year for exit cap calc
+            const exitValue = inputs.exitCap > 0 ? (noiYear11 / inputs.exitCap) : 0; // This is the Sale Price
+            const sellingCosts = exitValue * SELLING_COST_PERCENT;
+            const loanBalanceYear10 = projections.loanBalance[LOAN_TERM_YEARS];
+            const netReversion = exitValue - sellingCosts - loanBalanceYear10;
+
+            // 5. Calculate Summary Metrics
+            const year1Noi = projections.noi[1]; // NOI for Year 1
+            const year1Dscr = annualDebtService > 0 ? (year1Noi / annualDebtService) : Infinity;
+            const totalPrincipalPaid = loanAmount - loanBalanceYear10; // NEW calculation
+            const totalCashFlow = cumulativeCashFlow; // NEW (just using existing variable)
+            const year1CashFlow = projections.cashFlow[1]; // Get year 1 cash flow
+            let year1Coc = 0;
+            let year1IrrSimple = 0;
+            if (equityRequired > 0) {
+                 year1Coc = year1CashFlow / equityRequired;
+                 year1IrrSimple = year1CashFlow / equityRequired; // Simple IRR for year 1
+            } else if (equityRequired === 0 && year1CashFlow > 0) {
+                 year1Coc = Infinity;
+                 year1IrrSimple = Infinity;
+            }
+
+            // Calculate Average Cash-on-Cash Return
+            const averageAnnualCashFlow = cumulativeCashFlow / LOAN_TERM_YEARS;
+            let avgCoc;
+            if (equityRequired > 0) {
+                 avgCoc = averageAnnualCashFlow / equityRequired;
+            } else if (equityRequired === 0 && averageAnnualCashFlow > 0) {
+                 avgCoc = Infinity; // Infinite return if zero equity and positive cash flow
+            } else {
+                 avgCoc = 0; // Or NaN? Let's use 0 for simplicity if equity is 0 and CF <= 0, or if equity is negative (already handled).
+            }
+
+            // Calculate Total Profit
+            const totalProfit = cumulativeCashFlow + netReversion - equityRequired;
+
+            // --- Prepare Cash Flows for IRR Calculation ---
+            const totalCashFlowsForIRR = [ -equityRequired ]; // Start with initial investment (negative)
+            for (let y = 1; y <= LOAN_TERM_YEARS; y++) {
+                if (y === LOAN_TERM_YEARS) {
+                    totalCashFlowsForIRR.push(projections.cashFlow[y] + netReversion); // Add net reversion to final year's cash flow
+                } else {
+                    totalCashFlowsForIRR.push(projections.cashFlow[y]);
+                }
+            }
+            // --- End IRR Cash Flow Prep ---
+
+            // Calculate IRR using the placeholder function
+            // Pass the array: [-Equity, CF1, CF2, ..., CF9, CF10+Reversion]
+            const irr = calculateIRR(totalCashFlowsForIRR);
+
+
+            // 6. Store results in gameState
+            gameState.currentAnalysis.inputs = inputs;
+            gameState.currentAnalysis.metrics = {
+                loanAmount: loanAmount,
+                equityRequired: equityRequired,
+                year1Dscr: year1Dscr,
+                avgCoc: avgCoc, // Store as decimal (e.g., 0.1 for 10%)
+                irr: isNaN(irr) ? 0 : irr, // Store as decimal (e.g., 0.15 for 15%)
+                totalProfit: totalProfit,
+                annualDebtService: annualDebtService, // Needed for funding sim
+                salePrice: exitValue, // NEW
+                totalPrincipalPaid: totalPrincipalPaid, // NEW
+                totalCashFlow: totalCashFlow, // NEW
+                purchasePrice: inputs.askingPrice, // NEW
+                year1Coc: year1Coc, // NEW
+                year1IrrSimple: year1IrrSimple // NEW
+            };
+            gameState.currentAnalysis.projections = projections;
+
+             console.log("Calculated Metrics:", gameState.currentAnalysis.metrics);
+             console.log("Exit Value:", exitValue, "Net Reversion:", netReversion);
+             // console.log("Cash Flows for IRR:", totalCashFlowsForIRR);
+
+
+            // 7. Update UI - Metrics
+            metricLoanAmountEl.textContent = formatCurrency(loanAmount, true);
+            metricEquityReqEl.textContent = formatCurrency(equityRequired, true);
+            metricY1DscrEl.textContent = formatDecimal(year1Dscr);
+             metricY1DscrEl.className = 'value'; // Reset class
+             if (!isFinite(year1Dscr)) metricY1DscrEl.classList.add('good'); // Infinity DSCR is good
+             else if (year1Dscr >= 1.25) metricY1DscrEl.classList.add('good');
+             else if (year1Dscr >= 1.10) metricY1DscrEl.classList.add('ok'); // Adjusted threshold for 'ok'
+             else metricY1DscrEl.classList.add('bad');
+
+             // Format percentages for display
+            metricAvgCocEl.textContent = formatPercent(avgCoc * 100); // Multiply by 100 for display
+             metricAvgCocEl.className = 'value'; // Reset class
+             if (!isFinite(avgCoc)) metricAvgCocEl.classList.add('good'); // Infinite CoC is good
+             else if (avgCoc >= 0.1) metricAvgCocEl.classList.add('good');
+              else if (avgCoc >= 0.05) metricAvgCocEl.classList.add('ok');
+              else metricAvgCocEl.classList.add('bad');
+
+             // Update NEW metrics
+             metricSalePriceEl.textContent = formatCurrency(gameState.currentAnalysis.metrics.salePrice, true);
+             metricPrincipalPaidEl.textContent = formatCurrency(gameState.currentAnalysis.metrics.totalPrincipalPaid, true);
+             metricTotalCashflowEl.textContent = formatCurrency(gameState.currentAnalysis.metrics.totalCashFlow, true);
+
+            metricIrrEl.textContent = isNaN(irr) ? 'Error' : formatPercent(irr * 100); // Multiply by 100 for display
+             metricIrrEl.className = 'value'; // Reset class
+              if (isNaN(irr)) metricIrrEl.classList.add('bad');
+             else if (irr >= 0.15) metricIrrEl.classList.add('good');
+             else if (irr >= 0.08) metricIrrEl.classList.add('ok');
+             else metricIrrEl.classList.add('bad');
+
+
+            metricTotalProfitEl.textContent = formatCurrency(totalProfit, true);
+             metricTotalProfitEl.className = 'value'; // Reset class
+             if (totalProfit > equityRequired) metricTotalProfitEl.classList.add('good'); // Profit > Initial Equity
+             else if (totalProfit > 0) metricTotalProfitEl.classList.add('ok');
+             else metricTotalProfitEl.classList.add('bad');
+
+            // Update specific NEW metrics that were previously added
+             metricPurchasePriceEl.textContent = formatCurrency(gameState.currentAnalysis.metrics.purchasePrice, true);
+             metricPrincipalPaidEl.textContent = formatCurrency(gameState.currentAnalysis.metrics.totalPrincipalPaid, true);
+             metricTotalCashflowEl.textContent = formatCurrency(gameState.currentAnalysis.metrics.totalCashFlow, true);
+
+            // Update more NEW metrics (Purchase Price, Y1 CoC, Y1 IRR)
+            metricPurchasePriceEl.textContent = formatCurrency(gameState.currentAnalysis.metrics.purchasePrice, false); // Use non-compact for Purchase Price
+
+            metricY1CocEl.textContent = formatPercent(gameState.currentAnalysis.metrics.year1Coc * 100);
+            metricY1CocEl.className = 'value'; // Reset class
+            if (!isFinite(gameState.currentAnalysis.metrics.year1Coc)) metricY1CocEl.classList.add('good');
+            else if (gameState.currentAnalysis.metrics.year1Coc >= 0.08) metricY1CocEl.classList.add('good'); // Example threshold
+            else if (gameState.currentAnalysis.metrics.year1Coc >= 0.04) metricY1CocEl.classList.add('ok');
+            else metricY1CocEl.classList.add('bad');
+
+            metricY1IrrEl.textContent = formatPercent(gameState.currentAnalysis.metrics.year1IrrSimple * 100);
+            metricY1IrrEl.className = 'value'; // Reset class
+            if (!isFinite(gameState.currentAnalysis.metrics.year1IrrSimple)) metricY1IrrEl.classList.add('good');
+            else if (gameState.currentAnalysis.metrics.year1IrrSimple >= 0.08) metricY1IrrEl.classList.add('good'); // Example threshold
+            else if (gameState.currentAnalysis.metrics.year1IrrSimple >= 0.04) metricY1IrrEl.classList.add('ok');
+            else metricY1IrrEl.classList.add('bad');
+
+            // 8. Update UI - Charts
+             try {
+                 // Map projection data for charts {x: year, y: value}
+                 const valueData = projections.years.map((y, i) => ({ x: y, y: projections.value[i] }));
+                 const noiData = projections.years.map((y, i) => ({ x: y, y: projections.noi[i] }));
+                 const loanData = projections.years.map((y, i) => ({ x: y, y: projections.loanBalance[i] }));
+                 const cashFlowData = projections.years.map((y, i) => ({ x: y, y: projections.cashFlow[i] }));
+
+                 updateChart(valueChartSVG, valueData, '--chart-value'); // Pass CSS var name
+                 updateChart(noiChartSVG, noiData, '--chart-noi');
+                 updateChart(loanChartSVG, loanData, '--chart-loan');
+                 updateChart(cashflowChartSVG, cashFlowData, '--chart-cashflow');
+             } catch (chartError) {
+                 console.error("Error updating charts:", chartError);
+                 copilotFeedbackEl.innerHTML = `<span style="color: var(--accent-red)">Chart rendering error.</span>`;
+             }
+
+
+            // 9. Update UI - Copilot Feedback
+            let feedback = [];
+             // DSCR Feedback
+             if (!isFinite(year1Dscr)) {
+                 feedback.push(`Year 1 DSCR is infinite (good!).`);
+             } else if (year1Dscr >= 1.4) {
+                feedback.push(`Strong Year 1 DSCR (${formatDecimal(year1Dscr)}).`);
+             } else if (year1Dscr >= 1.25) {
+                 feedback.push(`Good Year 1 DSCR (${formatDecimal(year1Dscr)}).`);
+            } else if (year1Dscr >= 1.1) {
+                feedback.push(`<span style="color: var(--accent-gold)">Okay Year 1 DSCR (${formatDecimal(year1Dscr)}), but below typical target (1.25+).</span>`);
+            } else {
+                 feedback.push(`<span style="color: var(--accent-red)">Warning: Low Year 1 DSCR (${formatDecimal(year1Dscr)}). Funding risk.</span>`);
+            }
+
+             // IRR Feedback
+             if (isNaN(irr)) {
+                  feedback.push(`<span style="color: var(--accent-red)">IRR calculation error.</span>`);
+             } else if (irr >= 0.20) {
+                 feedback.push(`Excellent projected IRR (${formatPercent(irr*100)}).`);
+             } else if (irr >= 0.12) {
+                 feedback.push(`Solid projected IRR (${formatPercent(irr*100)}).`);
+             } else if (irr >= 0.07) {
+                 feedback.push(`<span style="color: var(--accent-gold)">Modest projected IRR (${formatPercent(irr*100)}).</span>`);
+             } else {
+                 feedback.push(`<span style="color: var(--accent-red)">Low projected IRR (${formatPercent(irr*100)}). Re-evaluate assumptions.</span>`);
+             }
+
+            // CoC Feedback
+            if (avgCoc >= 0.12) {
+                 feedback.push(`Strong avg. Cash-on-Cash (${formatPercent(avgCoc*100)}).`);
+            } else if (avgCoc >= 0.06) {
+                 feedback.push(`Decent avg. Cash-on-Cash (${formatPercent(avgCoc*100)}).`);
+            } else if (avgCoc > 0) {
+                 feedback.push(`<span style="color: var(--accent-gold)">Low avg. Cash-on-Cash (${formatPercent(avgCoc*100)}).</span>`);
+            } else {
+                 feedback.push(`<span style="color: var(--accent-red)">Negative avg. Cash-on-Cash (${formatPercent(avgCoc*100)}).</span>`);
+            }
+
+             // Input Sensitivity Hints (Example)
+            if (inputs.rentGrowth < 0.02) {
+                 feedback.push(`<span style="color: var(--text-secondary)">Consider if ${formatPercent(inputs.rentGrowth*100)} rent growth is sustainable.</span>`);
+             }
+             if (inputs.exitCap < (inputs.initialNoi / inputs.askingPrice) + 0.005) { // Exit cap lower than entry cap
+                  feedback.push(`<span style="color: var(--text-secondary)">Exit Cap (${formatPercent(inputs.exitCap*100, 2)}) assumes cap rate compression. Possible, but adds risk.</span>`);
+              }
+               if (inputs.expenseGrowth > inputs.rentGrowth) {
+                  feedback.push(`<span style="color: var(--accent-gold)">Expense growth (${formatPercent(inputs.expenseGrowth*100)}) > Rent growth (${formatPercent(inputs.rentGrowth*100)}) will erode NOI over time.</span>`);
+              }
+
+
+            copilotFeedbackEl.innerHTML = feedback.join('<br>'); // Display hints on separate lines
+
+            console.log("updateCalculations finished.");
+        }
+
+
+         // *** THIS IS THE NEXT FUNCTION TO IMPLEMENT ***
+        function runFundingSimulation() {
+            console.log("runFundingSimulation called");
+             if (!gameState.selectedDeal || !gameState.currentAnalysis.metrics) {
+                 console.error("Cannot run funding sim: Missing deal or analysis data.");
+                 return;
+             }
+
+            const metrics = gameState.currentAnalysis.metrics;
+            const inputs = gameState.currentAnalysis.inputs;
+            const results = [];
+            let approvedCount = 0;
+
+             // Simulate each lender's decision
+             LENDERS.forEach(lender => {
+                 const adjustedRate = inputs.loanRate + (lender.rateAdjustment / 100);
+                 const potentialLoanAmount = inputs.askingPrice * lender.maxLTV; // Lender's max LTV constraint
+
+                  // Recalculate DSCR based on *lender's* potential adjusted rate and the LESSER of user's LTV request OR lender's max LTV
+                  // This is complex: Do we assume lender forces their LTV, or just declines if user's LTV is too high?
+                  // Let's assume lender evaluates based on the *user's requested LTV*, but flags if it exceeds their max.
+                 const loanAmountForEval = inputs.askingPrice * inputs.loanLtv; // User's requested loan
+                 const annualDebtServiceForEval = calculateMonthlyPayment(adjustedRate * 100, LOAN_AMORTIZATION_YEARS * 12, loanAmountForEval) * 12;
+                 const year1Noi = inputs.initialNoi * (1 + inputs.rentGrowth); // Re-calc needed? Use stored? Let's use stored for now.
+                 const dscrForEval = annualDebtServiceForEval > 0 ? (year1Noi / annualDebtServiceForEval) : Infinity;
+
+                 let approved = true;
+                 let reasons = [];
+
+                 // Check LTV
+                  if (inputs.loanLtv > lender.maxLTV) {
+                      approved = false;
+                      reasons.push(`Requested LTV (${formatPercent(inputs.loanLtv * 100)}) exceeds Max (${formatPercent(lender.maxLTV * 100)})`);
+                  }
+
+                 // Check DSCR
+                  if (dscrForEval < lender.minDSCR) {
+                      approved = false;
+                      reasons.push(`Projected Y1 DSCR (${formatDecimal(dscrForEval)}) below Minimum (${formatDecimal(lender.minDSCR)})`);
+                      // Optional: Could add a check based on the lender's adjusted rate if they were to fund at their max LTV, but that's more complex.
+                  }
+
+                 if (approved) {
+                     approvedCount++;
+                     reasons.push(`Meets LTV & DSCR requirements.`);
+                      // Could add potential term adjustments here, e.g., "Offered Rate: ${formatPercentRate(adjustedRate*100)}"
+                 }
+
+                 results.push({
+                     lenderName: lender.name,
+                     approved: approved,
+                     feedback: reasons.join('. ') // Combine reasons
+                 });
+             });
+
+             gameState.currentAnalysis.fundingResults = results;
+             const overallFunded = approvedCount >= Math.ceil(LENDERS.length / 2); // Majority approval
+
+             // Update Game State (Reputation, Funded Count)
+             if (overallFunded) {
+                 gameState.dealsFunded++;
+                 gameState.reputation = Math.min(150, gameState.reputation + 5); // Increase reputation, cap at 150
+                 logSimulationResult("Deal FUNDED!", "success");
+             } else {
+                 gameState.reputation = Math.max(0, gameState.reputation - 10); // Decrease reputation
+                 logSimulationResult("Deal NOT Funded.", "warning");
+             }
+
+             console.log("Funding Simulation Results:", results);
+             console.log("Overall Funded:", overallFunded);
+             console.log("New Reputation:", gameState.reputation);
+             console.log("Total Funded:", gameState.dealsFunded);
+
+
+             // Update UI (Funding View)
+             populateFundingView(overallFunded);
+             updateScoreboard(); // Update header scores
+
+             // Check Win/Loss Conditions
+             checkEndConditions();
+             updateStepNavHighlighting(3); // Update nav after funding sim
+        }
+
+        // --- UI Update Functions ---
+
+        function updateScoreboard() {
+             reputationScoreEl.textContent = gameState.reputation;
+             reputationScoreEl.className = 'value'; // Reset class
+             if (gameState.reputation > 100) reputationScoreEl.classList.add('positive');
+             if (gameState.reputation < 75) reputationScoreEl.classList.add('negative');
+
+             dealsFundedCountEl.textContent = `${gameState.dealsFunded} / ${DEALS_TO_WIN}`;
+        }
+
+        function updateStepNavHighlighting(activeStep) {
+            stepNavItem1.classList.toggle('active', activeStep === 1);
+            stepNavItem2.classList.toggle('active', activeStep === 2);
+            stepNavItem3.classList.toggle('active', activeStep === 3);
+        }
+
+         function switchView(viewName) {
+              console.log(`Attempting to switch view to: ${viewName}`); // Log: View switch attempt
+
+              // Deactivate all views first
+              console.log('Deactivating all views...');
+              [marketplaceView, analysisView, fundingView, uploadAnalyzeView].forEach(view => {
+                  if (view) {
+                      view.classList.remove('active');
+                      view.style.display = 'none';
+                  }
+              });
+
+              gameState.currentView = viewName; // Update state
+              let targetViewElement = null;
+
+             if (viewName === 'marketplace') {
+                 targetViewElement = marketplaceView;
+                 updateStepNavHighlighting(1);
+             } else if (viewName === 'upload-analyze') {
+                 targetViewElement = uploadAnalyzeView;
+                 updateStepNavHighlighting(2);
+             } else if (viewName === 'analysis') {
+                  if (gameState.selectedDeal) {
+                      targetViewElement = analysisView;
+                      updateStepNavHighlighting(2);
+                      console.log("[switchView] Calling populateAnalysisView for deal:", gameState.selectedDeal.name);
+                      populateAnalysisView(); // Populate with selected deal data
+                  } else {
+                      console.error("Tried to switch to analysis view without selected deal. Falling back to marketplace.");
+                      switchView('marketplace'); // Fallback to marketplace
+                      return; // Prevent further execution in this call
+                  }
+              } else if (viewName === 'funding') {
+                  if (gameState.selectedDeal && gameState.currentAnalysis.fundingResults.length > 0) {
+                      targetViewElement = fundingView;
+                      updateStepNavHighlighting(3);
+                      populateFundingView(gameState.currentAnalysis.fundingResults.filter(r => r.approved).length >= Math.ceil(LENDERS.length / 2));
+                  } else {
+                       console.error("Tried to switch to funding view without simulation results. Falling back.");
+                       if (gameState.selectedDeal) {
+                           switchView('analysis');
+                       } else {
+                           switchView('marketplace');
+                       }
+                       return; // Prevent further execution in this call
+                  }
+              }
+
+              if (targetViewElement) {
+                   console.log(`Activating view: ${viewName}`); // Log: Activating target
+                   console.log(`Target Element Before: display=${targetViewElement.style.display}, classes=${targetViewElement.className}`);
+                   targetViewElement.classList.add('active');
+                   targetViewElement.style.display = 'flex'; // Use flex as per CSS
+                   console.log(`Target Element After: display=${targetViewElement.style.display}, classes=${targetViewElement.className}`);
+              } else {
+                   console.error(`Target view element not found for view name: ${viewName}`); // Log: Target not found
+              }
+         }
+
+        function populateMarketplace() {
+             marketplaceDealsDrexiContainer.innerHTML = ''; // Clear Drexi deals
+             marketplaceDealsMoopNetContainer.innerHTML = ''; // Clear MoopNet deals
+
+             const drexiDeals = gameState.marketplaceDeals.filter(deal => deal.source === 'Drexi');
+             const moopNetDeals = gameState.marketplaceDeals.filter(deal => deal.source === 'MoopNet');
+
+             if (drexiDeals.length === 0 && moopNetDeals.length === 0) {
+                  // Optionally show a message if both are empty
+                  marketplaceDealsDrexiContainer.innerHTML = '<p style="grid-column: 1 / -1;">No deals available. Try refreshing.</p>';
+                  return;
+              }
+
+             drexiDeals.forEach(deal => {
+                 const card = createDealCard(deal);
+                 marketplaceDealsDrexiContainer.appendChild(card);
+             });
+
+             moopNetDeals.forEach(deal => {
+                  const card = createDealCard(deal);
+                  marketplaceDealsMoopNetContainer.appendChild(card);
+              });
+        }
+
+        // NEW Helper function to create a deal card element
+        function createDealCard(deal) {
+            const card = document.createElement('div');
+            const sourceClass = deal.source ? `source-${deal.source.toLowerCase()}` : '';
+            card.className = `deal-card ${sourceClass}`;
+            const omFilename = generateOmFilename(deal);
+
+            card.innerHTML = `
+               <div class="deal-source">Source: ${deal.source || 'Unknown'}</div>
+               <h3>${deal.name}</h3>
+               <p><span class="label">Type:</span> <span>${deal.type}</span></p>
+               <p><span class="label">Location:</span> <span>${deal.location}</span></p>
+               <p><span class="label">Asking Price:</span> <span>${formatCurrency(deal.price)}</span></p>
+               <p><span class="label">Current NOI:</span> <span>${formatCurrency(deal.noi * 12)} / yr</span></p>
+               <p><span class="label">Current Cap:</span> <span>${formatPercent((deal.noi * 12) / deal.price * 100)}</span></p>
+               <div class="om-indicator" style="margin-top: 0.5rem;">
+                   OM:
+                   <img src="https://cdn-icons-png.flaticon.com/128/337/337946.png" alt="OM Icon" style="height: 1em; width: auto; vertical-align: middle; margin-left: 0.3em; margin-right: 0.3em;">
+                   ${omFilename}
+               </div>
+               <div class="deal-actions" style="margin-top: 1rem; text-align: center;">
+                    <button class="btn-primary btn-analyze-om" data-deal-id="${deal.id}">Analyze on RefiHub</button>
+               </div>
+            `;
+            return card;
+        }
+
+        function populateAnalysisView() {
+            console.log("[populateAnalysisView] Entered. Checking selected deal...");
+            if (!gameState.selectedDeal) {
+                console.error("[populateAnalysisView] No selected deal found!");
+                // Optional: Prevent switch or switch back?
+                return;
+            }
+            const deal = gameState.selectedDeal;
+            console.log(`[populateAnalysisView] Populating info for: ${deal.name}`);
+
+            try {
+                // Populate Info Panel
+                dealNameInfoEl.textContent = deal.name;
+                infoAskingPriceEl.textContent = formatCurrency(deal.price);
+                infoPropertyTypeEl.textContent = deal.type;
+                const annualNoi = deal.noi * 12;
+                infoCurrentNoiEl.textContent = `${formatCurrency(annualNoi)} / yr`;
+                infoCurrentCapEl.textContent = formatPercent(annualNoi / deal.price * 100);
+                infoLocationEl.textContent = deal.location;
+                infoSizeEl.textContent = deal.size || 'N/A'; // Assuming size might be added
+
+                // Reset Sliders to Defaults (or last used for this deal if implemented)
+                rentGrowthSlider.value = 3; rentGrowthValueEl.textContent = formatPercent(3);
+                expenseGrowthSlider.value = 2.5; expenseGrowthValueEl.textContent = formatPercent(2.5);
+                appreciationSlider.value = 3; appreciationValueEl.textContent = formatPercent(3); // NEW Reset
+                exitCapSlider.value = 6.5; exitCapValueEl.textContent = formatPercent(6.5, 2); // More precision for cap
+                loanRateSlider.value = 6.5; loanRateValueEl.textContent = formatPercentRate(6.5);
+                loanLtvSlider.value = 70; loanLtvValueEl.textContent = formatPercent(70, 0);
+                loanAmortizationSlider.value = 30; loanAmortizationValueEl.textContent = '30 Yrs'; // NEW - Reset default
+                console.log("[populateAnalysisView] Info & sliders populated. Calling updateCalculations...");
+
+                // Initial Calculation on load
+                updateCalculations();
+                console.log("[populateAnalysisView] updateCalculations finished successfully.");
+
+            } catch (error) {
+                 console.error("[populateAnalysisView] Error during population or calculation:", error);
+                 // Display error to user in copilot panel maybe?
+                 if(copilotFeedbackEl) copilotFeedbackEl.innerHTML = `<span style="color: var(--accent-red)">Error loading analysis data. Check console.</span>`;
+            }
+            console.log("[populateAnalysisView] Exiting function."); // Log exit regardless of error
+        }
+
+         function populateFundingView(overallFunded) {
+            if (!gameState.selectedDeal || !gameState.currentAnalysis.fundingResults) return;
+
+            fundingDealNameEl.textContent = gameState.selectedDeal.name;
+            lenderResultsContainer.innerHTML = ''; // Clear previous results
+
+             gameState.currentAnalysis.fundingResults.forEach(result => {
+                const card = document.createElement('div');
+                card.className = 'lender-card';
+                const statusClass = result.approved ? 'approved' : 'declined';
+                const statusText = result.approved ? 'APPROVED' : 'DECLINED';
+
+                card.innerHTML = `
+                    <h3>${result.lenderName}</h3>
+                    <div class="lender-status ${statusClass}">${statusText}</div>
+                    <div class="lender-feedback">
+                        <p><span class="reason">${result.feedback}</span></p>
+                    </div>
+                `;
+                lenderResultsContainer.appendChild(card);
+            });
+
+            // Update Summary Message
+            fundingSummaryEl.textContent = overallFunded ? 'Result: Deal Funded!' : 'Result: Deal Not Funded';
+            fundingSummaryEl.className = overallFunded ? 'funded' : 'not-funded'; // Add base class if needed 'funding-summary funded'/'funding-summary not-funded'
+             fundingSummaryEl.classList.add('funding-summary'); // Ensure base class is present
+
+         }
+
+        // --- Event Handlers ---
+        function handleDealSelection(selectedDeal) { // Now accepts the deal object directly
+            console.log("handleDealSelection called with deal:", selectedDeal); // Log: Function entered
+            // No longer need to find the deal based on ID from event
+            gameState.selectedDeal = selectedDeal;
+
+              if (gameState.selectedDeal) {
+                 const processingDuration = 6000; // Total duration: 6 seconds
+                 let progressInterval = null; // To store the interval ID
+                 const omFilename = generateOmFilename(gameState.selectedDeal); // Generate filename first
+
+                 // Get text elements
+                 const uploadAnalyzeTextEl = document.getElementById('upload-analyze-text');
+                 const uploadAnalyzeSubTextEl = document.getElementById('upload-analyze-subtext');
+
+                 // --- Phase 1: Uploading ---
+                 if (uploadAnalyzeTextEl) {
+                     uploadAnalyzeTextEl.textContent = `Uploading File`; // Generic text
+                 }
+                 if (uploadAnalyzeSubTextEl) {
+                     uploadAnalyzeSubTextEl.textContent = omFilename; // Show filename in subtext
+                 }
+
+                 // Switch to the intermediate upload/analyze view FIRST
+                 switchView('upload-analyze');
+                 updateStepNavHighlighting(2); // Highlight step 2 during processing
+
+                 // Ensure progress bar elements exist before manipulating
+                 if (omProgressBarFill && omProgressPercentage) {
+                     // --- Start Progress Bar Logic ---
+                     // Reset progress bar visually
+                     omProgressBarFill.style.transition = 'none';
+                     omProgressBarFill.style.width = '0%';
+                     omProgressPercentage.textContent = '0%';
+                     void omProgressBarFill.offsetWidth; // Force reflow
+
+                     // Calculate phase durations for TEXT changes
+                     const uploadPhaseDuration = 1500; // Text: Uploading (0 - 1.5s)
+                     const omDetectedDuration = 1000; // Text: Detected (1.5s - 2.5s)
+                     const processingPhaseDuration = 1500; // Text: Processing (2.5s - 4s)
+                     // Text: Analyzing (4s - 6s)
+
+                     // --- Start Progress Bar Animation & Percentage Update NOW ---
+                     omProgressBarFill.style.transition = `width ${processingDuration}ms linear`; // Animate over the *full* duration
+                     omProgressBarFill.style.width = '100%';
+
+                     let currentProgress = 0;
+                     const intervalTime = 50;
+                     const totalSteps = processingDuration / intervalTime;
+                     const increment = 100 / totalSteps;
+
+                     progressInterval = setInterval(() => {
+                         currentProgress += increment;
+                         omProgressPercentage.textContent = `${Math.min(100, Math.round(currentProgress))}%`;
+                         if (currentProgress >= 100) {
+                             clearInterval(progressInterval);
+                         }
+                     }, intervalTime);
+                     // --- End Immediate Animation Start ---
+
+                     // --- Schedule Text Changes ---
+                     // Schedule Intermediate Step: OM Detected
+                     setTimeout(() => {
+                         if (uploadAnalyzeTextEl) {
+                             uploadAnalyzeTextEl.textContent = `Offering Memorandum Detected`;
+                         }
+                         if (uploadAnalyzeSubTextEl) {
+                             uploadAnalyzeSubTextEl.innerHTML = `&nbsp; <span style="color: var(--accent-green); font-size: 1.2em;">✅</span>`;
+                         }
+                     }, uploadPhaseDuration); // Change text after Upload phase duration
+
+                     // Schedule Phase 2 Text: Processing
+                     setTimeout(() => {
+                         if (uploadAnalyzeTextEl) {
+                             uploadAnalyzeTextEl.textContent = `Processing...`;
+                         }
+                         if (uploadAnalyzeSubTextEl) {
+                             uploadAnalyzeSubTextEl.textContent = `Extracting key data points...`;
+                         }
+                     }, uploadPhaseDuration + omDetectedDuration); // Change text after Upload + Detected durations
+
+                     // Schedule Phase 3 Text: Analyzing
+                     setTimeout(() => {
+                         if (uploadAnalyzeTextEl) {
+                             uploadAnalyzeTextEl.textContent = `Analyzing...`;
+                         }
+                         if (uploadAnalyzeSubTextEl) {
+                             uploadAnalyzeSubTextEl.textContent = `RefiHub Co-Pilot is generating insights...`;
+                         }
+                     }, uploadPhaseDuration + omDetectedDuration + processingPhaseDuration); // Change text after Upload + Detected + Processing durations
+                     // --- End Scheduled Text Changes ---
+
+                 } else {
+                     console.error("Progress bar elements not found!");
+                 }
+
+                 // Wait for *full* processing duration before switching view to Analysis
+                 setTimeout(() => {
+                     if (progressInterval) {
+                         clearInterval(progressInterval); // Ensure interval is cleared
+                         if (omProgressPercentage) omProgressPercentage.textContent = '100%';
+                     }
+                     switchView('analysis');
+                 }, processingDuration); // Use original total duration for final switch
+
+             } else {
+                  console.error("Selected deal object was null or invalid in handleDealSelection");
+              }
+        }
+
+        function handleSliderInput(event) {
+             const slider = event.target;
+             const outputEl = document.getElementById(slider.id.replace('-slider', '-value'));
+             if (outputEl) {
+                 let value = parseFloat(slider.value);
+                 if (slider.id === 'loan-rate-slider') {
+                     outputEl.textContent = formatPercentRate(value);
+                 } else if (slider.id === 'loan-ltv-slider') {
+                      outputEl.textContent = formatPercent(value, 0); // No decimals for LTV %
+                 } else if (slider.id === 'exit-cap-slider') {
+                     outputEl.textContent = formatPercent(value, 2); // Higher precision
+                 } else if (slider.id === 'loan-amortization-slider') {
+                     outputEl.textContent = `${value} Yrs`; // Special format for years
+                 } else {
+                     outputEl.textContent = formatPercent(value);
+                 }
+             }
+             // Re-run calculations whenever a slider changes
+             updateCalculations();
+         }
+
+        function handleAnalyzeFunding() {
+            console.log("Analyze & Seek Funding button clicked.");
+             // Ensure calculations are up-to-date based on final slider positions
+             updateCalculations();
+             // Run the lender simulation
+             runFundingSimulation();
+             // Switch to the funding view (runFundingSimulation handles this implicitly now by calling populateFundingView)
+             if (gameState.currentAnalysis.fundingResults.length > 0) {
+                switchView('funding');
+             } else {
+                 console.error("Funding simulation did not produce results.");
+                 // Stay on analysis view or show error? Stay for now.
+                  copilotFeedbackEl.innerHTML = `<span style="color: var(--accent-red)">Error running funding simulation. Check console.</span>`;
+             }
+        }
+
+         function handleBackToMarket() {
+             gameState.selectedDeal = null; // Deselect deal
+             gameState.currentAnalysis = { inputs: {}, metrics: {}, projections: {}, fundingResults: [] }; // Clear analysis
+             switchView('marketplace');
+         }
+
+         function handleReviseDeal() {
+              // Just switch back to analysis view, preserving the selected deal and last inputs/results
+              switchView('analysis');
+        }
+
+          function handleNewDeal() {
+              // Go back to marketplace, deselect deal, clear analysis
+              handleBackToMarket();
+              // Optional: Automatically refresh deals?
+              generateMockDeals();
+              populateMarketplace();
+              switchView('marketplace'); // Ensure correct view is shown
+              setupEventListeners(); // Re-attach listeners if needed (though they should persist)
+              gameOverOverlay.style.display = 'none'; // Hide overlay
+            // Ensure marketplace is populated on init, even if generateMockDeals was called internally
+            if (gameState.marketplaceDeals.length > 0 && gameState.currentView === 'marketplace') {
+                populateMarketplace();
+            }
+              console.log("Game Initialized.");
+          }
+
+          function handleRefreshDeals() {
+               console.log("Refresh Deals clicked");
+               generateMockDeals();
+               populateMarketplace();
+          }
+
+          function handleRestartGame() {
+              gameOverOverlay.style.display = 'none';
+              initGame();
+          }
+
+        // --- Game Logic ---
+        function generateMockDeals(countPerSource = 3) { // Changed parameter
+             console.log("Generating mock deals...");
+             gameState.marketplaceDeals = [];
+             const types = ["Retail Center", "Office Building", "Apartment Complex", "Industrial Warehouse", "Mixed-Use"];
+             const locations = ["Downtown Metro", "Suburban Heights", "Airport Corridor", "Tech Park", "Coastal District"];
+             const sources = ["Drexi", "MoopNet"];
+             let dealIdCounter = 1000; // Reset counter each time
+
+             sources.forEach(source => {
+                 for (let i = 0; i < countPerSource; i++) {
+                     const price = Math.floor(Math.random() * 20000000) + 1000000; // $1M - $21M
+                     const capRate = (Math.random() * (0.08 - 0.045) + 0.045); // 4.5% - 8.0%
+                     const noi = price * capRate / 12; // Monthly NOI
+
+                     gameState.marketplaceDeals.push({
+                         id: dealIdCounter++,
+                         name: `${locations[Math.floor(Math.random() * locations.length)]} ${types[Math.floor(Math.random() * types.length)]}`,
+                         type: types[Math.floor(Math.random() * types.length)],
+                         location: locations[Math.floor(Math.random() * locations.length)],
+                         price: price,
+                         noi: noi, // Store monthly NOI
+                         source: source,
+                         size: `${Math.floor(Math.random()*100)+10}k SqFt` // Example size
+                     });
+                 }
+             });
+
+              console.log("Mock deals generated:", gameState.marketplaceDeals);
+              populateMarketplace(); // Update UI immediately
+        }
+
+         function logSimulationResult(message, type = 'info') {
+             // Could expand this to add to a log panel if needed
+             console.log(`SIM LOG [${type.toUpperCase()}]: ${message}`);
+             // Example: Add to a simple log in the header or a dedicated panel
+              // const logEntry = document.createElement('p');
+              // logEntry.textContent = message;
+              // logEntry.className = `log-${type}`;
+              // someLogContainer.prepend(logEntry); // Add to top
+         }
+
+        function checkEndConditions() {
+             let gameOver = false;
+             let win = false;
+
+             if (gameState.reputation < MIN_REPUTATION) {
+                 gameOver = true;
+                 win = false;
+                 gameOverTitle.textContent = "Reputation Lost!";
+                 gameOverTitle.className = 'lose';
+                 gameOverMessage.textContent = `Your Deal Reputation dropped below ${MIN_REPUTATION}. Lenders lost confidence.`;
+                 logSimulationResult("GAME OVER - Reputation too low!", "error");
+             } else if (gameState.dealsFunded >= DEALS_TO_WIN) {
+                 gameOver = true;
+                 win = true;
+                 gameOverTitle.textContent = "Funding Secured!";
+                  gameOverTitle.className = 'win';
+                 gameOverMessage.textContent = `Congratulations! You successfully funded ${DEALS_TO_WIN} deals and built a strong reputation!`;
+                 logSimulationResult("GAME WON - Reached funding goal!", "success");
+             }
+
+             if (gameOver) {
+                 gameOverOverlay.style.display = 'flex';
+                 // Optionally disable buttons in the main game UI
+             }
+         }
+
+
+        // --- Initialization ---
+        function setupEventListeners() {
+             // Input Sliders
+             rentGrowthSlider.addEventListener('input', handleSliderInput);
+             expenseGrowthSlider.addEventListener('input', handleSliderInput);
+             exitCapSlider.addEventListener('input', handleSliderInput);
+             loanRateSlider.addEventListener('input', handleSliderInput);
+             loanLtvSlider.addEventListener('input', handleSliderInput);
+             loanAmortizationSlider.addEventListener('input', handleSliderInput); // NEW
+             appreciationSlider.addEventListener('input', handleSliderInput); // NEW
+
+             // Action Buttons
+             // refreshDealsBtn.removeEventListener('click', handleRefreshDeals); // Remove listener for old button ID
+             // refreshDealsBtn.addEventListener('click', handleRefreshDeals); // REMOVED listener for old ID
+             backToMarketBtn.addEventListener('click', handleBackToMarket);
+             analyzeFundingBtn.addEventListener('click', handleAnalyzeFunding);
+             reviseDealBtn.addEventListener('click', handleReviseDeal);
+             newDealBtn.addEventListener('click', handleNewDeal);
+             restartBtn.addEventListener('click', handleRestartGame);
+
+             // Marketplace Deal Selection (Event delegation on the container)
+             // Use event delegation on the main marketplace view, check which sub-container was clicked if needed
+             const mainMarketplaceContainer = document.getElementById('marketplace-view'); // Target parent
+             if (mainMarketplaceContainer) {
+                  mainMarketplaceContainer.removeEventListener('click', handleAnalyzeButtonClick);
+                  mainMarketplaceContainer.addEventListener('click', handleAnalyzeButtonClick);
+                  console.log("Event listener attached to main marketplaceView container.");
+             } else {
+                  console.error("Marketplace view container not found during event listener setup!"); // Log: Container missing
+             }
+
+            // NEW: Event listener for the new Refresh buttons (using event delegation)
+            if (marketplaceView) {
+                marketplaceView.removeEventListener('click', handleRefreshClick); // Prevent duplicates
+                marketplaceView.addEventListener('click', handleRefreshClick);
+            } else {
+                console.error("Marketplace view not found for refresh button listener setup.");
+            }
+         }
+
+        function initGame() {
+            console.log("Initializing Deal Analyzer Game...");
+            // Reset state
+            gameState = {
+                reputation: INITIAL_REPUTATION,
+                dealsFunded: 0,
+                currentView: 'marketplace',
+                marketplaceDeals: [],
+                selectedDeal: null,
+                 currentAnalysis: { inputs: {}, metrics: {}, projections: { years: [], value: [], noi: [], loanBalance: [], cashFlow: [] }, fundingResults: [] }
+            };
+
+            // Force hide other views initially before switching, as a safeguard
+            if (analysisView) analysisView.style.display = 'none';
+            if (fundingView) fundingView.style.display = 'none';
+            if (uploadAnalyzeView) uploadAnalyzeView.style.display = 'none';
+            // Ensure marketplace IS visible before switchView potentially hides it then shows it again (prevent flicker)
+            if (marketplaceView) marketplaceView.style.display = 'flex'; 
+
+            updateScoreboard();
+             console.log("Calling generateMockDeals...");
+             generateMockDeals(); // Create initial deals
+             console.log("generateMockDeals finished. Calling switchView('marketplace')...");
+             switchView('marketplace'); // Ensure correct view is shown (will manage active class)
+             console.log("switchView('marketplace') finished. Calling setupEventListeners...");
+             setupEventListeners(); // Re-attach listeners if needed (though they should persist)
+             console.log("setupEventListeners finished. Hiding overlay...");
+             gameOverOverlay.style.display = 'none'; // Hide overlay
+             console.log("Game Initialized.");
+        }
+
+        // --- Start Game ---
+        document.addEventListener('DOMContentLoaded', initGame);
+
+        function generateOmFilename(deal) {
+            // Generate a mock street address style filename
+            const streetNumbers = Math.floor(Math.random() * 899) + 100; // 100-999
+            const streetNames = ['main', 'oak', 'pine', 'maple', 'cedar', 'elm', 'wall', 'market', 'park', 'central'];
+            const streetTypes = ['st', 'ave', 'ln', 'dr', 'ct', 'rd'];
+            const randomName = streetNames[Math.floor(Math.random() * streetNames.length)];
+            const randomType = streetTypes[Math.floor(Math.random() * streetTypes.length)];
+
+            return `${streetNumbers}_${randomName}_${randomType}_om.pdf`;
+        }
+
+        function handleAnalyzeButtonClick(event) {
+            console.log("Marketplace container clicked."); // Log: Container click detected
+            const button = event.target.closest('.btn-analyze-om'); // Find the button clicked or its parent button
+            if (!button) {
+                 console.log("Click was not on or inside an analyze button."); // Log: Click not on button
+                 return; // Click wasn't on or inside an analyze button
+            }
+            console.log("Analyze button found:", button); // Log: Button identified
+
+            const dealId = parseInt(button.dataset.dealId);
+            if (isNaN(dealId)) {
+                console.error("Invalid dealId on button:", button); // Log: Invalid ID
+                return;
+            }
+            console.log("Analyze OM button clicked, extracted ID:", dealId); // Log: ID extracted
+
+            // Find the deal in the current marketplace deals
+            const selectedDeal = gameState.marketplaceDeals.find(d => d.id === dealId);
+
+            if (selectedDeal) {
+                console.log("Deal found in gameState:", selectedDeal); // Log: Deal found
+                // Call the original selection logic, passing the found deal object
+                handleDealSelection(selectedDeal);
+            } else {
+                console.error("Selected deal not found in gameState for ID:", dealId); // Log: Deal not found
+            }
+        }
+
+        // NEW Handler for refresh clicks via delegation
+        function handleRefreshClick(event) {
+            if (event.target.matches('.btn-refresh-deals')) {
+                handleRefreshDeals(); // Call the original refresh logic
+            }
+        }
+
+    </script>
+
+</body>
+</html>

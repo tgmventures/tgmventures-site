@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url(https://img1.wsimg.com/gfonts/s/poppins/v22/pxiByp8kv8JHgFVrLDz8Z1JlFc-K.woff2) format('woff2');
+}
+@font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(https://img1.wsimg.com/gfonts/s/poppins/v22/pxiEyp8kv8JHgFVrJJfecg.woff2) format('woff2');
+}
+@font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url(https://img1.wsimg.com/gfonts/s/poppins/v22/pxiByp8kv8JHgFVrLEj6Z1xlFQ.woff2) format('woff2');
+}
+@font-face {
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url(https://img1.wsimg.com/gfonts/s/poppins/v22/pxiByp8kv8JHgFVrLCz7Z1xlFQ.woff2) format('woff2');
+}
+
+/* TGM Ventures Brand Colors and Typography */
+:root {
+  --tgm-black: #000000;
+  --tgm-white: #ffffff;
+  --tgm-gray-light: #888888;
+  --tgm-gray-dark: #666666;
+  --poppins: 'Poppins', sans-serif;
+}
+
+body {
+  font-family: var(--poppins);
+  margin: 0;
+  padding: 0;
+}

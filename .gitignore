@@ -1,24 +1,33 @@
 # Dependencies
 node_modules/
 functions/node_modules/
-package-lock.json
-functions/package-lock.json
 
 # Build outputs
-public/
+.next/
+out/
+build/
 
 # Firebase
 .firebase/
 firebase-debug.log
 firebase-debug.*.log
+functions/lib/
 
 # Environment variables
 .env
 .env.local
 .env.production
+.env.development
 
 # Configuration files with sensitive data
 config.js
+**/config.js
+.env.*
+
+# Next.js
+.next/
+*.tsbuildinfo
+next-env.d.ts
 
 # Operating System
 .DS_Store

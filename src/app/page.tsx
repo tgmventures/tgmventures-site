@@ -5,19 +5,22 @@ import Image from 'next/image'
 
 export default function HomePage() {
   return (
-    <>
+    <div className="min-h-screen relative overflow-hidden">
       {/* Background image with opacity */}
       <div 
-        className="fixed top-0 left-0 w-full h-full opacity-30 -z-10"
+        className="absolute inset-0 z-0"
         style={{
-          backgroundImage: "url('https://github.com/tgmventures/tgmventures-site/blob/main/images/tgm-ventures-image.png?raw=true')",
+          backgroundImage: `url(/images/tgm-warehouse.jpg)`,
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat'
         }}
       />
+      
+      {/* Black overlay */}
+      <div className="absolute inset-0 bg-black opacity-70 z-10" />
 
-      <div className="min-h-screen bg-black text-white font-['Poppins'] flex flex-col justify-between items-center text-center relative">
+      <div className="min-h-screen text-white font-['Poppins'] flex flex-col justify-between items-center text-center relative z-20">
         {/* Main Content */}
         <div className="flex flex-col justify-center items-center flex-1">
           <div style={{ marginBottom: '0' }}>
@@ -59,7 +62,7 @@ export default function HomePage() {
           paddingBottom: '10px'
         }}>
           <Link 
-            href="/auth/signin"
+            href="/login"
             className="inline-block text-white no-underline font-['Poppins'] transition-all duration-300"
             style={{
               background: 'rgba(255, 255, 255, 0.1)',
@@ -182,6 +185,6 @@ export default function HomePage() {
           </p>
         </footer>
       </div>
-    </>
+    </div>
   )
 }

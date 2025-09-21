@@ -6,14 +6,6 @@ export default function PrivacyPolicyPage() {
   return (
     <LegalPageLayout title="Privacy Policy">
       <div>
-        <p style={{
-          fontSize: '14px',
-          color: '#666',
-          marginBottom: '30px',
-          fontFamily: 'Poppins, sans-serif'
-        }}>
-          Effective Date: September 19, 2025 | Last Updated: September 19, 2025
-        </p>
         
         <p style={{
           fontSize: '16px',

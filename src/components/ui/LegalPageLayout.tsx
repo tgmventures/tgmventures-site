@@ -82,8 +82,8 @@ export default function LegalPageLayout({ title, children }: LegalPageLayoutProp
             fontFamily: 'Poppins, sans-serif'
           }}
         >
-          <strong>Effective Date:</strong> September 21, 2024<br />
-          <strong>Last Updated:</strong> September 21, 2024
+          <strong>Effective Date:</strong> September 19, 2025<br />
+          <strong>Last Updated:</strong> September 19, 2025
         </div>
         <div style={{ fontFamily: 'Poppins, sans-serif' }}>
           {children}

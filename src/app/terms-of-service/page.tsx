@@ -6,14 +6,6 @@ export default function TermsOfServicePage() {
   return (
     <LegalPageLayout title="Terms of Service">
       <div>
-        <p style={{
-          fontSize: '14px',
-          color: '#666',
-          marginBottom: '30px',
-          fontFamily: 'Poppins, sans-serif'
-        }}>
-          Effective Date: September 19, 2025 | Last Updated: September 19, 2025
-        </p>
         
         <h2 style={{
           fontSize: '24px',

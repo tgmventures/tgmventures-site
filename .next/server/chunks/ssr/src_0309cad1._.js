@@ -251,7 +251,7 @@ function LegalPageLayout({ title, children }) {
                                 lineNumber: 85,
                                 columnNumber: 11
                             }, this),
-                            " September 21, 2024",
+                            " September 19, 2025",
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
                                 fileName: "[project]/src/components/ui/LegalPageLayout.tsx",
                                 lineNumber: 85,
@@ -264,7 +264,7 @@ function LegalPageLayout({ title, children }) {
                                 lineNumber: 86,
                                 columnNumber: 11
                             }, this),
-                            " September 21, 2024"
+                            " September 19, 2025"
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/components/ui/LegalPageLayout.tsx",
@@ -375,23 +375,22 @@ function ContactPage() {
                 submitStatus === 'success' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     style: {
                         backgroundColor: '#d4edda',
-                        border: '1px solid #c3e6cb',
-                        borderRadius: '8px',
+                        color: '#155724',
                         padding: '15px',
+                        borderRadius: '8px',
+                        border: '1px solid #c3e6cb',
                         marginBottom: '20px',
-                        textAlign: 'center'
+                        display: 'block'
                     },
                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                         style: {
-                            color: '#155724',
                             margin: 0,
-                            fontFamily: 'Poppins, sans-serif',
-                            fontWeight: '500'
+                            fontFamily: 'Poppins, sans-serif'
                         },
-                        children: "✅ Thank you! Your message has been sent successfully. We'll get back to you soon."
+                        children: "Thank you! Your message has been sent successfully."
                     }, void 0, false, {
                         fileName: "[project]/src/app/contact/page.tsx",
-                        lineNumber: 66,
+                        lineNumber: 67,
                         columnNumber: 13
                     }, this)
                 }, void 0, false, {
@@ -402,20 +401,19 @@ function ContactPage() {
                 submitStatus === 'error' && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     style: {
                         backgroundColor: '#f8d7da',
-                        border: '1px solid #f5c6cb',
-                        borderRadius: '8px',
+                        color: '#721c24',
                         padding: '15px',
+                        borderRadius: '8px',
+                        border: '1px solid #f5c6cb',
                         marginBottom: '20px',
-                        textAlign: 'center'
+                        display: 'block'
                     },
                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                         style: {
-                            color: '#721c24',
                             margin: 0,
-                            fontFamily: 'Poppins, sans-serif',
-                            fontWeight: '500'
+                            fontFamily: 'Poppins, sans-serif'
                         },
-                        children: "❌ Sorry, there was an error. Please try again or contact us directly."
+                        children: "There was an error sending your message. Please try again."
                     }, void 0, false, {
                         fileName: "[project]/src/app/contact/page.tsx",
                         lineNumber: 87,
@@ -423,15 +421,14 @@ function ContactPage() {
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/contact/page.tsx",
-                    lineNumber: 79,
+                    lineNumber: 78,
                     columnNumber: 11
                 }, this),
                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                     style: {
                         backgroundColor: '#f8f9fa',
-                        border: '1px solid #ddd',
-                        borderRadius: '12px',
                         padding: '40px',
+                        borderRadius: '12px',
                         boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
                         fontFamily: 'Poppins, sans-serif'
                     },
@@ -447,10 +444,10 @@ function ContactPage() {
                                         htmlFor: "name",
                                         style: {
                                             display: 'block',
-                                            fontSize: '14px',
+                                            marginBottom: '8px',
                                             fontWeight: '600',
                                             color: '#333',
-                                            marginBottom: '8px',
+                                            fontSize: '14px',
                                             fontFamily: 'Poppins, sans-serif'
                                         },
                                         children: [
@@ -462,13 +459,13 @@ function ContactPage() {
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/contact/page.tsx",
-                                                lineNumber: 121,
+                                                lineNumber: 118,
                                                 columnNumber: 27
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/contact/page.tsx",
-                                        lineNumber: 110,
+                                        lineNumber: 107,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -483,11 +480,11 @@ function ContactPage() {
                                             padding: '12px 16px',
                                             border: '2px solid #e1e5e9',
                                             borderRadius: '8px',
-                                            fontSize: '16px',
                                             fontFamily: 'Poppins, sans-serif',
+                                            fontSize: '16px',
                                             transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
-                                            outline: 'none',
-                                            boxSizing: 'border-box'
+                                            boxSizing: 'border-box',
+                                            outline: 'none'
                                         },
                                         onFocus: (e)=>{
                                             e.currentTarget.style.borderColor = '#007bff';
@@ -499,13 +496,13 @@ function ContactPage() {
                                         }
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/contact/page.tsx",
-                                        lineNumber: 123,
+                                        lineNumber: 120,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/contact/page.tsx",
-                                lineNumber: 109,
+                                lineNumber: 106,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -517,10 +514,10 @@ function ContactPage() {
                                         htmlFor: "email",
                                         style: {
                                             display: 'block',
-                                            fontSize: '14px',
+                                            marginBottom: '8px',
                                             fontWeight: '600',
                                             color: '#333',
-                                            marginBottom: '8px',
+                                            fontSize: '14px',
                                             fontFamily: 'Poppins, sans-serif'
                                         },
                                         children: [
@@ -532,13 +529,13 @@ function ContactPage() {
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/contact/page.tsx",
-                                                lineNumber: 165,
+                                                lineNumber: 162,
                                                 columnNumber: 31
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/contact/page.tsx",
-                                        lineNumber: 154,
+                                        lineNumber: 151,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -553,11 +550,11 @@ function ContactPage() {
                                             padding: '12px 16px',
                                             border: '2px solid #e1e5e9',
                                             borderRadius: '8px',
-                                            fontSize: '16px',
                                             fontFamily: 'Poppins, sans-serif',
+                                            fontSize: '16px',
                                             transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
-                                            outline: 'none',
-                                            boxSizing: 'border-box'
+                                            boxSizing: 'border-box',
+                                            outline: 'none'
                                         },
                                         onFocus: (e)=>{
                                             e.currentTarget.style.borderColor = '#007bff';
@@ -569,13 +566,13 @@ function ContactPage() {
                                         }
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/contact/page.tsx",
-                                        lineNumber: 167,
+                                        lineNumber: 164,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/contact/page.tsx",
-                                lineNumber: 153,
+                                lineNumber: 150,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -587,16 +584,16 @@ function ContactPage() {
                                         htmlFor: "phone",
                                         style: {
                                             display: 'block',
-                                            fontSize: '14px',
+                                            marginBottom: '8px',
                                             fontWeight: '600',
                                             color: '#333',
-                                            marginBottom: '8px',
+                                            fontSize: '14px',
                                             fontFamily: 'Poppins, sans-serif'
                                         },
                                         children: "Phone Number"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/contact/page.tsx",
-                                        lineNumber: 198,
+                                        lineNumber: 195,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -610,11 +607,11 @@ function ContactPage() {
                                             padding: '12px 16px',
                                             border: '2px solid #e1e5e9',
                                             borderRadius: '8px',
-                                            fontSize: '16px',
                                             fontFamily: 'Poppins, sans-serif',
+                                            fontSize: '16px',
                                             transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
-                                            outline: 'none',
-                                            boxSizing: 'border-box'
+                                            boxSizing: 'border-box',
+                                            outline: 'none'
                                         },
                                         onFocus: (e)=>{
                                             e.currentTarget.style.borderColor = '#007bff';
@@ -626,13 +623,13 @@ function ContactPage() {
                                         }
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/contact/page.tsx",
-                                        lineNumber: 211,
+                                        lineNumber: 208,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/contact/page.tsx",
-                                lineNumber: 197,
+                                lineNumber: 194,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -644,10 +641,10 @@ function ContactPage() {
                                         htmlFor: "contactReason",
                                         style: {
                                             display: 'block',
-                                            fontSize: '14px',
+                                            marginBottom: '8px',
                                             fontWeight: '600',
                                             color: '#333',
-                                            marginBottom: '8px',
+                                            fontSize: '14px',
                                             fontFamily: 'Poppins, sans-serif'
                                         },
                                         children: [
@@ -659,13 +656,13 @@ function ContactPage() {
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/contact/page.tsx",
-                                                lineNumber: 252,
+                                                lineNumber: 249,
                                                 columnNumber: 32
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/contact/page.tsx",
-                                        lineNumber: 241,
+                                        lineNumber: 238,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -679,13 +676,13 @@ function ContactPage() {
                                             padding: '12px 16px',
                                             border: '2px solid #e1e5e9',
                                             borderRadius: '8px',
-                                            fontSize: '16px',
                                             fontFamily: 'Poppins, sans-serif',
+                                            fontSize: '16px',
                                             transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
-                                            outline: 'none',
+                                            boxSizing: 'border-box',
                                             backgroundColor: 'white',
                                             cursor: 'pointer',
-                                            boxSizing: 'border-box'
+                                            outline: 'none'
                                         },
                                         onFocus: (e)=>{
                                             e.currentTarget.style.borderColor = '#007bff';
@@ -701,7 +698,7 @@ function ContactPage() {
                                                 children: "Please select..."
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/contact/page.tsx",
-                                                lineNumber: 282,
+                                                lineNumber: 279,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -709,7 +706,7 @@ function ContactPage() {
                                                 children: "General Inquiry"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/contact/page.tsx",
-                                                lineNumber: 283,
+                                                lineNumber: 280,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -717,7 +714,7 @@ function ContactPage() {
                                                 children: "Property Management Inquiry"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/contact/page.tsx",
-                                                lineNumber: 284,
+                                                lineNumber: 281,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -725,7 +722,7 @@ function ContactPage() {
                                                 children: "Business Management Services"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/contact/page.tsx",
-                                                lineNumber: 285,
+                                                lineNumber: 282,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -733,7 +730,7 @@ function ContactPage() {
                                                 children: "Investment Opportunity"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/contact/page.tsx",
-                                                lineNumber: 286,
+                                                lineNumber: 283,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -741,19 +738,19 @@ function ContactPage() {
                                                 children: "Media & Press"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/contact/page.tsx",
-                                                lineNumber: 287,
+                                                lineNumber: 284,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/contact/page.tsx",
-                                        lineNumber: 254,
+                                        lineNumber: 251,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/contact/page.tsx",
-                                lineNumber: 240,
+                                lineNumber: 237,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -765,16 +762,16 @@ function ContactPage() {
                                         htmlFor: "company",
                                         style: {
                                             display: 'block',
-                                            fontSize: '14px',
+                                            marginBottom: '8px',
                                             fontWeight: '600',
                                             color: '#333',
-                                            marginBottom: '8px',
+                                            fontSize: '14px',
                                             fontFamily: 'Poppins, sans-serif'
                                         },
                                         children: "Company/Organization"
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/contact/page.tsx",
-                                        lineNumber: 293,
+                                        lineNumber: 290,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -788,11 +785,11 @@ function ContactPage() {
                                             padding: '12px 16px',
                                             border: '2px solid #e1e5e9',
                                             borderRadius: '8px',
-                                            fontSize: '16px',
                                             fontFamily: 'Poppins, sans-serif',
+                                            fontSize: '16px',
                                             transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
-                                            outline: 'none',
-                                            boxSizing: 'border-box'
+                                            boxSizing: 'border-box',
+                                            outline: 'none'
                                         },
                                         onFocus: (e)=>{
                                             e.currentTarget.style.borderColor = '#007bff';
@@ -804,13 +801,13 @@ function ContactPage() {
                                         }
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/contact/page.tsx",
-                                        lineNumber: 306,
+                                        lineNumber: 303,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/contact/page.tsx",
-                                lineNumber: 292,
+                                lineNumber: 289,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -822,10 +819,10 @@ function ContactPage() {
                                         htmlFor: "message",
                                         style: {
                                             display: 'block',
-                                            fontSize: '14px',
+                                            marginBottom: '8px',
                                             fontWeight: '600',
                                             color: '#333',
-                                            marginBottom: '8px',
+                                            fontSize: '14px',
                                             fontFamily: 'Poppins, sans-serif'
                                         },
                                         children: [
@@ -837,13 +834,13 @@ function ContactPage() {
                                                 children: "*"
                                             }, void 0, false, {
                                                 fileName: "[project]/src/app/contact/page.tsx",
-                                                lineNumber: 347,
+                                                lineNumber: 344,
                                                 columnNumber: 25
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/src/app/contact/page.tsx",
-                                        lineNumber: 336,
+                                        lineNumber: 333,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -852,20 +849,19 @@ function ContactPage() {
                                         value: formData.message,
                                         onChange: handleChange,
                                         required: true,
-                                        rows: 6,
                                         placeholder: "Please provide details about your inquiry...",
                                         style: {
                                             width: '100%',
                                             padding: '12px 16px',
                                             border: '2px solid #e1e5e9',
                                             borderRadius: '8px',
-                                            fontSize: '16px',
                                             fontFamily: 'Poppins, sans-serif',
+                                            fontSize: '16px',
                                             transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
-                                            outline: 'none',
-                                            resize: 'vertical',
+                                            boxSizing: 'border-box',
                                             minHeight: '120px',
-                                            boxSizing: 'border-box'
+                                            resize: 'vertical',
+                                            outline: 'none'
                                         },
                                         onFocus: (e)=>{
                                             e.currentTarget.style.borderColor = '#007bff';
@@ -877,89 +873,98 @@ function ContactPage() {
                                         }
                                     }, void 0, false, {
                                         fileName: "[project]/src/app/contact/page.tsx",
-                                        lineNumber: 349,
+                                        lineNumber: 346,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/src/app/contact/page.tsx",
-                                lineNumber: 335,
+                                lineNumber: 332,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 style: {
                                     margin: '25px 0',
-                                    textAlign: 'center',
-                                    fontSize: '12px',
-                                    color: '#666',
-                                    fontFamily: 'Poppins, sans-serif'
+                                    textAlign: 'center'
                                 },
-                                children: [
-                                    "This site is protected by reCAPTCHA Enterprise and the Google",
-                                    ' ',
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
-                                        href: "https://policies.google.com/privacy",
-                                        target: "_blank",
-                                        style: {
-                                            color: '#0066cc',
-                                            textDecoration: 'none',
-                                            fontFamily: 'Poppins, sans-serif'
-                                        },
-                                        children: "Privacy Policy"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/contact/page.tsx",
-                                        lineNumber: 390,
-                                        columnNumber: 15
-                                    }, this),
-                                    " and",
-                                    ' ',
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
-                                        href: "https://policies.google.com/terms",
-                                        target: "_blank",
-                                        style: {
-                                            color: '#0066cc',
-                                            textDecoration: 'none',
-                                            fontFamily: 'Poppins, sans-serif'
-                                        },
-                                        children: "Terms of Service"
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/contact/page.tsx",
-                                        lineNumber: 401,
-                                        columnNumber: 15
-                                    }, this),
-                                    " apply."
-                                ]
-                            }, void 0, true, {
+                                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                    style: {
+                                        fontSize: '12px',
+                                        color: '#666',
+                                        textAlign: 'center',
+                                        fontFamily: 'Poppins, sans-serif'
+                                    },
+                                    children: [
+                                        "This site is protected by reCAPTCHA Enterprise and the Google",
+                                        ' ',
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
+                                            href: "https://policies.google.com/privacy",
+                                            target: "_blank",
+                                            style: {
+                                                color: '#0066cc',
+                                                textDecoration: 'none',
+                                                fontFamily: 'Poppins, sans-serif'
+                                            },
+                                            children: "Privacy Policy"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/contact/page.tsx",
+                                            lineNumber: 389,
+                                            columnNumber: 17
+                                        }, this),
+                                        " and",
+                                        ' ',
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
+                                            href: "https://policies.google.com/terms",
+                                            target: "_blank",
+                                            style: {
+                                                color: '#0066cc',
+                                                textDecoration: 'none',
+                                                fontFamily: 'Poppins, sans-serif'
+                                            },
+                                            children: "Terms of Service"
+                                        }, void 0, false, {
+                                            fileName: "[project]/src/app/contact/page.tsx",
+                                            lineNumber: 400,
+                                            columnNumber: 17
+                                        }, this),
+                                        " apply."
+                                    ]
+                                }, void 0, true, {
+                                    fileName: "[project]/src/app/contact/page.tsx",
+                                    lineNumber: 382,
+                                    columnNumber: 15
+                                }, this)
+                            }, void 0, false, {
                                 fileName: "[project]/src/app/contact/page.tsx",
-                                lineNumber: 382,
+                                lineNumber: 378,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                 type: "submit",
                                 disabled: isSubmitting,
                                 style: {
-                                    width: '100%',
-                                    backgroundColor: isSubmitting ? '#6c757d' : '#28a745',
+                                    backgroundColor: isSubmitting ? '#6c757d' : '#007bff',
                                     color: 'white',
-                                    padding: '15px 20px',
                                     border: 'none',
+                                    padding: '15px 40px',
                                     borderRadius: '8px',
-                                    fontSize: '18px',
-                                    fontWeight: '600',
                                     fontFamily: 'Poppins, sans-serif',
+                                    fontSize: '16px',
+                                    fontWeight: '600',
                                     cursor: isSubmitting ? 'not-allowed' : 'pointer',
                                     transition: 'background-color 0.3s ease, transform 0.2s ease',
+                                    width: '100%',
                                     outline: 'none'
                                 },
                                 onMouseEnter: (e)=>{
                                     if (!isSubmitting) {
-                                        e.currentTarget.style.backgroundColor = '#218838';
+                                        e.currentTarget.style.backgroundColor = '#0056b3';
                                         e.currentTarget.style.transform = 'translateY(-2px)';
                                     }
                                 },
                                 onMouseLeave: (e)=>{
                                     if (!isSubmitting) {
-                                        e.currentTarget.style.backgroundColor = '#28a745';
+                                        e.currentTarget.style.backgroundColor = '#007bff';
                                         e.currentTarget.style.transform = 'translateY(0)';
                                     }
                                 },
@@ -972,12 +977,12 @@ function ContactPage() {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/src/app/contact/page.tsx",
-                        lineNumber: 107,
+                        lineNumber: 104,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/src/app/contact/page.tsx",
-                    lineNumber: 99,
+                    lineNumber: 97,
                     columnNumber: 9
                 }, this)
             ]

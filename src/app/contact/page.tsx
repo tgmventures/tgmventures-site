@@ -1,7 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import LegalPageLayout from '@/components/ui/LegalPageLayout'
+import Link from 'next/link'
+import Image from 'next/image'
+import Footer from '@/components/ui/Footer'
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -21,8 +23,19 @@ export default function ContactPage() {
     setSubmitStatus('idle')
 
     try {
-      // Simulate form submission for now
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to submit form')
+      }
+
       setSubmitStatus('success')
       setFormData({ name: '', email: '', phone: '', contactReason: '', company: '', message: '' })
     } catch (error) {
@@ -41,7 +54,70 @@ export default function ContactPage() {
   }
 
   return (
-    <LegalPageLayout title="Contact Us">
+    <div 
+      className="min-h-screen flex flex-col"
+      style={{
+        margin: 0,
+        padding: 0,
+        backgroundColor: 'white',
+        color: '#333',
+        fontFamily: 'Poppins, sans-serif',
+        lineHeight: 1.6,
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column'
+      }}
+    >
+      {/* Header - Black background with logo */}
+      <header 
+        style={{
+          backgroundColor: 'black',
+          padding: '20px 0',
+          textAlign: 'center'
+        }}
+      >
+        <Link 
+          href="/" 
+          style={{ display: 'inline-block' }}
+        >
+          <Image
+            src="https://github.com/tgmventures/tgmventures-site/blob/main/images/tgm-logo-icon.png?raw=true"
+            alt="TGM Logo"
+            width={60}
+            height={60}
+            style={{
+              height: '60px',
+              width: 'auto',
+              transition: 'opacity 0.3s ease'
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.8' }}
+            onMouseLeave={(e) => { e.currentTarget.style.opacity = '1' }}
+          />
+        </Link>
+      </header>
+
+      {/* Main Content */}
+      <div 
+        style={{
+          maxWidth: '600px',
+          width: '100%',
+          margin: '0 auto',
+          padding: '40px 20px',
+          flex: 1
+        }}
+      >
+        <h1 
+          style={{
+            fontSize: '36px',
+            fontWeight: '700',
+            marginBottom: '10px',
+            color: '#111',
+            fontFamily: 'Poppins, sans-serif',
+            textAlign: 'center'
+          }}
+        >
+          Contact Us
+        </h1>
       <div>
         <p style={{
           fontSize: '18px',
@@ -447,6 +523,9 @@ export default function ContactPage() {
           </form>
         </div>
       </div>
-    </LegalPageLayout>
+      </div>
+
+      <Footer />
+    </div>
   )
 }

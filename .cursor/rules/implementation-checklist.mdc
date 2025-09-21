@@ -7,10 +7,17 @@ alwaysApply: true
 
 # 📋 IMPLEMENTATION CHECKLIST RULE
 
-## 🚨 CRITICAL REQUIREMENT
-**ALWAYS** check the implementation checklist before starting any work:
+## 🚨 CRITICAL REQUIREMENTS
 
+### **ALWAYS** check the implementation checklist before starting any work:
 **File Location**: `planning/IMPLEMENTATION-CHECKLIST.md`
+
+### **NEVER** check a box without thorough testing:
+1. **IMPLEMENT** → **TEST** → **VERIFY** → **DOCUMENT** → **CHECK BOX**
+2. **Multiple test cases** required for each feature
+3. **User-level testing** (not just technical testing)
+4. **Edge case verification** (error handling, mobile, etc.)
+5. **Performance testing** (load times, responsiveness)
 
 ## 🔄 MANDATORY WORKFLOW
 
@@ -25,21 +32,36 @@ alwaysApply: true
 3. **ADD** any new tasks discovered during implementation
 
 ### **After Completing Work:**
-1. **VERIFY** all completed items actually work
-2. **TEST** functionality thoroughly
-3. **UPDATE** checklist with final status
-4. **COMMIT** checklist changes to git
+1. **TEST** the implementation thoroughly (multiple test cases)
+2. **VERIFY** functionality works as expected (user testing)
+3. **DOCUMENT** test results and any edge cases discovered
+4. **ONLY THEN** check the box with test verification notes
+5. **COMMIT** checklist changes to git with test confirmation
 
 ## ✅ CHECKLIST UPDATE FORMAT
 
+**NEVER check a box without completing ALL verification steps:**
+
+### **Before Checking Any Box:**
+1. **IMPLEMENT** the feature completely
+2. **TEST** the functionality thoroughly  
+3. **VERIFY** it works as expected
+4. **DOCUMENT** any issues or notes
+5. **ONLY THEN** check the box `[x]`
+
 **When marking items complete:**
 ```markdown
-- [x] **Task Name**: Brief description of what was completed
+- [x] **Task Name**: TESTED and verified working - [brief description of what was completed and how it was tested]
 ```
 
 **When adding new tasks:**
 ```markdown
 - [ ] **New Task**: Description of what needs to be done
+```
+
+**Example of proper completion:**
+```markdown
+- [x] **Contact Form**: TESTED and verified working - Form submits successfully, reCAPTCHA validates, emails arrive at management@tgmventures.com with proper formatting
 ```
 
 ## 🎯 CURRENT FOCUS AREAS

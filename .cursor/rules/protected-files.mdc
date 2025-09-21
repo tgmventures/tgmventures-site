@@ -1,0 +1,35 @@
+---
+description: Protected files that require explicit user permission before modification
+globs:
+- "index.html"
+- "privacy-policy.html" 
+- "terms-of-service.html"
+- "style.css"
+- "projects/refihub/**/*"
+- "projects/legacy-games/**/*"
+alwaysApply: true
+---
+
+# 🔒 PROTECTED FILES - DO NOT MODIFY WITHOUT PERMISSION
+
+## Core Pages (Require Explicit User Approval)
+These files maintain the intentionally simple, professional aesthetic:
+
+- `index.html` - Homepage with black background and warehouse image
+- `privacy-policy.html` - Legal compliance document  
+- `terms-of-service.html` - Legal compliance document
+- `style.css` - Core homepage styling
+
+## Legacy Projects (Completely Hands-Off)
+These are grandfathered legacy projects that must never be touched:
+
+- `projects/refihub/` - Complete RefiHub project directory
+- `projects/legacy-games/` - Legacy HTML game files
+
+## ⚠️ CRITICAL RULE
+Before modifying ANY of these files:
+1. Ask user for explicit permission
+2. Explain what changes you want to make
+3. Wait for approval before proceeding
+
+**Violation of this rule could break the professional website or destroy legacy projects.**

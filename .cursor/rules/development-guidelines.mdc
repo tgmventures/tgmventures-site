@@ -1,0 +1,51 @@
+---
+description: Development guidelines and design principles for TGM Ventures website
+globs:
+- "src/**/*"
+- "public/**/*"
+- "functions/**/*"
+- "*.js"
+- "*.json"
+- "*.md"
+alwaysApply: true
+---
+
+# 🛠️ TGM VENTURES DEVELOPMENT GUIDELINES
+
+## Design Principles
+- **Maintain professional, minimal aesthetic**
+- **Preserve Poppins font family** across all pages
+- **Keep consistent black/white color scheme**
+- **Ensure mobile responsiveness** for all components
+- **Prioritize simplicity and elegance**
+
+## Allowed Development Actions ✅
+- Create new web app structure and framework
+- Add dynamic functionality (contact forms, etc.)
+- Reorganize file structure for better maintainability
+- Add modern tooling and build processes
+- Create new pages that don't conflict with existing ones
+- Improve scalability and maintainability
+
+## Prohibited Actions ❌
+- Modifying visual design of core pages without explicit permission
+- Changing content of legal documents
+- Altering user experience of existing pages
+- Adding complexity to the intentionally simple homepage
+- Touching any files in `projects/` directory
+
+## Contact Form Requirements
+- Multiple contact reason dropdown options
+- Professional CAPTCHA integration (reCAPTCHA v2)
+- Email backend with no direct email exposure
+- Professional styling matching site aesthetic
+- Full mobile responsiveness
+
+## Workflow Requirements
+1. **Always check README.md** for current project rules
+2. **Verify protected files** before making any changes
+3. **Test all changes thoroughly** before deployment
+4. **Maintain visual consistency** with existing brand
+5. **Document new functionality** in appropriate files
+
+**Remember**: This represents TGM Ventures' professional digital presence. Every change should enhance, not compromise, the established brand identity.

@@ -1,0 +1,25 @@
+{
+  "name": "tgmventures-site",
+  "version": "2.0.0",
+  "description": "TGM Ventures professional management company website",
+  "main": "public/index.html",
+  "scripts": {
+    "dev": "python -m http.server 8000 --directory public",
+    "build": "node build.js",
+    "start": "npm run build && npm run dev",
+    "deploy": "npm run build && firebase deploy",
+    "serve": "firebase serve"
+  },
+  "keywords": [
+    "tgm-ventures",
+    "management-company",
+    "real-estate",
+    "business-management"
+  ],
+  "author": "TGM Ventures, Inc.",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@sendgrid/mail": "^8.1.6"
+  }
+}

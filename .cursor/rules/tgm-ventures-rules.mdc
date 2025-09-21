@@ -1,0 +1,71 @@
+---
+description: TGM Ventures Website Development Rules - Core preservation and development guidelines
+globs:
+- "**/*"
+alwaysApply: true
+---
+
+# TGM Ventures Website - AI Development Rules
+
+## 🚨 CRITICAL - READ README FIRST
+- ALWAYS read and follow the README.md file before making any changes
+- The README contains essential preservation rules and project guidelines
+
+## PROTECTED FILES - DO NOT MODIFY
+
+### Core Pages (Require Explicit Permission)
+- `index.html` - Homepage (simple black design with warehouse background)
+- `privacy-policy.html` - Legal document 
+- `terms-of-service.html` - Legal document
+- `style.css` - Core homepage styling
+
+**Rule**: These files maintain the simple, professional aesthetic. Changes require user approval.
+
+### Legacy Projects (Completely Protected)
+- `/refihub/` directory and all contents
+- `refihub-deal-analyzer.html` 
+- `refihub-game.html`
+- `refihub-loan-request.html`
+- `stock-game.html`
+
+**Rule**: These are grandfathered legacy projects. Never modify, move, or delete.
+
+## DEVELOPMENT GUIDELINES
+
+### ✅ Allowed Actions:
+- Create new web app structure and framework
+- Add dynamic functionality (contact forms, etc.)
+- Reorganize file structure (moving legacy to `/projects/`)
+- Add modern tooling and build processes
+- Create new pages that don't conflict with existing ones
+- Improve scalability and maintainability
+
+### ❌ Prohibited Actions:
+- Modifying visual design of core pages without permission
+- Changing content of legal documents
+- Altering user experience of existing pages  
+- Touching any legacy project files
+- Adding complexity to the intentionally simple homepage
+
+## DESIGN PRINCIPLES
+- Maintain professional, minimal aesthetic
+- Preserve Poppins font family
+- Keep consistent black/white color scheme
+- Ensure mobile responsiveness
+- Prioritize simplicity and elegance
+
+## WORKFLOW REQUIREMENTS
+1. Check README.md for current project rules
+2. Verify which files are protected before editing
+3. Test all changes thoroughly
+4. Maintain visual consistency with existing brand
+5. Document any new functionality added
+
+## CONTACT FORM SPECIFICATIONS
+- Multiple contact reason dropdown options
+- CAPTCHA integration for spam protection
+- Email backend (no direct email exposure)
+- Professional styling matching site aesthetic
+- Full mobile responsiveness
+
+Remember: This represents TGM Ventures' professional digital presence. Maintain the established simple, elegant brand identity.

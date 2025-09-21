@@ -17,6 +17,9 @@ firebase-debug.*.log
 .env.local
 .env.production
 
+# Configuration files with sensitive data
+config.js
+
 # Operating System
 .DS_Store
 Thumbs.db

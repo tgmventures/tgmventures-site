@@ -72,6 +72,23 @@ class TGMAuth {
             const user = result.user;
             
             console.log('Google sign-in successful:', user.email);
+            
+            // Immediate client-side domain check
+            if (!user.email.endsWith('@tgmventures.com')) {
+                console.error('SECURITY: Unauthorized domain detected:', user.email);
+                
+                // Sign out immediately
+                await this.auth.signOut();
+                
+                // Show clear error message
+                this.showError('Access denied. This dashboard is restricted to @tgmventures.com email addresses only. Please sign in with your TGM Ventures Google account.');
+                
+                // Log security incident
+                console.error('SECURITY INCIDENT: Attempted access with unauthorized domain:', user.email);
+                
+                throw new Error('Unauthorized domain');
+            }
+            
             return user;
             
         } catch (error) {
@@ -82,6 +99,8 @@ class TGMAuth {
                 this.showError('Sign-in cancelled. Please try again.');
             } else if (error.code === 'auth/popup-blocked') {
                 this.showError('Pop-up blocked. Please allow pop-ups for this site and try again.');
+            } else if (error.message === 'Unauthorized domain') {
+                // Already handled above, don't show additional error
             } else {
                 this.showError(`Sign-in failed: ${error.message}`);
             }

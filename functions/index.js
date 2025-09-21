@@ -242,3 +242,54 @@ exports.healthCheck = functions.https.onRequest((req, res) => {
   res.status(200).json({status: 'OK', timestamp: new Date().toISOString()});
 });
 
+// Firebase Auth trigger to validate and clean up unauthorized users
+exports.validateUserDomain = functions.auth.user().onCreate((user) => {
+  console.log('=== FIREBASE AUTH VALIDATION ===');
+  console.log('New user created:', user.email);
+  console.log('User domain:', user.email ? user.email.split('@')[1] : 'no email');
+  
+  // Check if user email is from authorized domain
+  if (!user.email || !user.email.endsWith('@tgmventures.com')) {
+    console.log('UNAUTHORIZED: Deleting user with invalid domain:', user.email);
+    
+    // Delete the user account immediately
+    return admin.auth().deleteUser(user.uid)
+      .then(() => {
+        console.log('Successfully deleted unauthorized user:', user.email);
+        
+        // Log the security incident
+        return admin.firestore().collection('securityLogs').add({
+          type: 'unauthorized_access_attempt',
+          email: user.email,
+          uid: user.uid,
+          timestamp: admin.firestore.FieldValue.serverTimestamp(),
+          action: 'user_deleted'
+        });
+      })
+      .catch((error) => {
+        console.error('Error deleting unauthorized user:', error);
+        throw error;
+      });
+  }
+  
+  console.log('AUTHORIZED: User domain validated:', user.email);
+  
+  // Set custom claims for authorized users
+  return admin.auth().setCustomUserClaims(user.uid, {
+    domain: 'tgmventures.com',
+    role: 'team_member',
+    authorized: true
+  }).then(() => {
+    console.log('Custom claims set for authorized user:', user.email);
+    
+    // Log the successful authorization
+    return admin.firestore().collection('securityLogs').add({
+      type: 'authorized_user_created',
+      email: user.email,
+      uid: user.uid,
+      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+      action: 'user_authorized'
+    });
+  });
+});
+

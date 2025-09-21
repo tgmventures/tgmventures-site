@@ -1,0 +1,84 @@
+# 🔐 CRITICAL SECURITY RULES FOR AI DEVELOPMENT
+
+## 🚨 NEVER COMMIT SENSITIVE DATA
+**BEFORE WRITING ANY CODE, CHECK FOR:**
+- API keys (AIza*, sk_*, pk_*, etc.)
+- Tokens, passwords, secrets
+- Database credentials
+- Private keys or certificates
+- Email addresses or personal data
+- Internal URLs or server details
+
+## 🛡️ SECURITY REQUIREMENTS
+
+### **MANDATORY CHECKS BEFORE EVERY CODE CHANGE:**
+1. **SCAN**: Search for hardcoded credentials: `grep -r "AIza\|sk_\|pk_\|secret\|password\|token" .`
+2. **VERIFY**: All sensitive data uses config.js (gitignored)
+3. **CONFIRM**: .gitignore includes config.js and .env files
+4. **TEST**: Application works with configuration system
+
+### **CONFIGURATION SYSTEM RULES:**
+- **NEVER** hardcode API keys in any file
+- **ALWAYS** use config.js for client-side secrets
+- **ALWAYS** use environment variables for server-side secrets
+- **ALWAYS** provide config.example.js as template
+- **ALWAYS** ensure config.js is in .gitignore
+
+### **CODE PATTERNS TO AVOID:**
+```javascript
+// ❌ NEVER DO THIS
+const apiKey = "AIzaSyAffXsVM8HjEVlDc8kX9Wzkv9muD_zFWGA";
+const secret = "sk_test_123456789";
+```
+
+### **SECURE CODE PATTERNS:**
+```javascript
+// ✅ ALWAYS DO THIS
+const apiKey = window.TGMConfig.firebase.apiKey;
+const secret = process.env.SECRET_KEY;
+```
+
+## 🔍 SECURITY VALIDATION
+
+### **BEFORE SUBMITTING ANY CHANGES:**
+1. Run security scan: `grep -r "AIza\|sk_\|pk_" . --exclude-dir=node_modules`
+2. Check .gitignore covers sensitive files
+3. Verify config system is working
+4. Test with example configuration
+
+### **IF SECURITY ISSUE FOUND:**
+1. **STOP** all other work immediately
+2. **REMOVE** exposed credentials from code
+3. **REVOKE** compromised keys/tokens
+4. **UPDATE** security systems
+5. **DOCUMENT** incident and prevention
+
+## 📋 PROTECTED FILES
+
+### **NEVER MODIFY WITHOUT PERMISSION:**
+- index.html (homepage design)
+- privacy-policy.html (legal document)
+- terms-of-service.html (legal document)
+- style.css (core styling)
+- /projects/ directory (legacy projects)
+
+## 🛠️ DEVELOPMENT WORKFLOW
+
+### **REQUIRED STEPS:**
+1. **READ** README.md and SECURITY.md first
+2. **CHECK** implementation checklist
+3. **SCAN** for security issues
+4. **IMPLEMENT** with secure patterns
+5. **TEST** thoroughly
+6. **DOCUMENT** changes
+
+### **SECURITY-FIRST MINDSET:**
+- Assume all code will be public
+- Never log sensitive information
+- Use least privilege principle
+- Implement defense in depth
+- Regular security audits
+
+---
+
+**REMEMBER**: One exposed secret can compromise the entire system. Always prioritize security over convenience.

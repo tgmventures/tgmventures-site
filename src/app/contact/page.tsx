@@ -57,19 +57,18 @@ export default function ContactPage() {
         {submitStatus === 'success' && (
           <div style={{
             backgroundColor: '#d4edda',
-            border: '1px solid #c3e6cb',
-            borderRadius: '8px',
+            color: '#155724',
             padding: '15px',
+            borderRadius: '8px',
+            border: '1px solid #c3e6cb',
             marginBottom: '20px',
-            textAlign: 'center'
+            display: 'block'
           }}>
             <p style={{
-              color: '#155724',
               margin: 0,
-              fontFamily: 'Poppins, sans-serif',
-              fontWeight: '500'
+              fontFamily: 'Poppins, sans-serif'
             }}>
-              ✅ Thank you! Your message has been sent successfully. We&apos;ll get back to you soon.
+              Thank you! Your message has been sent successfully.
             </p>
           </div>
         )}
@@ -78,19 +77,18 @@ export default function ContactPage() {
         {submitStatus === 'error' && (
           <div style={{
             backgroundColor: '#f8d7da',
-            border: '1px solid #f5c6cb',
-            borderRadius: '8px',
+            color: '#721c24',
             padding: '15px',
+            borderRadius: '8px',
+            border: '1px solid #f5c6cb',
             marginBottom: '20px',
-            textAlign: 'center'
+            display: 'block'
           }}>
             <p style={{
-              color: '#721c24',
               margin: 0,
-              fontFamily: 'Poppins, sans-serif',
-              fontWeight: '500'
+              fontFamily: 'Poppins, sans-serif'
             }}>
-              ❌ Sorry, there was an error. Please try again or contact us directly.
+              There was an error sending your message. Please try again.
             </p>
           </div>
         )}
@@ -98,9 +96,8 @@ export default function ContactPage() {
         {/* Contact Form */}
         <div style={{
           backgroundColor: '#f8f9fa',
-          border: '1px solid #ddd',
-          borderRadius: '12px',
           padding: '40px',
+          borderRadius: '12px',
           boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
           fontFamily: 'Poppins, sans-serif'
         }}>
@@ -111,10 +108,10 @@ export default function ContactPage() {
                 htmlFor="name"
                 style={{
                   display: 'block',
-                  fontSize: '14px',
+                  marginBottom: '8px',
                   fontWeight: '600',
                   color: '#333',
-                  marginBottom: '8px',
+                  fontSize: '14px',
                   fontFamily: 'Poppins, sans-serif'
                 }}
               >
@@ -132,11 +129,11 @@ export default function ContactPage() {
                   padding: '12px 16px',
                   border: '2px solid #e1e5e9',
                   borderRadius: '8px',
-                  fontSize: '16px',
                   fontFamily: 'Poppins, sans-serif',
+                  fontSize: '16px',
                   transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
-                  outline: 'none',
-                  boxSizing: 'border-box'
+                  boxSizing: 'border-box',
+                  outline: 'none'
                 }}
                 onFocus={(e) => { 
                   e.currentTarget.style.borderColor = '#007bff'
@@ -155,10 +152,10 @@ export default function ContactPage() {
                 htmlFor="email"
                 style={{
                   display: 'block',
-                  fontSize: '14px',
+                  marginBottom: '8px',
                   fontWeight: '600',
                   color: '#333',
-                  marginBottom: '8px',
+                  fontSize: '14px',
                   fontFamily: 'Poppins, sans-serif'
                 }}
               >
@@ -176,11 +173,11 @@ export default function ContactPage() {
                   padding: '12px 16px',
                   border: '2px solid #e1e5e9',
                   borderRadius: '8px',
-                  fontSize: '16px',
                   fontFamily: 'Poppins, sans-serif',
+                  fontSize: '16px',
                   transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
-                  outline: 'none',
-                  boxSizing: 'border-box'
+                  boxSizing: 'border-box',
+                  outline: 'none'
                 }}
                 onFocus={(e) => { 
                   e.currentTarget.style.borderColor = '#007bff'
@@ -199,10 +196,10 @@ export default function ContactPage() {
                 htmlFor="phone"
                 style={{
                   display: 'block',
-                  fontSize: '14px',
+                  marginBottom: '8px',
                   fontWeight: '600',
                   color: '#333',
-                  marginBottom: '8px',
+                  fontSize: '14px',
                   fontFamily: 'Poppins, sans-serif'
                 }}
               >
@@ -219,11 +216,11 @@ export default function ContactPage() {
                   padding: '12px 16px',
                   border: '2px solid #e1e5e9',
                   borderRadius: '8px',
-                  fontSize: '16px',
                   fontFamily: 'Poppins, sans-serif',
+                  fontSize: '16px',
                   transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
-                  outline: 'none',
-                  boxSizing: 'border-box'
+                  boxSizing: 'border-box',
+                  outline: 'none'
                 }}
                 onFocus={(e) => { 
                   e.currentTarget.style.borderColor = '#007bff'
@@ -242,10 +239,10 @@ export default function ContactPage() {
                 htmlFor="contactReason"
                 style={{
                   display: 'block',
-                  fontSize: '14px',
+                  marginBottom: '8px',
                   fontWeight: '600',
                   color: '#333',
-                  marginBottom: '8px',
+                  fontSize: '14px',
                   fontFamily: 'Poppins, sans-serif'
                 }}
               >
@@ -262,13 +259,13 @@ export default function ContactPage() {
                   padding: '12px 16px',
                   border: '2px solid #e1e5e9',
                   borderRadius: '8px',
-                  fontSize: '16px',
                   fontFamily: 'Poppins, sans-serif',
+                  fontSize: '16px',
                   transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
-                  outline: 'none',
+                  boxSizing: 'border-box',
                   backgroundColor: 'white',
                   cursor: 'pointer',
-                  boxSizing: 'border-box'
+                  outline: 'none'
                 }}
                 onFocus={(e) => { 
                   e.currentTarget.style.borderColor = '#007bff'
@@ -294,10 +291,10 @@ export default function ContactPage() {
                 htmlFor="company"
                 style={{
                   display: 'block',
-                  fontSize: '14px',
+                  marginBottom: '8px',
                   fontWeight: '600',
                   color: '#333',
-                  marginBottom: '8px',
+                  fontSize: '14px',
                   fontFamily: 'Poppins, sans-serif'
                 }}
               >
@@ -314,11 +311,11 @@ export default function ContactPage() {
                   padding: '12px 16px',
                   border: '2px solid #e1e5e9',
                   borderRadius: '8px',
-                  fontSize: '16px',
                   fontFamily: 'Poppins, sans-serif',
+                  fontSize: '16px',
                   transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
-                  outline: 'none',
-                  boxSizing: 'border-box'
+                  boxSizing: 'border-box',
+                  outline: 'none'
                 }}
                 onFocus={(e) => { 
                   e.currentTarget.style.borderColor = '#007bff'
@@ -337,10 +334,10 @@ export default function ContactPage() {
                 htmlFor="message"
                 style={{
                   display: 'block',
-                  fontSize: '14px',
+                  marginBottom: '8px',
                   fontWeight: '600',
                   color: '#333',
-                  marginBottom: '8px',
+                  fontSize: '14px',
                   fontFamily: 'Poppins, sans-serif'
                 }}
               >
@@ -352,20 +349,19 @@ export default function ContactPage() {
                 value={formData.message}
                 onChange={handleChange}
                 required
-                rows={6}
                 placeholder="Please provide details about your inquiry..."
                 style={{
                   width: '100%',
                   padding: '12px 16px',
                   border: '2px solid #e1e5e9',
                   borderRadius: '8px',
-                  fontSize: '16px',
                   fontFamily: 'Poppins, sans-serif',
+                  fontSize: '16px',
                   transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
-                  outline: 'none',
-                  resize: 'vertical',
+                  boxSizing: 'border-box',
                   minHeight: '120px',
-                  boxSizing: 'border-box'
+                  resize: 'vertical',
+                  outline: 'none'
                 }}
                 onFocus={(e) => { 
                   e.currentTarget.style.borderColor = '#007bff'
@@ -381,34 +377,38 @@ export default function ContactPage() {
             {/* reCAPTCHA Notice */}
             <div style={{
               margin: '25px 0',
-              textAlign: 'center',
-              fontSize: '12px',
-              color: '#666',
-              fontFamily: 'Poppins, sans-serif'
+              textAlign: 'center'
             }}>
-              This site is protected by reCAPTCHA Enterprise and the Google{' '}
-              <a 
-                href="https://policies.google.com/privacy" 
-                target="_blank"
-                style={{
-                  color: '#0066cc',
-                  textDecoration: 'none',
-                  fontFamily: 'Poppins, sans-serif'
-                }}
-              >
-                Privacy Policy
-              </a> and{' '}
-              <a 
-                href="https://policies.google.com/terms" 
-                target="_blank"
-                style={{
-                  color: '#0066cc',
-                  textDecoration: 'none',
-                  fontFamily: 'Poppins, sans-serif'
-                }}
-              >
-                Terms of Service
-              </a> apply.
+              <div style={{
+                fontSize: '12px',
+                color: '#666',
+                textAlign: 'center',
+                fontFamily: 'Poppins, sans-serif'
+              }}>
+                This site is protected by reCAPTCHA Enterprise and the Google{' '}
+                <a 
+                  href="https://policies.google.com/privacy" 
+                  target="_blank"
+                  style={{
+                    color: '#0066cc',
+                    textDecoration: 'none',
+                    fontFamily: 'Poppins, sans-serif'
+                  }}
+                >
+                  Privacy Policy
+                </a> and{' '}
+                <a 
+                  href="https://policies.google.com/terms" 
+                  target="_blank"
+                  style={{
+                    color: '#0066cc',
+                    textDecoration: 'none',
+                    fontFamily: 'Poppins, sans-serif'
+                  }}
+                >
+                  Terms of Service
+                </a> apply.
+              </div>
             </div>
 
             {/* Submit Button */}
@@ -416,28 +416,28 @@ export default function ContactPage() {
               type="submit"
               disabled={isSubmitting}
               style={{
-                width: '100%',
-                backgroundColor: isSubmitting ? '#6c757d' : '#28a745',
+                backgroundColor: isSubmitting ? '#6c757d' : '#007bff',
                 color: 'white',
-                padding: '15px 20px',
                 border: 'none',
+                padding: '15px 40px',
                 borderRadius: '8px',
-                fontSize: '18px',
-                fontWeight: '600',
                 fontFamily: 'Poppins, sans-serif',
+                fontSize: '16px',
+                fontWeight: '600',
                 cursor: isSubmitting ? 'not-allowed' : 'pointer',
                 transition: 'background-color 0.3s ease, transform 0.2s ease',
+                width: '100%',
                 outline: 'none'
               }}
               onMouseEnter={(e) => {
                 if (!isSubmitting) {
-                  e.currentTarget.style.backgroundColor = '#218838'
+                  e.currentTarget.style.backgroundColor = '#0056b3'
                   e.currentTarget.style.transform = 'translateY(-2px)'
                 }
               }}
               onMouseLeave={(e) => {
                 if (!isSubmitting) {
-                  e.currentTarget.style.backgroundColor = '#28a745'
+                  e.currentTarget.style.backgroundColor = '#007bff'
                   e.currentTarget.style.transform = 'translateY(0)'
                 }
               }}

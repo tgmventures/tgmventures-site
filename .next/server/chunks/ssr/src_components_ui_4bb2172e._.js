@@ -14,121 +14,112 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 function Footer() {
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("footer", {
         style: {
-            backgroundColor: '#f8f8f8',
-            padding: '20px 0',
+            backgroundColor: 'black',
+            color: 'white',
             textAlign: 'center',
-            borderTop: '1px solid #ddd',
+            padding: '20px 0',
+            borderTop: 'none',
             fontFamily: 'Poppins, sans-serif'
         },
         children: [
-            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
+                href: "/",
                 style: {
-                    marginBottom: '8px'
+                    color: '#888',
+                    textDecoration: 'none',
+                    fontSize: '14px',
+                    fontWeight: '300',
+                    margin: '0 15px',
+                    fontFamily: 'Poppins, sans-serif',
+                    transition: 'color 0.3s ease'
                 },
-                children: [
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
-                        href: "/",
-                        style: {
-                            color: '#666',
-                            textDecoration: 'none',
-                            fontSize: '14px',
-                            fontWeight: '400',
-                            margin: '0 15px',
-                            fontFamily: 'Poppins, sans-serif',
-                            transition: 'color 0.3s ease'
-                        },
-                        onMouseEnter: (e)=>{
-                            e.currentTarget.style.color = '#000';
-                        },
-                        onMouseLeave: (e)=>{
-                            e.currentTarget.style.color = '#666';
-                        },
-                        children: "Home"
-                    }, void 0, false, {
-                        fileName: "[project]/src/components/ui/Footer.tsx",
-                        lineNumber: 17,
-                        columnNumber: 9
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
-                        href: "/privacy-policy",
-                        style: {
-                            color: '#666',
-                            textDecoration: 'none',
-                            fontSize: '14px',
-                            fontWeight: '400',
-                            margin: '0 15px',
-                            fontFamily: 'Poppins, sans-serif',
-                            transition: 'color 0.3s ease'
-                        },
-                        onMouseEnter: (e)=>{
-                            e.currentTarget.style.color = '#000';
-                        },
-                        onMouseLeave: (e)=>{
-                            e.currentTarget.style.color = '#666';
-                        },
-                        children: "Privacy Policy"
-                    }, void 0, false, {
-                        fileName: "[project]/src/components/ui/Footer.tsx",
-                        lineNumber: 33,
-                        columnNumber: 9
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
-                        href: "/terms-of-service",
-                        style: {
-                            color: '#666',
-                            textDecoration: 'none',
-                            fontSize: '14px',
-                            fontWeight: '400',
-                            margin: '0 15px',
-                            fontFamily: 'Poppins, sans-serif',
-                            transition: 'color 0.3s ease'
-                        },
-                        onMouseEnter: (e)=>{
-                            e.currentTarget.style.color = '#000';
-                        },
-                        onMouseLeave: (e)=>{
-                            e.currentTarget.style.color = '#666';
-                        },
-                        children: "Terms of Service"
-                    }, void 0, false, {
-                        fileName: "[project]/src/components/ui/Footer.tsx",
-                        lineNumber: 49,
-                        columnNumber: 9
-                    }, this),
-                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
-                        href: "/contact",
-                        style: {
-                            color: '#666',
-                            textDecoration: 'none',
-                            fontSize: '14px',
-                            fontWeight: '400',
-                            margin: '0 15px',
-                            fontFamily: 'Poppins, sans-serif',
-                            transition: 'color 0.3s ease'
-                        },
-                        onMouseEnter: (e)=>{
-                            e.currentTarget.style.color = '#000';
-                        },
-                        onMouseLeave: (e)=>{
-                            e.currentTarget.style.color = '#666';
-                        },
-                        children: "Contact"
-                    }, void 0, false, {
-                        fileName: "[project]/src/components/ui/Footer.tsx",
-                        lineNumber: 65,
-                        columnNumber: 9
-                    }, this)
-                ]
-            }, void 0, true, {
+                onMouseEnter: (e)=>{
+                    e.currentTarget.style.color = 'white';
+                },
+                onMouseLeave: (e)=>{
+                    e.currentTarget.style.color = '#888';
+                },
+                children: "Home"
+            }, void 0, false, {
                 fileName: "[project]/src/components/ui/Footer.tsx",
-                lineNumber: 16,
+                lineNumber: 17,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
+                href: "/privacy-policy",
+                style: {
+                    color: '#888',
+                    textDecoration: 'none',
+                    fontSize: '14px',
+                    fontWeight: '300',
+                    margin: '0 15px',
+                    fontFamily: 'Poppins, sans-serif',
+                    transition: 'color 0.3s ease'
+                },
+                onMouseEnter: (e)=>{
+                    e.currentTarget.style.color = 'white';
+                },
+                onMouseLeave: (e)=>{
+                    e.currentTarget.style.color = '#888';
+                },
+                children: "Privacy Policy"
+            }, void 0, false, {
+                fileName: "[project]/src/components/ui/Footer.tsx",
+                lineNumber: 33,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
+                href: "/terms-of-service",
+                style: {
+                    color: '#888',
+                    textDecoration: 'none',
+                    fontSize: '14px',
+                    fontWeight: '300',
+                    margin: '0 15px',
+                    fontFamily: 'Poppins, sans-serif',
+                    transition: 'color 0.3s ease'
+                },
+                onMouseEnter: (e)=>{
+                    e.currentTarget.style.color = 'white';
+                },
+                onMouseLeave: (e)=>{
+                    e.currentTarget.style.color = '#888';
+                },
+                children: "Terms of Service"
+            }, void 0, false, {
+                fileName: "[project]/src/components/ui/Footer.tsx",
+                lineNumber: 49,
+                columnNumber: 7
+            }, this),
+            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
+                href: "/contact",
+                style: {
+                    color: '#888',
+                    textDecoration: 'none',
+                    fontSize: '14px',
+                    fontWeight: '300',
+                    margin: '0 15px',
+                    fontFamily: 'Poppins, sans-serif',
+                    transition: 'color 0.3s ease'
+                },
+                onMouseEnter: (e)=>{
+                    e.currentTarget.style.color = 'white';
+                },
+                onMouseLeave: (e)=>{
+                    e.currentTarget.style.color = '#888';
+                },
+                children: "Contact"
+            }, void 0, false, {
+                fileName: "[project]/src/components/ui/Footer.tsx",
+                lineNumber: 65,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
                 style: {
-                    fontSize: '12px',
-                    color: '#999',
-                    margin: 0,
+                    margin: '10px 0 0 0',
+                    fontSize: '14px',
+                    fontWeight: '300',
+                    color: '#666',
                     fontFamily: 'Poppins, sans-serif'
                 },
                 children: [
@@ -138,7 +129,7 @@ function Footer() {
                 ]
             }, void 0, true, {
                 fileName: "[project]/src/components/ui/Footer.tsx",
-                lineNumber: 82,
+                lineNumber: 81,
                 columnNumber: 7
             }, this)
         ]

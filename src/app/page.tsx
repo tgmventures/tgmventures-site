@@ -10,7 +10,7 @@ export default function HomePage() {
       <div 
         className="fixed top-0 left-0 w-full h-full opacity-30 -z-10"
         style={{
-          backgroundImage: "url('https://github.com/tgmventures/tgmam-site/blob/main/images/tgm-warehouse.jpg?raw=true')",
+          backgroundImage: "url('https://github.com/tgmventures/tgmventures-site/blob/main/images/tgm-ventures-image.png?raw=true')",
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat'

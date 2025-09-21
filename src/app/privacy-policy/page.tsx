@@ -1,3 +1,5 @@
+'use client'
+
 import LegalPageLayout from '@/components/ui/LegalPageLayout'
 
 export default function PrivacyPolicyPage() {
@@ -146,6 +148,139 @@ export default function PrivacyPolicyPage() {
           marginBottom: '20px',
           color: '#222',
           fontFamily: 'Poppins, sans-serif'
+        }}>5. DATA SECURITY</h2>
+        
+        <p style={{
+          fontSize: '16px',
+          lineHeight: '1.8',
+          color: '#444',
+          marginBottom: '15px',
+          fontFamily: 'Poppins, sans-serif'
+        }}>
+          We implement appropriate technical and organizational security measures to protect your personal information. However, no method of transmission over the Internet or electronic storage is completely secure, and we cannot guarantee absolute security of your information.
+        </p>
+
+        <h2 style={{
+          fontSize: '24px',
+          fontWeight: '600',
+          marginTop: '40px',
+          marginBottom: '20px',
+          color: '#222',
+          fontFamily: 'Poppins, sans-serif'
+        }}>6. DATA RETENTION</h2>
+        
+        <p style={{
+          fontSize: '16px',
+          lineHeight: '1.8',
+          color: '#444',
+          marginBottom: '15px',
+          fontFamily: 'Poppins, sans-serif'
+        }}>
+          We retain your personal information for as long as necessary to fulfill the purposes outlined in this Privacy Policy, unless a longer retention period is required by law. When we no longer need your information, we will securely delete or destroy it.
+        </p>
+
+        <h2 style={{
+          fontSize: '24px',
+          fontWeight: '600',
+          marginTop: '40px',
+          marginBottom: '20px',
+          color: '#222',
+          fontFamily: 'Poppins, sans-serif'
+        }}>7. YOUR PRIVACY RIGHTS</h2>
+        
+        <p style={{
+          fontSize: '16px',
+          lineHeight: '1.8',
+          color: '#444',
+          marginBottom: '15px',
+          fontFamily: 'Poppins, sans-serif'
+        }}>
+          Depending on your location, you may have certain rights regarding your personal information, including the right to access, correct, delete, or restrict the use of your information. To exercise any of these rights, please contact us using the information below.
+        </p>
+
+        <h2 style={{
+          fontSize: '24px',
+          fontWeight: '600',
+          marginTop: '40px',
+          marginBottom: '20px',
+          color: '#222',
+          fontFamily: 'Poppins, sans-serif'
+        }}>8. CHILDREN'S PRIVACY</h2>
+        
+        <p style={{
+          fontSize: '16px',
+          lineHeight: '1.8',
+          color: '#444',
+          marginBottom: '15px',
+          fontFamily: 'Poppins, sans-serif'
+        }}>
+          Our services are not intended for individuals under the age of 18. We do not knowingly collect personal information from children under 18.
+        </p>
+
+        <h2 style={{
+          fontSize: '24px',
+          fontWeight: '600',
+          marginTop: '40px',
+          marginBottom: '20px',
+          color: '#222',
+          fontFamily: 'Poppins, sans-serif'
+        }}>9. THIRD-PARTY LINKS</h2>
+        
+        <p style={{
+          fontSize: '16px',
+          lineHeight: '1.8',
+          color: '#444',
+          marginBottom: '15px',
+          fontFamily: 'Poppins, sans-serif'
+        }}>
+          Our website may contain links to third-party websites. We are not responsible for the privacy practices of these sites and encourage you to review their privacy policies.
+        </p>
+
+        <h2 style={{
+          fontSize: '24px',
+          fontWeight: '600',
+          marginTop: '40px',
+          marginBottom: '20px',
+          color: '#222',
+          fontFamily: 'Poppins, sans-serif'
+        }}>10. CALIFORNIA PRIVACY RIGHTS</h2>
+        
+        <p style={{
+          fontSize: '16px',
+          lineHeight: '1.8',
+          color: '#444',
+          marginBottom: '15px',
+          fontFamily: 'Poppins, sans-serif'
+        }}>
+          California residents have specific rights under the California Consumer Privacy Act (CCPA). For more information or to make a request, please contact us.
+        </p>
+
+        <h2 style={{
+          fontSize: '24px',
+          fontWeight: '600',
+          marginTop: '40px',
+          marginBottom: '20px',
+          color: '#222',
+          fontFamily: 'Poppins, sans-serif'
+        }}>11. CHANGES TO THIS PRIVACY POLICY</h2>
+        
+        <p style={{
+          fontSize: '16px',
+          lineHeight: '1.8',
+          color: '#444',
+          marginBottom: '15px',
+          fontFamily: 'Poppins, sans-serif'
+        }}>
+          We may update this Privacy Policy from time to time. We will notify you of any material changes by updating the date at the top of this policy. Your continued use of our services after changes indicates acceptance of the updated policy.
+        </p>
+
+        <h2 style={{
+          fontSize: '24px',
+          fontWeight: '600',
+          marginTop: '40px',
+          marginBottom: '20px',
+          color: '#222',
+          fontFamily: 'Poppins, sans-serif'
         }}>12. CONTACT INFORMATION</h2>
         
         <p style={{
@@ -163,6 +298,8 @@ export default function PrivacyPolicyPage() {
               textDecoration: 'none',
               fontFamily: 'Poppins, sans-serif'
             }}
+            onMouseEnter={(e) => { e.currentTarget.style.textDecoration = 'underline' }}
+            onMouseLeave={(e) => { e.currentTarget.style.textDecoration = 'none' }}
           >
             contact us
           </a> through our website.
@@ -190,6 +327,8 @@ export default function PrivacyPolicyPage() {
                 textDecoration: 'none',
                 fontFamily: 'Poppins, sans-serif'
               }}
+              onMouseEnter={(e) => { e.currentTarget.style.textDecoration = 'underline' }}
+              onMouseLeave={(e) => { e.currentTarget.style.textDecoration = 'none' }}
             >
               tgmventures.com
             </a><br />
@@ -201,6 +340,8 @@ export default function PrivacyPolicyPage() {
                 textDecoration: 'none',
                 fontFamily: 'Poppins, sans-serif'
               }}
+              onMouseEnter={(e) => { e.currentTarget.style.textDecoration = 'underline' }}
+              onMouseLeave={(e) => { e.currentTarget.style.textDecoration = 'none' }}
             >
               Contact Form
             </a>

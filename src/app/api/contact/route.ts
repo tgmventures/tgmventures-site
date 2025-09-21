@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Call the Firebase function
+    // Call the Firebase function (now deployed)
     const response = await fetch('https://us-central1-tgm-ventures-site.cloudfunctions.net/submitContactForm', {
       method: 'POST',
       headers: {

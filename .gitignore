@@ -22,7 +22,9 @@ functions/lib/
 # Configuration files with sensitive data
 config.js
 **/config.js
-.env.*
+
+# Allow example files
+!.env.example
 
 # Next.js
 .next/

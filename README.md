@@ -1,6 +1,41 @@
-# TGM Ventures Website
+# TGM Ventures Website - Next.js
 
-A professional management company website for TGM Ventures, Inc., a Washington state corporation specializing in building, buying, and managing businesses and real estate.
+A modern Next.js application for TGM Ventures, Inc., a Washington state corporation specializing in building, buying, and managing businesses and real estate.
+
+## 🚀 Quick Start
+
+```bash
+# Install dependencies
+npm install
+
+# Create .env.local from example
+cp .env.example .env.local
+# Edit .env.local and add your Firebase API key
+
+# Run development server
+npm run dev
+```
+
+## 🔐 Environment Variables
+
+Create a `.env.local` file with:
+```
+NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key_here
+```
+
+## 📦 Deployment
+
+### Option 1: Deploy to Vercel (Recommended)
+1. Push code to GitHub
+2. Import project to Vercel
+3. Add environment variable: `NEXT_PUBLIC_FIREBASE_API_KEY`
+4. Deploy
+
+### Option 2: Deploy to Firebase Hosting
+1. Build the project: `npm run build`
+2. Deploy: `firebase deploy --only hosting`
+
+Note: For full functionality with API routes and authentication, Vercel deployment is recommended.
 
 ## 🚨 CRITICAL PRESERVATION RULES
 

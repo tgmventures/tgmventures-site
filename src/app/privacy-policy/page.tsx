@@ -79,6 +79,55 @@ export default function PrivacyPolicyPage() {
             <li style={{ marginBottom: '8px', color: '#333' }}>Cookies and similar tracking technologies</li>
           </ul>
         </section>
+
+        <section>
+          <h2 style={{
+            fontSize: '24px',
+            fontWeight: '600',
+            marginTop: '40px',
+            marginBottom: '20px',
+            color: '#222',
+            fontFamily: 'Poppins, sans-serif'
+          }}>3. Contact Us</h2>
+          <p style={{
+            fontSize: '16px',
+            lineHeight: '1.6',
+            marginBottom: '15px',
+            color: '#333',
+            fontFamily: 'Poppins, sans-serif'
+          }}>
+            If you have questions about this Privacy Policy or our privacy practices, please{' '}
+            <a 
+              href="/contact" 
+              style={{
+                color: '#007bff',
+                textDecoration: 'underline',
+                fontFamily: 'Poppins, sans-serif'
+              }}
+            >
+              contact us
+            </a>.
+          </p>
+          <div style={{
+            backgroundColor: '#f8f9fa',
+            borderRadius: '8px',
+            padding: '20px',
+            marginTop: '20px',
+            border: '1px solid #e9ecef'
+          }}>
+            <p style={{
+              color: '#333',
+              margin: 0,
+              fontFamily: 'Poppins, sans-serif',
+              lineHeight: '1.6',
+              fontSize: '16px'
+            }}>
+              <strong>TGM Ventures, Inc.</strong><br />
+              Email: management@tgmventures.com<br />
+              Website: www.tgmventures.com
+            </p>
+          </div>
+        </section>
       </div>
     </LegalPageLayout>
   )

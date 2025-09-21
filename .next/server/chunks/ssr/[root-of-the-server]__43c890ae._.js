@@ -58,411 +58,340 @@ function TermsOfServicePage() {
         title: "Terms of Service",
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             children: [
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
-                    children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                            style: {
-                                fontSize: '24px',
-                                fontWeight: '600',
-                                marginTop: '40px',
-                                marginBottom: '20px',
-                                color: '#222',
-                                fontFamily: 'Poppins, sans-serif'
-                            },
-                            children: "1. Agreement to Terms"
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/terms-of-service/page.tsx",
-                            lineNumber: 8,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                            style: {
-                                fontSize: '16px',
-                                lineHeight: '1.6',
-                                marginBottom: '20px',
-                                color: '#333',
-                                fontFamily: 'Poppins, sans-serif'
-                            },
-                            children: 'By accessing and using the TGM Ventures, Inc. website ("Service"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.'
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/terms-of-service/page.tsx",
-                            lineNumber: 16,
-                            columnNumber: 11
-                        }, this)
-                    ]
-                }, void 0, true, {
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    style: {
+                        fontSize: '14px',
+                        color: '#666',
+                        marginBottom: '30px',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: "Effective Date: September 19, 2025 | Last Updated: September 19, 2025"
+                }, void 0, false, {
                     fileName: "[project]/src/app/terms-of-service/page.tsx",
                     lineNumber: 7,
                     columnNumber: 9
                 }, this),
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                    style: {
+                        fontSize: '24px',
+                        fontWeight: '600',
+                        marginTop: '40px',
+                        marginBottom: '20px',
+                        color: '#222',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: "1. AGREEMENT TO TERMS"
+                }, void 0, false, {
+                    fileName: "[project]/src/app/terms-of-service/page.tsx",
+                    lineNumber: 16,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    style: {
+                        fontSize: '16px',
+                        lineHeight: '1.8',
+                        color: '#444',
+                        marginBottom: '15px',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: 'These Terms of Service ("Terms") constitute a legally binding agreement between you and TGM Ventures, Inc., a Washington state corporation ("TGM Ventures," "we," "us," or "our"). By accessing our website or using our services, you agree to be bound by these Terms. If you do not agree, please do not use our website or services.'
+                }, void 0, false, {
+                    fileName: "[project]/src/app/terms-of-service/page.tsx",
+                    lineNumber: 25,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                    style: {
+                        fontSize: '24px',
+                        fontWeight: '600',
+                        marginTop: '40px',
+                        marginBottom: '20px',
+                        color: '#222',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: "2. SERVICE DESCRIPTION"
+                }, void 0, false, {
+                    fileName: "[project]/src/app/terms-of-service/page.tsx",
+                    lineNumber: 35,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    style: {
+                        fontSize: '16px',
+                        lineHeight: '1.8',
+                        color: '#444',
+                        marginBottom: '15px',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: "TGM Ventures is a management company that oversees various properties, businesses, and assets. Our services include comprehensive management solutions, which may involve property management, business operations oversight, maintenance coordination, and related communications including text messaging services."
+                }, void 0, false, {
+                    fileName: "[project]/src/app/terms-of-service/page.tsx",
+                    lineNumber: 44,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    style: {
+                        fontSize: '16px',
+                        lineHeight: '1.8',
+                        color: '#444',
+                        marginBottom: '15px',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: "Our text messaging services allow us to communicate efficiently with tenants, property owners, business partners, and other stakeholders. These messages may include updates, maintenance notifications, urgent alerts, appointment confirmations, and other management-related communications."
+                }, void 0, false, {
+                    fileName: "[project]/src/app/terms-of-service/page.tsx",
+                    lineNumber: 54,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                    style: {
+                        fontSize: '24px',
+                        fontWeight: '600',
+                        marginTop: '40px',
+                        marginBottom: '20px',
+                        color: '#222',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: "3. CONSENT TO RECEIVE TEXT MESSAGES"
+                }, void 0, false, {
+                    fileName: "[project]/src/app/terms-of-service/page.tsx",
+                    lineNumber: 64,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    style: {
+                        fontSize: '16px',
+                        lineHeight: '1.8',
+                        color: '#444',
+                        marginBottom: '15px',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: "By providing your mobile phone number to us, you consent to receive text messages from TGM Ventures. Message and data rates may apply, and message frequency will vary based on your interactions with us. You are responsible for any fees charged by your mobile carrier."
+                }, void 0, false, {
+                    fileName: "[project]/src/app/terms-of-service/page.tsx",
+                    lineNumber: 73,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                    style: {
+                        fontSize: '24px',
+                        fontWeight: '600',
+                        marginTop: '40px',
+                        marginBottom: '20px',
+                        color: '#222',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: "4. OPT-OUT PROCEDURES"
+                }, void 0, false, {
+                    fileName: "[project]/src/app/terms-of-service/page.tsx",
+                    lineNumber: 83,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    style: {
+                        fontSize: '16px',
+                        lineHeight: '1.8',
+                        color: '#444',
+                        marginBottom: '15px',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
                     children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                        'You may opt out of receiving text messages at any time by replying "STOP" to any text message or by',
+                        ' ',
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
+                            href: "/contact",
                             style: {
-                                fontSize: '24px',
-                                fontWeight: '600',
-                                marginTop: '40px',
-                                marginBottom: '20px',
-                                color: '#222',
+                                color: '#0066cc',
+                                textDecoration: 'none',
                                 fontFamily: 'Poppins, sans-serif'
                             },
-                            children: "2. Description of Service"
+                            children: "contacting us"
                         }, void 0, false, {
                             fileName: "[project]/src/app/terms-of-service/page.tsx",
-                            lineNumber: 28,
+                            lineNumber: 100,
                             columnNumber: 11
                         }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                            style: {
-                                fontSize: '16px',
-                                lineHeight: '1.6',
-                                marginBottom: '20px',
-                                color: '#333',
-                                fontFamily: 'Poppins, sans-serif'
-                            },
-                            children: "TGM Ventures, Inc. is a Washington state corporation that builds, buys, and manages businesses and real estate. Our website provides information about our services, portfolio, and contact information for potential business opportunities."
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/terms-of-service/page.tsx",
-                            lineNumber: 36,
-                            columnNumber: 11
-                        }, this)
+                        ' through our website. For help with our text messaging services, reply "HELP" to any message.'
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/terms-of-service/page.tsx",
-                    lineNumber: 27,
+                    lineNumber: 92,
                     columnNumber: 9
                 }, this),
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                    style: {
+                        fontSize: '24px',
+                        fontWeight: '600',
+                        marginTop: '40px',
+                        marginBottom: '20px',
+                        color: '#222',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: "6. PRIVACY POLICY"
+                }, void 0, false, {
+                    fileName: "[project]/src/app/terms-of-service/page.tsx",
+                    lineNumber: 112,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    style: {
+                        fontSize: '16px',
+                        lineHeight: '1.8',
+                        color: '#444',
+                        marginBottom: '15px',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
                     children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                        "Your use of our services is also governed by our",
+                        ' ',
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
+                            href: "/privacy-policy",
                             style: {
-                                fontSize: '24px',
-                                fontWeight: '600',
-                                marginTop: '40px',
-                                marginBottom: '20px',
-                                color: '#222',
+                                color: '#0066cc',
+                                textDecoration: 'none',
                                 fontFamily: 'Poppins, sans-serif'
                             },
-                            children: "3. Acceptable Use"
+                            children: "Privacy Policy"
                         }, void 0, false, {
                             fileName: "[project]/src/app/terms-of-service/page.tsx",
-                            lineNumber: 48,
+                            lineNumber: 129,
                             columnNumber: 11
                         }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                            style: {
-                                fontSize: '18px',
-                                fontWeight: '600',
-                                marginTop: '30px',
-                                marginBottom: '15px',
-                                color: '#333',
-                                fontFamily: 'Poppins, sans-serif'
-                            },
-                            children: "3.1 Permitted Use"
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/terms-of-service/page.tsx",
-                            lineNumber: 56,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                            style: {
-                                fontSize: '16px',
-                                lineHeight: '1.6',
-                                marginBottom: '15px',
-                                color: '#333',
-                                fontFamily: 'Poppins, sans-serif'
-                            },
-                            children: "You may use our website for:"
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/terms-of-service/page.tsx",
-                            lineNumber: 64,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
-                            style: {
-                                paddingLeft: '25px',
-                                marginBottom: '20px',
-                                fontFamily: 'Poppins, sans-serif'
-                            },
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                    style: {
-                                        marginBottom: '8px',
-                                        color: '#333'
-                                    },
-                                    children: "Viewing information about our services"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/terms-of-service/page.tsx",
-                                    lineNumber: 76,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                    style: {
-                                        marginBottom: '8px',
-                                        color: '#333'
-                                    },
-                                    children: "Contacting us for legitimate business inquiries"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/terms-of-service/page.tsx",
-                                    lineNumber: 77,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                    style: {
-                                        marginBottom: '8px',
-                                        color: '#333'
-                                    },
-                                    children: "Accessing publicly available content"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/terms-of-service/page.tsx",
-                                    lineNumber: 78,
-                                    columnNumber: 13
-                                }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/app/terms-of-service/page.tsx",
-                            lineNumber: 71,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                            style: {
-                                fontSize: '18px',
-                                fontWeight: '600',
-                                marginTop: '30px',
-                                marginBottom: '15px',
-                                color: '#333',
-                                fontFamily: 'Poppins, sans-serif'
-                            },
-                            children: "3.2 Prohibited Use"
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/terms-of-service/page.tsx",
-                            lineNumber: 81,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                            style: {
-                                fontSize: '16px',
-                                lineHeight: '1.6',
-                                marginBottom: '15px',
-                                color: '#333',
-                                fontFamily: 'Poppins, sans-serif'
-                            },
-                            children: "You may not use our website for:"
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/terms-of-service/page.tsx",
-                            lineNumber: 89,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
-                            style: {
-                                paddingLeft: '25px',
-                                marginBottom: '20px',
-                                fontFamily: 'Poppins, sans-serif'
-                            },
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                    style: {
-                                        marginBottom: '8px',
-                                        color: '#333'
-                                    },
-                                    children: "Any unlawful purpose or to solicit others to unlawful acts"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/terms-of-service/page.tsx",
-                                    lineNumber: 101,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                    style: {
-                                        marginBottom: '8px',
-                                        color: '#333'
-                                    },
-                                    children: "Violating any international, federal, provincial, or state regulations, rules, laws, or local ordinances"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/terms-of-service/page.tsx",
-                                    lineNumber: 102,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                    style: {
-                                        marginBottom: '8px',
-                                        color: '#333'
-                                    },
-                                    children: "Infringing upon or violating our intellectual property rights or the intellectual property rights of others"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/terms-of-service/page.tsx",
-                                    lineNumber: 103,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                    style: {
-                                        marginBottom: '8px',
-                                        color: '#333'
-                                    },
-                                    children: "Harassing, abusing, insulting, harming, defaming, slandering, disparaging, intimidating, or discriminating"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/terms-of-service/page.tsx",
-                                    lineNumber: 104,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                    style: {
-                                        marginBottom: '8px',
-                                        color: '#333'
-                                    },
-                                    children: "Submitting false or misleading information"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/terms-of-service/page.tsx",
-                                    lineNumber: 105,
-                                    columnNumber: 13
-                                }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/app/terms-of-service/page.tsx",
-                            lineNumber: 96,
-                            columnNumber: 11
-                        }, this)
+                        ", which explains how we collect, use, and protect your information."
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/terms-of-service/page.tsx",
-                    lineNumber: 47,
+                    lineNumber: 121,
                     columnNumber: 9
                 }, this),
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                    style: {
+                        fontSize: '24px',
+                        fontWeight: '600',
+                        marginTop: '40px',
+                        marginBottom: '20px',
+                        color: '#222',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: "18. CONTACT INFORMATION"
+                }, void 0, false, {
+                    fileName: "[project]/src/app/terms-of-service/page.tsx",
+                    lineNumber: 141,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    style: {
+                        fontSize: '16px',
+                        lineHeight: '1.8',
+                        color: '#444',
+                        marginBottom: '15px',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
                     children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                        "If you have any questions about these Terms, please",
+                        ' ',
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
+                            href: "/contact",
                             style: {
-                                fontSize: '24px',
-                                fontWeight: '600',
-                                marginTop: '40px',
-                                marginBottom: '20px',
-                                color: '#222',
+                                color: '#0066cc',
+                                textDecoration: 'none',
                                 fontFamily: 'Poppins, sans-serif'
                             },
-                            children: "4. Intellectual Property Rights"
+                            children: "contact us"
                         }, void 0, false, {
                             fileName: "[project]/src/app/terms-of-service/page.tsx",
-                            lineNumber: 110,
+                            lineNumber: 158,
                             columnNumber: 11
                         }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                            style: {
-                                fontSize: '16px',
-                                lineHeight: '1.6',
-                                marginBottom: '20px',
-                                color: '#333',
-                                fontFamily: 'Poppins, sans-serif'
-                            },
-                            children: "The Service and its original content, features, and functionality are and will remain the exclusive property of TGM Ventures, Inc. and its licensors. The Service is protected by copyright, trademark, and other laws."
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/terms-of-service/page.tsx",
-                            lineNumber: 118,
-                            columnNumber: 11
-                        }, this)
+                        " through our website."
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/terms-of-service/page.tsx",
-                    lineNumber: 109,
+                    lineNumber: 150,
                     columnNumber: 9
                 }, this),
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
-                    children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                            style: {
-                                fontSize: '24px',
-                                fontWeight: '600',
-                                marginTop: '40px',
-                                marginBottom: '20px',
-                                color: '#222',
-                                fontFamily: 'Poppins, sans-serif'
-                            },
-                            children: "5. Contact Information"
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/terms-of-service/page.tsx",
-                            lineNumber: 130,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                            style: {
-                                fontSize: '16px',
-                                lineHeight: '1.6',
-                                marginBottom: '15px',
-                                color: '#333',
-                                fontFamily: 'Poppins, sans-serif'
-                            },
-                            children: [
-                                "If you have any questions about these Terms of Service, please",
-                                ' ',
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
-                                    href: "/contact",
-                                    style: {
-                                        color: '#007bff',
-                                        textDecoration: 'underline',
-                                        fontFamily: 'Poppins, sans-serif'
-                                    },
-                                    children: "contact us"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/terms-of-service/page.tsx",
-                                    lineNumber: 146,
-                                    columnNumber: 13
-                                }, this),
-                                "."
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/app/terms-of-service/page.tsx",
-                            lineNumber: 138,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            style: {
-                                backgroundColor: '#f8f9fa',
-                                borderRadius: '8px',
-                                padding: '20px',
-                                marginTop: '20px',
-                                border: '1px solid #e9ecef'
-                            },
-                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    style: {
+                        backgroundColor: '#f8f9fa',
+                        padding: '20px',
+                        borderRadius: '8px',
+                        margin: '20px 0'
+                    },
+                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                        style: {
+                            fontSize: '16px',
+                            lineHeight: '1.8',
+                            color: '#444',
+                            margin: 0,
+                            fontFamily: 'Poppins, sans-serif'
+                        },
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
                                 style: {
-                                    color: '#333',
-                                    margin: 0,
-                                    fontFamily: 'Poppins, sans-serif',
-                                    lineHeight: '1.6',
-                                    fontSize: '16px'
+                                    fontWeight: '600',
+                                    color: '#222'
                                 },
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
-                                        children: "TGM Ventures, Inc."
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/terms-of-service/page.tsx",
-                                        lineNumber: 171,
-                                        columnNumber: 15
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
-                                        fileName: "[project]/src/app/terms-of-service/page.tsx",
-                                        lineNumber: 171,
-                                        columnNumber: 50
-                                    }, this),
-                                    "Email: management@tgmventures.com",
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
-                                        fileName: "[project]/src/app/terms-of-service/page.tsx",
-                                        lineNumber: 172,
-                                        columnNumber: 48
-                                    }, this),
-                                    "Website: www.tgmventures.com"
-                                ]
-                            }, void 0, true, {
+                                children: "TGM Ventures, Inc."
+                            }, void 0, false, {
                                 fileName: "[project]/src/app/terms-of-service/page.tsx",
-                                lineNumber: 164,
+                                lineNumber: 183,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
+                                fileName: "[project]/src/app/terms-of-service/page.tsx",
+                                lineNumber: 183,
+                                columnNumber: 93
+                            }, this),
+                            "Attn: Legal Department",
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
+                                fileName: "[project]/src/app/terms-of-service/page.tsx",
+                                lineNumber: 184,
+                                columnNumber: 35
+                            }, this),
+                            "Website:",
+                            ' ',
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
+                                href: "https://tgmventures.com",
+                                style: {
+                                    color: '#0066cc',
+                                    textDecoration: 'none',
+                                    fontFamily: 'Poppins, sans-serif'
+                                },
+                                children: "tgmventures.com"
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/terms-of-service/page.tsx",
+                                lineNumber: 186,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
+                                fileName: "[project]/src/app/terms-of-service/page.tsx",
+                                lineNumber: 195,
+                                columnNumber: 17
+                            }, this),
+                            "Contact:",
+                            ' ',
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
+                                href: "/contact",
+                                style: {
+                                    color: '#0066cc',
+                                    textDecoration: 'none',
+                                    fontFamily: 'Poppins, sans-serif'
+                                },
+                                children: "Contact Form"
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/terms-of-service/page.tsx",
+                                lineNumber: 197,
                                 columnNumber: 13
                             }, this)
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/terms-of-service/page.tsx",
-                            lineNumber: 157,
-                            columnNumber: 11
-                        }, this)
-                    ]
-                }, void 0, true, {
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/app/terms-of-service/page.tsx",
+                        lineNumber: 176,
+                        columnNumber: 11
+                    }, this)
+                }, void 0, false, {
                     fileName: "[project]/src/app/terms-of-service/page.tsx",
-                    lineNumber: 129,
+                    lineNumber: 170,
                     columnNumber: 9
                 }, this)
             ]

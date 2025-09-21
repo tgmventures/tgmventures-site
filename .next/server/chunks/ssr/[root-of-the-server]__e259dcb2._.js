@@ -58,323 +58,327 @@ function PrivacyPolicyPage() {
         title: "Privacy Policy",
         children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
             children: [
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
-                    children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                            style: {
-                                fontSize: '24px',
-                                fontWeight: '600',
-                                marginTop: '40px',
-                                marginBottom: '20px',
-                                color: '#222',
-                                fontFamily: 'Poppins, sans-serif'
-                            },
-                            children: "1. Introduction"
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/privacy-policy/page.tsx",
-                            lineNumber: 8,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                            style: {
-                                fontSize: '16px',
-                                lineHeight: '1.6',
-                                marginBottom: '20px',
-                                color: '#333',
-                                fontFamily: 'Poppins, sans-serif'
-                            },
-                            children: 'TGM Ventures, Inc. ("we," "us," or "our") respects your privacy and is committed to protecting your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.'
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/privacy-policy/page.tsx",
-                            lineNumber: 16,
-                            columnNumber: 11
-                        }, this)
-                    ]
-                }, void 0, true, {
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    style: {
+                        fontSize: '14px',
+                        color: '#666',
+                        marginBottom: '30px',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: "Effective Date: September 19, 2025 | Last Updated: September 19, 2025"
+                }, void 0, false, {
                     fileName: "[project]/src/app/privacy-policy/page.tsx",
                     lineNumber: 7,
                     columnNumber: 9
                 }, this),
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
-                    children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
-                            style: {
-                                fontSize: '24px',
-                                fontWeight: '600',
-                                marginTop: '40px',
-                                marginBottom: '20px',
-                                color: '#222',
-                                fontFamily: 'Poppins, sans-serif'
-                            },
-                            children: "2. Information We Collect"
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/privacy-policy/page.tsx",
-                            lineNumber: 28,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                            style: {
-                                fontSize: '16px',
-                                lineHeight: '1.6',
-                                marginBottom: '15px',
-                                color: '#333',
-                                fontFamily: 'Poppins, sans-serif'
-                            },
-                            children: "We collect information in the following ways:"
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/privacy-policy/page.tsx",
-                            lineNumber: 36,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                            style: {
-                                fontSize: '18px',
-                                fontWeight: '600',
-                                marginTop: '30px',
-                                marginBottom: '15px',
-                                color: '#333',
-                                fontFamily: 'Poppins, sans-serif'
-                            },
-                            children: "2.1 Information You Provide"
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/privacy-policy/page.tsx",
-                            lineNumber: 44,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
-                            style: {
-                                paddingLeft: '25px',
-                                marginBottom: '20px',
-                                fontFamily: 'Poppins, sans-serif'
-                            },
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                    style: {
-                                        marginBottom: '8px',
-                                        color: '#333'
-                                    },
-                                    children: "Contact information (name, email address, phone number)"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/privacy-policy/page.tsx",
-                                    lineNumber: 57,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                    style: {
-                                        marginBottom: '8px',
-                                        color: '#333'
-                                    },
-                                    children: "Business information and inquiries"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/privacy-policy/page.tsx",
-                                    lineNumber: 58,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                    style: {
-                                        marginBottom: '8px',
-                                        color: '#333'
-                                    },
-                                    children: "Any other information you voluntarily provide"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/privacy-policy/page.tsx",
-                                    lineNumber: 59,
-                                    columnNumber: 13
-                                }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/app/privacy-policy/page.tsx",
-                            lineNumber: 52,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h3", {
-                            style: {
-                                fontSize: '18px',
-                                fontWeight: '600',
-                                marginTop: '30px',
-                                marginBottom: '15px',
-                                color: '#333',
-                                fontFamily: 'Poppins, sans-serif'
-                            },
-                            children: "2.2 Automatically Collected Information"
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/privacy-policy/page.tsx",
-                            lineNumber: 62,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
-                            style: {
-                                paddingLeft: '25px',
-                                marginBottom: '20px',
-                                fontFamily: 'Poppins, sans-serif'
-                            },
-                            children: [
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                    style: {
-                                        marginBottom: '8px',
-                                        color: '#333'
-                                    },
-                                    children: "IP address and location data"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/privacy-policy/page.tsx",
-                                    lineNumber: 75,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                    style: {
-                                        marginBottom: '8px',
-                                        color: '#333'
-                                    },
-                                    children: "Browser type and version"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/privacy-policy/page.tsx",
-                                    lineNumber: 76,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                    style: {
-                                        marginBottom: '8px',
-                                        color: '#333'
-                                    },
-                                    children: "Device information"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/privacy-policy/page.tsx",
-                                    lineNumber: 77,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                    style: {
-                                        marginBottom: '8px',
-                                        color: '#333'
-                                    },
-                                    children: "Website usage patterns and analytics"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/privacy-policy/page.tsx",
-                                    lineNumber: 78,
-                                    columnNumber: 13
-                                }, this),
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
-                                    style: {
-                                        marginBottom: '8px',
-                                        color: '#333'
-                                    },
-                                    children: "Cookies and similar tracking technologies"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/privacy-policy/page.tsx",
-                                    lineNumber: 79,
-                                    columnNumber: 13
-                                }, this)
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/app/privacy-policy/page.tsx",
-                            lineNumber: 70,
-                            columnNumber: 11
-                        }, this)
-                    ]
-                }, void 0, true, {
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    style: {
+                        fontSize: '16px',
+                        lineHeight: '1.8',
+                        color: '#444',
+                        marginBottom: '15px',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: 'TGM Ventures, Inc., a Washington state corporation ("TGM Ventures," "Company," "we," "us," or "our"), is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website or engage with our services.'
+                }, void 0, false, {
                     fileName: "[project]/src/app/privacy-policy/page.tsx",
-                    lineNumber: 27,
+                    lineNumber: 16,
                     columnNumber: 9
                 }, this),
-                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("section", {
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                    style: {
+                        fontSize: '24px',
+                        fontWeight: '600',
+                        marginTop: '40px',
+                        marginBottom: '20px',
+                        color: '#222',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: "1. INFORMATION WE COLLECT"
+                }, void 0, false, {
+                    fileName: "[project]/src/app/privacy-policy/page.tsx",
+                    lineNumber: 26,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    style: {
+                        fontSize: '16px',
+                        lineHeight: '1.8',
+                        color: '#444',
+                        marginBottom: '15px',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: "We collect information you provide directly to us when you visit our website, communicate with us, or use our property and business management services. This includes contact information such as your name, email address, phone number, and mailing address. When you provide your mobile phone number through our website or other communications, we may use it to send and receive text messages related to our management services."
+                }, void 0, false, {
+                    fileName: "[project]/src/app/privacy-policy/page.tsx",
+                    lineNumber: 35,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    style: {
+                        fontSize: '16px',
+                        lineHeight: '1.8',
+                        color: '#444',
+                        marginBottom: '15px',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: "We also automatically collect certain information about your device when you visit our website, including your IP address, browser type, operating system, and browsing behavior. This helps us improve our website and services."
+                }, void 0, false, {
+                    fileName: "[project]/src/app/privacy-policy/page.tsx",
+                    lineNumber: 45,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                    style: {
+                        fontSize: '24px',
+                        fontWeight: '600',
+                        marginTop: '40px',
+                        marginBottom: '20px',
+                        color: '#222',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: "2. HOW WE USE YOUR INFORMATION"
+                }, void 0, false, {
+                    fileName: "[project]/src/app/privacy-policy/page.tsx",
+                    lineNumber: 55,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    style: {
+                        fontSize: '16px',
+                        lineHeight: '1.8',
+                        color: '#444',
+                        marginBottom: '15px',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: "We use the information we collect to provide and improve our management services for the various properties and businesses we oversee. This includes communicating with you about our services, responding to your inquiries, sending important updates and notifications, and fulfilling our obligations as a management company."
+                }, void 0, false, {
+                    fileName: "[project]/src/app/privacy-policy/page.tsx",
+                    lineNumber: 64,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    style: {
+                        fontSize: '16px',
+                        lineHeight: '1.8',
+                        color: '#444',
+                        marginBottom: '15px',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: "For text messaging specifically, we may send you property management communications, maintenance notifications, community updates, urgent alerts, appointment confirmations, and other service-related messages. Message frequency varies based on your needs and interactions with our managed properties or businesses."
+                }, void 0, false, {
+                    fileName: "[project]/src/app/privacy-policy/page.tsx",
+                    lineNumber: 74,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                    style: {
+                        fontSize: '24px',
+                        fontWeight: '600',
+                        marginTop: '40px',
+                        marginBottom: '20px',
+                        color: '#222',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: "3. TEXT MESSAGING TERMS"
+                }, void 0, false, {
+                    fileName: "[project]/src/app/privacy-policy/page.tsx",
+                    lineNumber: 84,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    style: {
+                        fontSize: '16px',
+                        lineHeight: '1.8',
+                        color: '#444',
+                        marginBottom: '15px',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: "By providing your mobile phone number, you consent to receive text messages from TGM Ventures at the number provided. Standard message and data rates may apply, and you are responsible for any charges from your wireless carrier."
+                }, void 0, false, {
+                    fileName: "[project]/src/app/privacy-policy/page.tsx",
+                    lineNumber: 93,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    style: {
+                        fontSize: '16px',
+                        lineHeight: '1.8',
+                        color: '#444',
+                        marginBottom: '15px',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: 'You may opt out of receiving text messages at any time by replying "STOP" to any message. For help, reply "HELP". Our text messaging services comply with CTIA guidelines.'
+                }, void 0, false, {
+                    fileName: "[project]/src/app/privacy-policy/page.tsx",
+                    lineNumber: 103,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                    style: {
+                        fontSize: '24px',
+                        fontWeight: '600',
+                        marginTop: '40px',
+                        marginBottom: '20px',
+                        color: '#222',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: "4. DATA SHARING AND DISCLOSURE"
+                }, void 0, false, {
+                    fileName: "[project]/src/app/privacy-policy/page.tsx",
+                    lineNumber: 113,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    style: {
+                        fontSize: '16px',
+                        lineHeight: '1.8',
+                        color: '#444',
+                        marginBottom: '15px',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: "We do not sell, trade, or rent your personal information to third parties for their marketing purposes. We may share your information with service providers who assist us in operating our business, such as property management software providers (including Rent Manager), maintenance contractors, and communication platforms. These providers are bound by confidentiality agreements and are only permitted to use your information as necessary to provide services to us."
+                }, void 0, false, {
+                    fileName: "[project]/src/app/privacy-policy/page.tsx",
+                    lineNumber: 122,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    style: {
+                        fontSize: '16px',
+                        lineHeight: '1.8',
+                        color: '#444',
+                        marginBottom: '15px',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: "We may also disclose your information when required by law, to protect our rights or property, or in connection with a business transfer."
+                }, void 0, false, {
+                    fileName: "[project]/src/app/privacy-policy/page.tsx",
+                    lineNumber: 132,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                    style: {
+                        fontSize: '24px',
+                        fontWeight: '600',
+                        marginTop: '40px',
+                        marginBottom: '20px',
+                        color: '#222',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
+                    children: "12. CONTACT INFORMATION"
+                }, void 0, false, {
+                    fileName: "[project]/src/app/privacy-policy/page.tsx",
+                    lineNumber: 142,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                    style: {
+                        fontSize: '16px',
+                        lineHeight: '1.8',
+                        color: '#444',
+                        marginBottom: '15px',
+                        fontFamily: 'Poppins, sans-serif'
+                    },
                     children: [
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                        "If you have questions about this Privacy Policy or our privacy practices, please",
+                        ' ',
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
+                            href: "/contact",
                             style: {
-                                fontSize: '24px',
-                                fontWeight: '600',
-                                marginTop: '40px',
-                                marginBottom: '20px',
-                                color: '#222',
+                                color: '#0066cc',
+                                textDecoration: 'none',
                                 fontFamily: 'Poppins, sans-serif'
                             },
-                            children: "3. Contact Us"
+                            children: "contact us"
                         }, void 0, false, {
                             fileName: "[project]/src/app/privacy-policy/page.tsx",
-                            lineNumber: 84,
+                            lineNumber: 159,
                             columnNumber: 11
                         }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                            style: {
-                                fontSize: '16px',
-                                lineHeight: '1.6',
-                                marginBottom: '15px',
-                                color: '#333',
-                                fontFamily: 'Poppins, sans-serif'
-                            },
-                            children: [
-                                "If you have questions about this Privacy Policy or our privacy practices, please",
-                                ' ',
-                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
-                                    href: "/contact",
-                                    style: {
-                                        color: '#007bff',
-                                        textDecoration: 'underline',
-                                        fontFamily: 'Poppins, sans-serif'
-                                    },
-                                    children: "contact us"
-                                }, void 0, false, {
-                                    fileName: "[project]/src/app/privacy-policy/page.tsx",
-                                    lineNumber: 100,
-                                    columnNumber: 13
-                                }, this),
-                                "."
-                            ]
-                        }, void 0, true, {
-                            fileName: "[project]/src/app/privacy-policy/page.tsx",
-                            lineNumber: 92,
-                            columnNumber: 11
-                        }, this),
-                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
-                            style: {
-                                backgroundColor: '#f8f9fa',
-                                borderRadius: '8px',
-                                padding: '20px',
-                                marginTop: '20px',
-                                border: '1px solid #e9ecef'
-                            },
-                            children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
-                                style: {
-                                    color: '#333',
-                                    margin: 0,
-                                    fontFamily: 'Poppins, sans-serif',
-                                    lineHeight: '1.6',
-                                    fontSize: '16px'
-                                },
-                                children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
-                                        children: "TGM Ventures, Inc."
-                                    }, void 0, false, {
-                                        fileName: "[project]/src/app/privacy-policy/page.tsx",
-                                        lineNumber: 125,
-                                        columnNumber: 15
-                                    }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
-                                        fileName: "[project]/src/app/privacy-policy/page.tsx",
-                                        lineNumber: 125,
-                                        columnNumber: 50
-                                    }, this),
-                                    "Email: management@tgmventures.com",
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
-                                        fileName: "[project]/src/app/privacy-policy/page.tsx",
-                                        lineNumber: 126,
-                                        columnNumber: 48
-                                    }, this),
-                                    "Website: www.tgmventures.com"
-                                ]
-                            }, void 0, true, {
-                                fileName: "[project]/src/app/privacy-policy/page.tsx",
-                                lineNumber: 118,
-                                columnNumber: 13
-                            }, this)
-                        }, void 0, false, {
-                            fileName: "[project]/src/app/privacy-policy/page.tsx",
-                            lineNumber: 111,
-                            columnNumber: 11
-                        }, this)
+                        " through our website."
                     ]
                 }, void 0, true, {
                     fileName: "[project]/src/app/privacy-policy/page.tsx",
-                    lineNumber: 83,
+                    lineNumber: 151,
+                    columnNumber: 9
+                }, this),
+                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    style: {
+                        backgroundColor: '#f8f9fa',
+                        padding: '20px',
+                        borderRadius: '8px',
+                        margin: '20px 0'
+                    },
+                    children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                        style: {
+                            fontSize: '16px',
+                            lineHeight: '1.8',
+                            color: '#444',
+                            margin: 0,
+                            fontFamily: 'Poppins, sans-serif'
+                        },
+                        children: [
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("strong", {
+                                style: {
+                                    fontWeight: '600',
+                                    color: '#222'
+                                },
+                                children: "TGM Ventures, Inc."
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/privacy-policy/page.tsx",
+                                lineNumber: 184,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
+                                fileName: "[project]/src/app/privacy-policy/page.tsx",
+                                lineNumber: 184,
+                                columnNumber: 93
+                            }, this),
+                            "Website:",
+                            ' ',
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
+                                href: "https://tgmventures.com",
+                                style: {
+                                    color: '#0066cc',
+                                    textDecoration: 'none',
+                                    fontFamily: 'Poppins, sans-serif'
+                                },
+                                children: "tgmventures.com"
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/privacy-policy/page.tsx",
+                                lineNumber: 186,
+                                columnNumber: 13
+                            }, this),
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("br", {}, void 0, false, {
+                                fileName: "[project]/src/app/privacy-policy/page.tsx",
+                                lineNumber: 195,
+                                columnNumber: 17
+                            }, this),
+                            "Contact:",
+                            ' ',
+                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$rsc$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$rsc$5d$__$28$ecmascript$29$__["jsxDEV"])("a", {
+                                href: "/contact",
+                                style: {
+                                    color: '#0066cc',
+                                    textDecoration: 'none',
+                                    fontFamily: 'Poppins, sans-serif'
+                                },
+                                children: "Contact Form"
+                            }, void 0, false, {
+                                fileName: "[project]/src/app/privacy-policy/page.tsx",
+                                lineNumber: 197,
+                                columnNumber: 13
+                            }, this)
+                        ]
+                    }, void 0, true, {
+                        fileName: "[project]/src/app/privacy-policy/page.tsx",
+                        lineNumber: 177,
+                        columnNumber: 11
+                    }, this)
+                }, void 0, false, {
+                    fileName: "[project]/src/app/privacy-policy/page.tsx",
+                    lineNumber: 171,
                     columnNumber: 9
                 }, this)
             ]

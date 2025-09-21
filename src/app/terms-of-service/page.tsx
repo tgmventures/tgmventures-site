@@ -4,176 +4,208 @@ export default function TermsOfServicePage() {
   return (
     <LegalPageLayout title="Terms of Service">
       <div>
-        <section>
-          <h2 style={{
-            fontSize: '24px',
-            fontWeight: '600',
-            marginTop: '40px',
-            marginBottom: '20px',
-            color: '#222',
-            fontFamily: 'Poppins, sans-serif'
-          }}>1. Agreement to Terms</h2>
-          <p style={{
-            fontSize: '16px',
-            lineHeight: '1.6',
-            marginBottom: '20px',
-            color: '#333',
-            fontFamily: 'Poppins, sans-serif'
-          }}>
-            By accessing and using the TGM Ventures, Inc. website (&quot;Service&quot;), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
-          </p>
-        </section>
+        <p style={{
+          fontSize: '14px',
+          color: '#666',
+          marginBottom: '30px',
+          fontFamily: 'Poppins, sans-serif'
+        }}>
+          Effective Date: September 19, 2025 | Last Updated: September 19, 2025
+        </p>
+        
+        <h2 style={{
+          fontSize: '24px',
+          fontWeight: '600',
+          marginTop: '40px',
+          marginBottom: '20px',
+          color: '#222',
+          fontFamily: 'Poppins, sans-serif'
+        }}>1. AGREEMENT TO TERMS</h2>
+        
+        <p style={{
+          fontSize: '16px',
+          lineHeight: '1.8',
+          color: '#444',
+          marginBottom: '15px',
+          fontFamily: 'Poppins, sans-serif'
+        }}>
+          These Terms of Service ("Terms") constitute a legally binding agreement between you and TGM Ventures, Inc., a Washington state corporation ("TGM Ventures," "we," "us," or "our"). By accessing our website or using our services, you agree to be bound by these Terms. If you do not agree, please do not use our website or services.
+        </p>
+        
+        <h2 style={{
+          fontSize: '24px',
+          fontWeight: '600',
+          marginTop: '40px',
+          marginBottom: '20px',
+          color: '#222',
+          fontFamily: 'Poppins, sans-serif'
+        }}>2. SERVICE DESCRIPTION</h2>
+        
+        <p style={{
+          fontSize: '16px',
+          lineHeight: '1.8',
+          color: '#444',
+          marginBottom: '15px',
+          fontFamily: 'Poppins, sans-serif'
+        }}>
+          TGM Ventures is a management company that oversees various properties, businesses, and assets. Our services include comprehensive management solutions, which may involve property management, business operations oversight, maintenance coordination, and related communications including text messaging services.
+        </p>
+        
+        <p style={{
+          fontSize: '16px',
+          lineHeight: '1.8',
+          color: '#444',
+          marginBottom: '15px',
+          fontFamily: 'Poppins, sans-serif'
+        }}>
+          Our text messaging services allow us to communicate efficiently with tenants, property owners, business partners, and other stakeholders. These messages may include updates, maintenance notifications, urgent alerts, appointment confirmations, and other management-related communications.
+        </p>
+        
+        <h2 style={{
+          fontSize: '24px',
+          fontWeight: '600',
+          marginTop: '40px',
+          marginBottom: '20px',
+          color: '#222',
+          fontFamily: 'Poppins, sans-serif'
+        }}>3. CONSENT TO RECEIVE TEXT MESSAGES</h2>
+        
+        <p style={{
+          fontSize: '16px',
+          lineHeight: '1.8',
+          color: '#444',
+          marginBottom: '15px',
+          fontFamily: 'Poppins, sans-serif'
+        }}>
+          By providing your mobile phone number to us, you consent to receive text messages from TGM Ventures. Message and data rates may apply, and message frequency will vary based on your interactions with us. You are responsible for any fees charged by your mobile carrier.
+        </p>
+        
+        <h2 style={{
+          fontSize: '24px',
+          fontWeight: '600',
+          marginTop: '40px',
+          marginBottom: '20px',
+          color: '#222',
+          fontFamily: 'Poppins, sans-serif'
+        }}>4. OPT-OUT PROCEDURES</h2>
+        
+        <p style={{
+          fontSize: '16px',
+          lineHeight: '1.8',
+          color: '#444',
+          marginBottom: '15px',
+          fontFamily: 'Poppins, sans-serif'
+        }}>
+          You may opt out of receiving text messages at any time by replying "STOP" to any text message or by{' '}
+          <a 
+            href="/contact" 
+            style={{
+              color: '#0066cc',
+              textDecoration: 'none',
+              fontFamily: 'Poppins, sans-serif'
+            }}
+          >
+            contacting us
+          </a> through our website. For help with our text messaging services, reply "HELP" to any message.
+        </p>
 
-        <section>
-          <h2 style={{
-            fontSize: '24px',
-            fontWeight: '600',
-            marginTop: '40px',
-            marginBottom: '20px',
-            color: '#222',
-            fontFamily: 'Poppins, sans-serif'
-          }}>2. Description of Service</h2>
-          <p style={{
-            fontSize: '16px',
-            lineHeight: '1.6',
-            marginBottom: '20px',
-            color: '#333',
-            fontFamily: 'Poppins, sans-serif'
-          }}>
-            TGM Ventures, Inc. is a Washington state corporation that builds, buys, and manages businesses and real estate. Our website provides information about our services, portfolio, and contact information for potential business opportunities.
-          </p>
-        </section>
+        <h2 style={{
+          fontSize: '24px',
+          fontWeight: '600',
+          marginTop: '40px',
+          marginBottom: '20px',
+          color: '#222',
+          fontFamily: 'Poppins, sans-serif'
+        }}>6. PRIVACY POLICY</h2>
+        
+        <p style={{
+          fontSize: '16px',
+          lineHeight: '1.8',
+          color: '#444',
+          marginBottom: '15px',
+          fontFamily: 'Poppins, sans-serif'
+        }}>
+          Your use of our services is also governed by our{' '}
+          <a 
+            href="/privacy-policy" 
+            style={{
+              color: '#0066cc',
+              textDecoration: 'none',
+              fontFamily: 'Poppins, sans-serif'
+            }}
+          >
+            Privacy Policy
+          </a>, which explains how we collect, use, and protect your information.
+        </p>
 
-        <section>
-          <h2 style={{
-            fontSize: '24px',
-            fontWeight: '600',
-            marginTop: '40px',
-            marginBottom: '20px',
-            color: '#222',
-            fontFamily: 'Poppins, sans-serif'
-          }}>3. Acceptable Use</h2>
-          <h3 style={{
-            fontSize: '18px',
-            fontWeight: '600',
-            marginTop: '30px',
-            marginBottom: '15px',
-            color: '#333',
-            fontFamily: 'Poppins, sans-serif'
-          }}>3.1 Permitted Use</h3>
+        <h2 style={{
+          fontSize: '24px',
+          fontWeight: '600',
+          marginTop: '40px',
+          marginBottom: '20px',
+          color: '#222',
+          fontFamily: 'Poppins, sans-serif'
+        }}>18. CONTACT INFORMATION</h2>
+        
+        <p style={{
+          fontSize: '16px',
+          lineHeight: '1.8',
+          color: '#444',
+          marginBottom: '15px',
+          fontFamily: 'Poppins, sans-serif'
+        }}>
+          If you have any questions about these Terms, please{' '}
+          <a 
+            href="/contact" 
+            style={{
+              color: '#0066cc',
+              textDecoration: 'none',
+              fontFamily: 'Poppins, sans-serif'
+            }}
+          >
+            contact us
+          </a> through our website.
+        </p>
+        
+        <div style={{
+          backgroundColor: '#f8f9fa',
+          padding: '20px',
+          borderRadius: '8px',
+          margin: '20px 0'
+        }}>
           <p style={{
             fontSize: '16px',
-            lineHeight: '1.6',
-            marginBottom: '15px',
-            color: '#333',
-            fontFamily: 'Poppins, sans-serif'
-          }}>You may use our website for:</p>
-          <ul style={{
-            paddingLeft: '25px',
-            marginBottom: '20px',
+            lineHeight: '1.8',
+            color: '#444',
+            margin: 0,
             fontFamily: 'Poppins, sans-serif'
           }}>
-            <li style={{ marginBottom: '8px', color: '#333' }}>Viewing information about our services</li>
-            <li style={{ marginBottom: '8px', color: '#333' }}>Contacting us for legitimate business inquiries</li>
-            <li style={{ marginBottom: '8px', color: '#333' }}>Accessing publicly available content</li>
-          </ul>
-          
-          <h3 style={{
-            fontSize: '18px',
-            fontWeight: '600',
-            marginTop: '30px',
-            marginBottom: '15px',
-            color: '#333',
-            fontFamily: 'Poppins, sans-serif'
-          }}>3.2 Prohibited Use</h3>
-          <p style={{
-            fontSize: '16px',
-            lineHeight: '1.6',
-            marginBottom: '15px',
-            color: '#333',
-            fontFamily: 'Poppins, sans-serif'
-          }}>You may not use our website for:</p>
-          <ul style={{
-            paddingLeft: '25px',
-            marginBottom: '20px',
-            fontFamily: 'Poppins, sans-serif'
-          }}>
-            <li style={{ marginBottom: '8px', color: '#333' }}>Any unlawful purpose or to solicit others to unlawful acts</li>
-            <li style={{ marginBottom: '8px', color: '#333' }}>Violating any international, federal, provincial, or state regulations, rules, laws, or local ordinances</li>
-            <li style={{ marginBottom: '8px', color: '#333' }}>Infringing upon or violating our intellectual property rights or the intellectual property rights of others</li>
-            <li style={{ marginBottom: '8px', color: '#333' }}>Harassing, abusing, insulting, harming, defaming, slandering, disparaging, intimidating, or discriminating</li>
-            <li style={{ marginBottom: '8px', color: '#333' }}>Submitting false or misleading information</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2 style={{
-            fontSize: '24px',
-            fontWeight: '600',
-            marginTop: '40px',
-            marginBottom: '20px',
-            color: '#222',
-            fontFamily: 'Poppins, sans-serif'
-          }}>4. Intellectual Property Rights</h2>
-          <p style={{
-            fontSize: '16px',
-            lineHeight: '1.6',
-            marginBottom: '20px',
-            color: '#333',
-            fontFamily: 'Poppins, sans-serif'
-          }}>
-            The Service and its original content, features, and functionality are and will remain the exclusive property of TGM Ventures, Inc. and its licensors. The Service is protected by copyright, trademark, and other laws.
-          </p>
-        </section>
-
-        <section>
-          <h2 style={{
-            fontSize: '24px',
-            fontWeight: '600',
-            marginTop: '40px',
-            marginBottom: '20px',
-            color: '#222',
-            fontFamily: 'Poppins, sans-serif'
-          }}>5. Contact Information</h2>
-          <p style={{
-            fontSize: '16px',
-            lineHeight: '1.6',
-            marginBottom: '15px',
-            color: '#333',
-            fontFamily: 'Poppins, sans-serif'
-          }}>
-            If you have any questions about these Terms of Service, please{' '}
+            <strong style={{ fontWeight: '600', color: '#222' }}>TGM Ventures, Inc.</strong><br />
+            Attn: Legal Department<br />
+            Website:{' '}
             <a 
-              href="/contact" 
+              href="https://tgmventures.com"
               style={{
-                color: '#007bff',
-                textDecoration: 'underline',
+                color: '#0066cc',
+                textDecoration: 'none',
                 fontFamily: 'Poppins, sans-serif'
               }}
             >
-              contact us
-            </a>.
+              tgmventures.com
+            </a><br />
+            Contact:{' '}
+            <a 
+              href="/contact"
+              style={{
+                color: '#0066cc',
+                textDecoration: 'none',
+                fontFamily: 'Poppins, sans-serif'
+              }}
+            >
+              Contact Form
+            </a>
           </p>
-          <div style={{
-            backgroundColor: '#f8f9fa',
-            borderRadius: '8px',
-            padding: '20px',
-            marginTop: '20px',
-            border: '1px solid #e9ecef'
-          }}>
-            <p style={{
-              color: '#333',
-              margin: 0,
-              fontFamily: 'Poppins, sans-serif',
-              lineHeight: '1.6',
-              fontSize: '16px'
-            }}>
-              <strong>TGM Ventures, Inc.</strong><br />
-              Email: management@tgmventures.com<br />
-              Website: www.tgmventures.com
-            </p>
-          </div>
-        </section>
+        </div>
       </div>
     </LegalPageLayout>
   )

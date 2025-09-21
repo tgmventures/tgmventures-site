@@ -81,7 +81,7 @@ export default function ContactPage() {
           style={{ display: 'inline-block' }}
         >
           <Image
-            src="https://github.com/tgmventures/tgmventures-site/blob/main/images/tgm-logo-icon.png?raw=true"
+            src="/images/tgm-logo-icon.png"
             alt="TGM Logo"
             width={60}
             height={60}

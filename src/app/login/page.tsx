@@ -68,7 +68,7 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-block">
             <Image
-              src="https://github.com/tgmventures/tgmventures-site/blob/main/images/tgm-logo-icon.png?raw=true"
+              src="/images/tgm-logo-icon.png"
               alt="TGM Ventures"
               width={100}
               height={100}

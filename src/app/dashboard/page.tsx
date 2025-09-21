@@ -64,7 +64,7 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Image
-                src="https://github.com/tgmventures/tgmventures-site/blob/main/images/tgm-logo-icon.png?raw=true"
+                src="/images/tgm-logo-icon.png"
                 alt="TGM Logo"
                 width={40}
                 height={40}

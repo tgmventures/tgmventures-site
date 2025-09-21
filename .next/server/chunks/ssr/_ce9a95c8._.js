@@ -15,7 +15,7 @@ const metadata = {
     title: 'TGM Ventures',
     description: 'We build, buy, and manage businesses and real estate.',
     icons: {
-        icon: 'https://github.com/tgmventures/tgmventures-site/blob/main/images/tgm-logo-icon.png?raw=true'
+        icon: '/images/tgm-logo-icon.png'
     }
 };
 function RootLayout({ children }) {

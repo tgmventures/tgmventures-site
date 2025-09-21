@@ -25,7 +25,7 @@ export default function HomePage() {
         <div className="flex flex-col justify-center items-center flex-1">
           <div style={{ marginBottom: '0' }}>
             <Image
-              src="https://github.com/tgmventures/tgmventures-site/blob/main/images/tgm-logo-icon.png?raw=true"
+              src="/images/tgm-logo-icon.png"
               alt="TGM Logo"
               width={150}
               height={150}

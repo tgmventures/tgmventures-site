@@ -1,8 +1,13 @@
 import { initializeApp, getApps } from 'firebase/app'
 import { getAuth, GoogleAuthProvider } from 'firebase/auth'
 
+// Check for API key
+if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+  throw new Error('Missing NEXT_PUBLIC_FIREBASE_API_KEY environment variable')
+}
+
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyCNdqeqeJL1W2vP0hpRLuEwYNPXomKkxRo",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: "tgm-ventures-site.firebaseapp.com",
   projectId: "tgm-ventures-site",
   storageBucket: "tgm-ventures-site.appspot.com",

@@ -19,9 +19,61 @@
 
 ---
 
-## 🏗️ **NEXT PHASE: ARCHITECTURE MIGRATION (PRIORITY)**
+## 🎯 **NEXT PHASE: Strategic Goals & Objectives System**
 
-### **🎯 Goal**: Transform static website into modern full-stack business platform
+### **Overview**: Company-wide and individual goal tracking system with quarterly planning
+
+### **Core Features:**
+- [ ] **Goals Database**: Store company and individual strategic goals
+- [ ] **User Roles**: CEO can set company-wide goals, individuals manage their own
+- [ ] **Quarterly Planning**: Goals assigned to Q1, Q2, Q3, Q4 with year selection
+- [ ] **Goal Limits**: Maximum 10 company goals (recommended)
+- [ ] **Two Views**: Company view and Individual view with toggle
+- [ ] **Progress Tracking**: Mark goals as complete, in-progress, or planned
+
+### **Example Company Goals:**
+- Purchase 1950 Bellevue
+- Start Obra Negra on Finca
+- Launch TGM Ventures Dashboard v2
+- Complete RefiHub Platform
+- Hire VP of Operations
+
+### **Technical Implementation:**
+- [ ] **Database Schema**: 
+  - Goals table (id, title, description, type: company/individual, owner_id, quarter, year, status)
+  - Users table (id, email, name, role: ceo/team_member)
+- [ ] **Goals Page UI**:
+  - Toggle between Company/Individual view
+  - Quarterly grid layout (Q1-Q4)
+  - Year selector (2025, 2026, etc.)
+  - Add/Edit/Delete goals (based on permissions)
+  - Drag-and-drop to reassign quarters
+- [ ] **Permissions System**:
+  - CEO role can create/edit company goals
+  - All users can create/edit their own goals
+  - All users can view company goals
+  - Users can only view their own individual goals
+- [ ] **Dashboard Integration**:
+  - Add "Strategic Goals" app icon to dashboard
+  - Show goal summary/progress on dashboard
+- [ ] **Notifications**:
+  - Quarterly reminders for goal review
+  - Goal completion celebrations
+
+### **User Experience Flow:**
+1. User clicks "Strategic Goals" from dashboard
+2. Lands on company goals view by default
+3. Can toggle to personal goals view
+4. CEO sees "Add Company Goal" button
+5. All users see "Add Personal Goal" button
+6. Goals displayed in quarterly grid format
+7. Click goal to view details/edit/mark complete
+
+---
+
+## 🏗️ **FUTURE PHASE: Enhanced Architecture Migration**
+
+### **🎯 Goal**: Transform into AI-powered business intelligence platform
 
 > **CRITICAL**: This phase MUST be completed before continuing with team dashboard features. See detailed plan: `planning/PHASE-4-ARCHITECTURE-MIGRATION.md`
 

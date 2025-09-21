@@ -24,7 +24,7 @@
 1. Go to https://vercel.com
 2. Import from GitHub: https://github.com/tgmventures/tgmventures-site
 3. Add environment variable:
-   - `NEXT_PUBLIC_FIREBASE_API_KEY` = `AIzaSyD-6NbMmGDn1rMn-qpltRNO6BpxuL9wilo`
+   - `NEXT_PUBLIC_FIREBASE_API_KEY` = `[Your Firebase API Key - see Firebase Console]`
 4. Deploy
 
 ### Option 2: Firebase Hosting (Static assets only)
@@ -32,10 +32,17 @@
 - API routes and authentication require Vercel or similar platform
 
 ## 🔐 Security Status
-- ✅ Old API key revoked
-- ✅ New API key secure in environment variables
+- ✅ No hardcoded API keys in codebase
+- ✅ Environment variables properly configured
 - ✅ Firebase Functions deployed
 - ✅ Domain restriction ready (@tgmventures.com)
+- ✅ .gitignore excludes sensitive files
+
+## 🔑 Environment Setup
+1. Copy `env.example` to `.env.local`
+2. Get your Firebase API key from: https://console.firebase.google.com/project/tgm-ventures-site/settings/general
+3. Fill in the actual values in `.env.local`
+4. Never commit `.env.local` to version control
 
 ## 🔗 Important URLs
 - GitHub: https://github.com/tgmventures/tgmventures-site

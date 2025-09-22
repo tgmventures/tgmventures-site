@@ -33,6 +33,8 @@ const TaxFilingsCard = lazy(() => import('@/components/dashboard/TaxFilingsCard'
 // Import loading skeleton
 import { CardSkeleton } from '@/components/dashboard/CardSkeleton'
 import { VentureCardSystem } from '@/components/dashboard/VentureCardSystem'
+import { getVentureCards, subscribeToVentureCards } from '@/lib/firebase/ventures-cards'
+import type { VentureCard } from '@/lib/firebase/ventures-cards'
 
 interface Project {
   id: string;
@@ -56,6 +58,7 @@ export default function DashboardPage() {
   })
   const [realEstateTasks, setRealEstateTasks] = useState<DivisionTask[]>([])
   const [venturesTasks, setVenturesTasks] = useState<DivisionTask[]>([])
+  const [ventureCards, setVentureCards] = useState<VentureCard[]>([])
   const [realEstateProjects, setRealEstateProjects] = useState<Project[]>([
     { id: '1', name: 'Finca El Tablazo', division: 'real-estate-development' }
   ])
@@ -142,6 +145,9 @@ export default function DashboardPage() {
         const venturesTasks = await getDivisionTasksCompat('ventures')
         setVenturesTasks(venturesTasks)
         
+        const ventureCards = await getVentureCards()
+        setVentureCards(ventureCards)
+        
         const taxFilingsData = await getTaxFilingsData()
         setTaxReturns(taxFilingsData.returns)
         setPropertyTaxH1Paid(taxFilingsData.propertyTaxH1Paid)
@@ -157,11 +163,13 @@ export default function DashboardPage() {
       const unsubAssetStatus = subscribeToAssetStatusCompat(setAssetStatus)
       const unsubRealEstateTasks = subscribeToDivisionTasksCompat('real-estate-development', setRealEstateTasks)
       const unsubVenturesTasks = subscribeToDivisionTasksCompat('ventures', setVenturesTasks)
+      const unsubVentureCards = subscribeToVentureCards(setVentureCards)
       
       return () => {
         unsubAssetStatus()
         unsubRealEstateTasks()
         unsubVenturesTasks()
+        unsubVentureCards()
       }
     }
   }, [user])
@@ -425,6 +433,11 @@ export default function DashboardPage() {
   
   const realEstateTasksComplete = realEstateTasks.filter(t => t.isChecked).length
   const venturesTasksComplete = venturesTasks.filter(t => t.isChecked).length
+  
+  // Calculate venture objectives from venture cards
+  const allVentureObjectives = ventureCards.flatMap(card => card.objectives || [])
+  const completedVentureObjectives = allVentureObjectives.filter(obj => obj.isChecked).length
+  const totalVentureObjectives = allVentureObjectives.length
 
   // Define apps for each business unit
   const assetManagementApps = [
@@ -775,7 +788,7 @@ export default function DashboardPage() {
                 <div className="flex items-center gap-2">
                   <div className="h-2 w-2 rounded-full bg-purple-500"></div>
                   <div className="text-gray-600">
-                    <span className="whitespace-nowrap">{venturesTasks.filter(t => !t.isChecked).length}/{venturesTasks.length}</span>{' '}
+                    <span className="whitespace-nowrap">{totalVentureObjectives - completedVentureObjectives}/{totalVentureObjectives}</span>{' '}
                     <span>Venture Objectives</span>
                   </div>
                 </div>

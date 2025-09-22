@@ -36,6 +36,7 @@ import { VentureCardSystem } from '@/components/dashboard/VentureCardSystem'
 import { getVentureCards, subscribeToVentureCards } from '@/lib/firebase/ventures-cards'
 import type { VentureCard } from '@/lib/firebase/ventures-cards'
 import { shouldShowTask, shouldShowAssetTask, getVisibleTaskCounts } from '@/lib/utils/task-visibility'
+import { getWeeklyCompletionCount, incrementWeeklyCompletionCount, decrementWeeklyCompletionCount } from '@/lib/firebase/weekly-progress'
 
 interface Project {
   id: string;
@@ -82,13 +83,24 @@ export default function DashboardPage() {
   const [businessUnit, setBusinessUnit] = useState<BusinessUnit>('asset-management')
   const [loadingBusinessUnit, setLoadingBusinessUnit] = useState(true)
   const [showSuccessToast, setShowSuccessToast] = useState(false)
-  const [todayCompletedCount, setTodayCompletedCount] = useState(0)
+  const [weeklyCompletedCount, setWeeklyCompletedCount] = useState(0)
 
   useEffect(() => {
     if (!loading && !user) {
       router.push('/login')
     }
   }, [user, loading, router])
+
+  // Load weekly completion count
+  useEffect(() => {
+    const loadWeeklyCount = async () => {
+      if (user) {
+        const count = await getWeeklyCompletionCount(user.uid)
+        setWeeklyCompletedCount(count)
+      }
+    }
+    loadWeeklyCount()
+  }, [user])
 
   // Load user preferences and business unit
   useEffect(() => {
@@ -213,13 +225,15 @@ export default function DashboardPage() {
       if (!assetStatus[field]) {
         setJustCompletedTask(`asset-${field}`)
         setShowSuccessToast(true)
-        setTodayCompletedCount(prev => prev + 1)
+        setWeeklyCompletedCount(prev => prev + 1)
+        if (user) await incrementWeeklyCompletionCount(user.uid)
         
         // Hide toast after 3 seconds
         setTimeout(() => setShowSuccessToast(false), 3000)
       } else {
         // Decrement counter when unchecking
-        setTodayCompletedCount(prev => Math.max(0, prev - 1))
+        setWeeklyCompletedCount(prev => Math.max(0, prev - 1))
+        if (user) await decrementWeeklyCompletionCount(user.uid)
       }
     } catch (error) {
       console.error('Error updating status:', error)
@@ -234,13 +248,15 @@ export default function DashboardPage() {
       if (!currentStatus) {
         setJustCompletedTask(`tax-${taxReturnId}`)
         setShowSuccessToast(true)
-        setTodayCompletedCount(prev => prev + 1)
+        setWeeklyCompletedCount(prev => prev + 1)
+        if (user) await incrementWeeklyCompletionCount(user.uid)
         
         // Hide toast after 3 seconds
         setTimeout(() => setShowSuccessToast(false), 3000)
       } else {
         // Decrement counter when unchecking
-        setTodayCompletedCount(prev => Math.max(0, prev - 1))
+        setWeeklyCompletedCount(prev => Math.max(0, prev - 1))
+        if (user) await decrementWeeklyCompletionCount(user.uid)
       }
     } catch (error) {
       console.error('Error updating tax return status:', error)
@@ -262,13 +278,15 @@ export default function DashboardPage() {
       if (newValue) {
         setJustCompletedTask(`property-tax-${period.toLowerCase()}`)
         setShowSuccessToast(true)
-        setTodayCompletedCount(prev => prev + 1)
+        setWeeklyCompletedCount(prev => prev + 1)
+        if (user) await incrementWeeklyCompletionCount(user.uid)
         
         // Hide toast after 3 seconds
         setTimeout(() => setShowSuccessToast(false), 3000)
       } else {
         // Decrement counter when unchecking
-        setTodayCompletedCount(prev => Math.max(0, prev - 1))
+        setWeeklyCompletedCount(prev => Math.max(0, prev - 1))
+        if (user) await decrementWeeklyCompletionCount(user.uid)
       }
       
       // Update in Firestore
@@ -318,13 +336,15 @@ export default function DashboardPage() {
       if (!isChecked) {
         setJustCompletedTask(taskId)
         setShowSuccessToast(true)
-        setTodayCompletedCount(prev => prev + 1)
+        setWeeklyCompletedCount(prev => prev + 1)
+        if (user) await incrementWeeklyCompletionCount(user.uid)
         
         // Hide toast after 3 seconds
         setTimeout(() => setShowSuccessToast(false), 3000)
       } else {
         // Decrement counter when unchecking
-        setTodayCompletedCount(prev => Math.max(0, prev - 1))
+        setWeeklyCompletedCount(prev => Math.max(0, prev - 1))
+        if (user) await decrementWeeklyCompletionCount(user.uid)
       }
     } catch (error) {
       console.error('Error updating task:', error)
@@ -658,11 +678,11 @@ export default function DashboardPage() {
         </div>
       )}
       
-      {/* Daily completion count header */}
-      {todayCompletedCount > 0 && (
+      {/* Weekly completion count header */}
+      {weeklyCompletedCount > 0 && (
         <div className="bg-green-50 border-b border-green-200 px-4 py-2">
           <p className="text-sm text-green-800 text-center">
-            🎉 You've completed {todayCompletedCount} objective{todayCompletedCount !== 1 ? 's' : ''} today!
+            🎉 You've completed {weeklyCompletedCount} objective{weeklyCompletedCount !== 1 ? 's' : ''} this week!
           </p>
         </div>
       )}
@@ -1007,7 +1027,9 @@ export default function DashboardPage() {
             userEmail={user.email || ''} 
             userName={user.displayName || ''} 
             setShowSuccessToast={setShowSuccessToast}
-            setTodayCompletedCount={setTodayCompletedCount}
+            setWeeklyCompletedCount={setWeeklyCompletedCount}
+            incrementWeeklyCount={user ? () => incrementWeeklyCompletionCount(user.uid) : undefined}
+            decrementWeeklyCount={user ? () => decrementWeeklyCompletionCount(user.uid) : undefined}
           />}
                 </div>
       )}

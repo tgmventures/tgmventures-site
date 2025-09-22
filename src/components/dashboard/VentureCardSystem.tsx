@@ -19,10 +19,12 @@ interface VentureCardSystemProps {
   userEmail?: string;
   userName?: string;
   setShowSuccessToast?: (show: boolean) => void;
-  setTodayCompletedCount?: (fn: (prev: number) => number) => void;
+  setWeeklyCompletedCount?: (fn: (prev: number) => number) => void;
+  incrementWeeklyCount?: () => Promise<void>;
+  decrementWeeklyCount?: () => Promise<void>;
 }
 
-export function VentureCardSystem({ userEmail, userName, setShowSuccessToast, setTodayCompletedCount }: VentureCardSystemProps) {
+export function VentureCardSystem({ userEmail, userName, setShowSuccessToast, setWeeklyCompletedCount, incrementWeeklyCount, decrementWeeklyCount }: VentureCardSystemProps) {
   const [cards, setCards] = useState<VentureCard[]>([])
   const [addingCard, setAddingCard] = useState(false)
   const [newCardTitle, setNewCardTitle] = useState('')
@@ -111,7 +113,8 @@ export function VentureCardSystem({ userEmail, userName, setShowSuccessToast, se
       if (!objective.isChecked) {
         setJustCompletedObjective(`${cardId}-${objective.id}`)
         if (setShowSuccessToast) setShowSuccessToast(true)
-        if (setTodayCompletedCount) setTodayCompletedCount(prev => prev + 1)
+        if (setWeeklyCompletedCount) setWeeklyCompletedCount(prev => prev + 1)
+        if (incrementWeeklyCount) await incrementWeeklyCount()
         
         // Hide toast after 3 seconds
         if (setShowSuccessToast) {
@@ -119,7 +122,8 @@ export function VentureCardSystem({ userEmail, userName, setShowSuccessToast, se
         }
       } else {
         // Decrement counter when unchecking
-        if (setTodayCompletedCount) setTodayCompletedCount(prev => Math.max(0, prev - 1))
+        if (setWeeklyCompletedCount) setWeeklyCompletedCount(prev => Math.max(0, prev - 1))
+        if (decrementWeeklyCount) await decrementWeeklyCount()
       }
     } catch (error) {
       console.error('Error updating objective:', error)

@@ -63,9 +63,10 @@ export default function TrainingPage() {
   const [categories, setCategories] = useState<Category[]>([])
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [selectedModule, setSelectedModule] = useState<TrainingModule | null>(null)
-  const [selectedMainCategory, setSelectedMainCategory] = useState<string | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null)
   const [expandedCategories, setExpandedCategories] = useState<string[]>([])
+  const [searchQuery, setSearchQuery] = useState('')
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -137,7 +138,7 @@ export default function TrainingPage() {
           subCategories: data.subCategories || []
         } as Category
       })
-      setCategories(categoriesData)
+      setCategories(categoriesData.sort((a, b) => a.name.localeCompare(b.name)))
     } catch (error) {
       console.error('Error loading categories:', error)
     }
@@ -309,10 +310,34 @@ export default function TrainingPage() {
     )
   }
 
-  const getModulesByCategory = (mainCat: string, subCat: string) => {
-    return modules.filter(m => 
-      m.mainCategory === mainCat && m.subCategory === subCat
-    )
+  const getFilteredModules = () => {
+    let filtered = modules
+
+    // Filter by search query
+    if (searchQuery) {
+      filtered = filtered.filter(m => 
+        m.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        m.description.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    }
+
+    // Filter by category/subcategory
+    if (selectedCategory) {
+      filtered = filtered.filter(m => m.mainCategory === selectedCategory)
+    }
+    if (selectedSubCategory) {
+      filtered = filtered.filter(m => m.subCategory === selectedSubCategory)
+    }
+
+    return filtered
+  }
+
+  const getLoomThumbnail = (loomUrl: string) => {
+    const videoId = extractLoomVideoId(loomUrl)
+    if (videoId) {
+      return `https://cdn.loom.com/sessions/thumbnails/${videoId}-00001.jpg`
+    }
+    return null
   }
 
   if (loading) {
@@ -328,8 +353,8 @@ export default function TrainingPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <header className="bg-white shadow-sm border-b border-gray-100 fixed top-0 left-0 right-0 z-40">
+        <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link href="/dashboard" className="flex items-center group">
@@ -348,369 +373,59 @@ export default function TrainingPage() {
             </div>
             <button
               onClick={() => setShowCreateForm(true)}
-              className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+              className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
             >
-              + New Module
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              New Module
             </button>
           </div>
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Module List or Create Form */}
-        {showCreateForm ? (
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <h2 className="text-xl font-semibold mb-6">Create Training Module</h2>
-            <form onSubmit={handleCreateModule}>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                  <textarea
-                    required
-                    rows={3}
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Loom URL</label>
-                  <input
-                    type="url"
-                    required
-                    placeholder="https://www.loom.com/share/..."
-                    value={formData.loomUrl}
-                    onChange={(e) => setFormData({ ...formData, loomUrl: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="relative">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Main Category</label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.mainCategory}
-                      onChange={(e) => handleMainCategoryInput(e.target.value)}
-                      onFocus={() => setShowMainCategoryDropdown(true)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    />
-                    {showMainCategoryDropdown && filteredMainCategories.length > 0 && (
-                      <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
-                        {filteredMainCategories.map((cat) => (
-                          <button
-                            key={cat.id}
-                            type="button"
-                            onClick={() => {
-                              setFormData({ ...formData, mainCategory: cat.name, subCategory: '' })
-                              setShowMainCategoryDropdown(false)
-                            }}
-                            className="w-full text-left px-3 py-2 hover:bg-gray-100"
-                          >
-                            {cat.name}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  <div className="relative">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Subcategory</label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.subCategory}
-                      onChange={(e) => handleSubCategoryInput(e.target.value)}
-                      onFocus={() => formData.mainCategory && setShowSubCategoryDropdown(true)}
-                      disabled={!formData.mainCategory}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:bg-gray-100"
-                    />
-                    {showSubCategoryDropdown && filteredSubCategories.length > 0 && (
-                      <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
-                        {filteredSubCategories.map((sub) => (
-                          <button
-                            key={sub}
-                            type="button"
-                            onClick={() => {
-                              setFormData({ ...formData, subCategory: sub })
-                              setShowSubCategoryDropdown(false)
-                            }}
-                            className="w-full text-left px-3 py-2 hover:bg-gray-100"
-                          >
-                            {sub}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Checklist Items</label>
-                  <div className="space-y-2">
-                    {checklistItems.map((item) => (
-                      <div key={item.id} className="flex items-center gap-2 group">
-                        <span className="text-gray-400">{item.order + 1}.</span>
-                        {editingChecklistId === item.id ? (
-                          <form 
-                            onSubmit={(e) => {
-                              e.preventDefault()
-                              handleEditChecklistItem(item.id, editChecklistText)
-                            }}
-                            className="flex-1 flex items-center gap-2"
-                          >
-                            <input
-                              type="text"
-                              value={editChecklistText}
-                              onChange={(e) => setEditChecklistText(e.target.value)}
-                              className="flex-1 text-sm px-2 py-1 border border-purple-300 rounded focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                              autoFocus
-                              onBlur={() => handleEditChecklistItem(item.id, editChecklistText)}
-                              onKeyDown={(e) => {
-                                if (e.key === 'Escape') {
-                                  setEditingChecklistId(null)
-                                  setEditChecklistText('')
-                                }
-                              }}
-                            />
-                          </form>
-                        ) : (
-                          <span 
-                            onClick={() => startEditingChecklistItem(item.id, item.text)}
-                            className="flex-1 text-sm cursor-pointer hover:text-purple-600"
-                          >
-                            {item.text}
-                          </span>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() => handleDeleteChecklistItem(item.id)}
-                          className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-all duration-200"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                        </button>
-                      </div>
-                    ))}
-                    
-                    {addingChecklistItem ? (
-                      <form 
-                        onSubmit={(e) => {
-                          e.preventDefault()
-                          handleAddChecklistItem()
-                        }}
-                        className="flex items-center gap-2 mt-2"
-                      >
-                        <input
-                          type="text"
-                          value={newChecklistText}
-                          onChange={(e) => setNewChecklistText(e.target.value)}
-                          placeholder="Add checklist item..."
-                          className="flex-1 text-sm px-3 py-1.5 border border-gray-200 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                          autoFocus
-                        />
-                        <button
-                          type="submit"
-                          className="text-green-600 hover:text-green-700"
-                        >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setAddingChecklistItem(false)
-                            setNewChecklistText('')
-                          }}
-                          className="text-gray-400 hover:text-gray-600"
-                        >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                        </button>
-                      </form>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => setAddingChecklistItem(true)}
-                        className="text-sm text-gray-400 hover:text-gray-600 transition-all duration-200 mt-2"
-                      >
-                        + Add checklist item
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="mt-6 flex gap-3">
-                <button
-                  type="submit"
-                  className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors"
-                >
-                  Create Module
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowCreateForm(false)
-                    setFormData({ title: '', description: '', loomUrl: '', mainCategory: '', subCategory: '' })
-                    setChecklistItems([])
-                  }}
-                  className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 transition-colors"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-        ) : selectedModule ? (
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            {/* Module Display */}
-            <div className="mb-6 flex justify-between items-start">
-              <div>
-                <h2 className="text-2xl font-semibold">{selectedModule.title}</h2>
-                <p className="text-gray-600 mt-1">{selectedModule.description}</p>
-                <div className="mt-2 flex gap-2">
-                  <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">
-                    {selectedModule.mainCategory}
-                  </span>
-                  <span className="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
-                    {selectedModule.subCategory}
-                  </span>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setSelectedModule(null)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-                {isAdmin && (
-                  <button
-                    onClick={() => handleDeleteModule(selectedModule.id)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
-                )}
-              </div>
+      <div className="flex pt-16">
+        {/* Sidebar */}
+        <aside className="w-64 bg-white border-r border-gray-200 h-screen fixed left-0 top-16 overflow-y-auto">
+          <div className="p-4">
+            {/* Search */}
+            <div className="relative mb-6">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search modules..."
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
+              />
+              <svg className="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Loom Video */}
-              <div>
-                <h3 className="text-lg font-semibold mb-3">Training Video</h3>
-                <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
-                  {extractLoomVideoId(selectedModule.loomUrl) ? (
-                    <iframe
-                      src={`https://www.loom.com/embed/${extractLoomVideoId(selectedModule.loomUrl)}`}
-                      frameBorder="0"
-                      allowFullScreen
-                      className="w-full h-full"
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center h-full text-gray-500">
-                      Invalid Loom URL
-                    </div>
-                  )}
-                </div>
-              </div>
+            {/* All Modules */}
+            <button
+              onClick={() => {
+                setSelectedCategory(null)
+                setSelectedSubCategory(null)
+              }}
+              className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors mb-4 ${
+                !selectedCategory ? 'bg-purple-50 text-purple-700' : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              All Modules
+            </button>
 
-              {/* Checklist */}
-              <div>
-                <h3 className="text-lg font-semibold mb-3">Checklist</h3>
-                <div className="space-y-2">
-                  {selectedModule.checklist.map((item, index) => (
-                    <label key={item.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded">
-                      <input type="checkbox" className="h-5 w-5 text-purple-600 rounded" />
-                      <span className="text-sm">{item.text}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Comments Section */}
-            <div className="mt-8 border-t pt-6">
-              <h3 className="text-lg font-semibold mb-4">Comments & Tasks</h3>
-              <div className="space-y-4">
-                {selectedModule.comments?.map((comment) => (
-                  <div key={comment.id} className="bg-gray-50 rounded-lg p-4">
-                    <p className="text-sm text-gray-700">{comment.text}</p>
-                    {comment.asanaTaskUrl && (
-                      <a
-                        href={comment.asanaTaskUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-sm text-purple-600 hover:text-purple-700 mt-1 inline-block"
-                      >
-                        View Asana Task →
-                      </a>
-                    )}
-                    <p className="text-xs text-gray-500 mt-2">
-                      By {comment.createdByEmail} • {new Date(comment.createdAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              {/* Add Comment Form */}
-              <div className="mt-4 space-y-3">
-                <textarea
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  placeholder="Add a comment..."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  rows={3}
-                />
-                <input
-                  type="url"
-                  value={asanaTaskUrl}
-                  onChange={(e) => setAsanaTaskUrl(e.target.value)}
-                  placeholder="Asana task URL (optional)"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                />
-                <button
-                  onClick={handleAddComment}
-                  disabled={!commentText.trim()}
-                  className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors disabled:bg-gray-400"
-                >
-                  Add Comment
-                </button>
-              </div>
-            </div>
-          </div>
-        ) : (
-          /* Category-based Module Organization */
-          <div className="space-y-6">
-            {categories.length === 0 ? (
-              <div className="text-center py-12 bg-white rounded-xl shadow-sm">
-                <p className="text-gray-500">No training modules yet. Create your first module to get started!</p>
-              </div>
-            ) : (
-              categories.map((category) => (
-                <div key={category.id} className="bg-white rounded-xl shadow-sm overflow-hidden">
+            {/* Categories */}
+            <div className="space-y-1">
+              {categories.map((category) => (
+                <div key={category.id}>
                   <button
                     onClick={() => toggleCategory(category.name)}
-                    className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                    className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                   >
-                    <h3 className="text-lg font-semibold text-gray-900">{category.name}</h3>
+                    <span>{category.name}</span>
                     <svg 
-                      className={`w-5 h-5 text-gray-400 transition-transform ${expandedCategories.includes(category.name) ? 'rotate-180' : ''}`} 
+                      className={`w-4 h-4 text-gray-400 transition-transform ${expandedCategories.includes(category.name) ? 'rotate-180' : ''}`} 
                       fill="none" 
                       stroke="currentColor" 
                       viewBox="0 0 24 24"
@@ -720,47 +435,462 @@ export default function TrainingPage() {
                   </button>
                   
                   {expandedCategories.includes(category.name) && (
-                    <div className="border-t border-gray-100">
-                      {(category.subCategories || []).map((subCategory) => {
-                        const moduleCount = getModulesByCategory(category.name, subCategory).length
-                        return (
-                          <div key={subCategory} className="border-b border-gray-50 last:border-0">
-                            <button
-                              onClick={() => {
-                                setSelectedMainCategory(category.name)
-                                setSelectedSubCategory(subCategory)
-                              }}
-                              className="w-full px-8 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors text-left"
-                            >
-                              <span className="text-sm text-gray-700">{subCategory}</span>
-                              <span className="text-xs text-gray-400">{moduleCount} module{moduleCount !== 1 ? 's' : ''}</span>
-                            </button>
-                            
-                            {selectedMainCategory === category.name && selectedSubCategory === subCategory && (
-                              <div className="px-8 pb-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {getModulesByCategory(category.name, subCategory).map((module) => (
-                                  <button
-                                    key={module.id}
-                                    onClick={() => setSelectedModule(module)}
-                                    className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors text-left"
-                                  >
-                                    <h4 className="font-medium text-gray-900 mb-1">{module.title}</h4>
-                                    <p className="text-sm text-gray-600 line-clamp-2">{module.description}</p>
-                                  </button>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        )
-                      })}
+                    <div className="ml-3 mt-1 space-y-1">
+                      <button
+                        onClick={() => {
+                          setSelectedCategory(category.name)
+                          setSelectedSubCategory(null)
+                        }}
+                        className={`w-full text-left px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                          selectedCategory === category.name && !selectedSubCategory 
+                            ? 'bg-purple-50 text-purple-700' 
+                            : 'text-gray-600 hover:bg-gray-100'
+                        }`}
+                      >
+                        All {category.name}
+                      </button>
+                      {(category.subCategories || []).map((subCategory) => (
+                        <button
+                          key={subCategory}
+                          onClick={() => {
+                            setSelectedCategory(category.name)
+                            setSelectedSubCategory(subCategory)
+                          }}
+                          className={`w-full text-left px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                            selectedCategory === category.name && selectedSubCategory === subCategory
+                              ? 'bg-purple-50 text-purple-700' 
+                              : 'text-gray-600 hover:bg-gray-100'
+                          }`}
+                        >
+                          {subCategory}
+                        </button>
+                      ))}
                     </div>
                   )}
                 </div>
-              ))
-            )}
+              ))}
+            </div>
           </div>
-        )}
-      </main>
+        </aside>
+
+        {/* Main Content */}
+        <main className="flex-1 ml-64 p-8">
+          {showCreateForm ? (
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <h2 className="text-xl font-semibold mb-6">Create Training Module</h2>
+                <form onSubmit={handleCreateModule}>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                      <input
+                        type="text"
+                        required
+                        value={formData.title}
+                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                      <textarea
+                        required
+                        rows={3}
+                        value={formData.description}
+                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Loom URL</label>
+                      <input
+                        type="url"
+                        required
+                        placeholder="https://www.loom.com/share/..."
+                        value={formData.loomUrl}
+                        onChange={(e) => setFormData({ ...formData, loomUrl: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="relative">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Main Category</label>
+                        <input
+                          type="text"
+                          required
+                          value={formData.mainCategory}
+                          onChange={(e) => handleMainCategoryInput(e.target.value)}
+                          onFocus={() => setShowMainCategoryDropdown(true)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                        />
+                        {showMainCategoryDropdown && filteredMainCategories.length > 0 && (
+                          <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
+                            {filteredMainCategories.map((cat) => (
+                              <button
+                                key={cat.id}
+                                type="button"
+                                onClick={() => {
+                                  setFormData({ ...formData, mainCategory: cat.name, subCategory: '' })
+                                  setShowMainCategoryDropdown(false)
+                                }}
+                                className="w-full text-left px-3 py-2 hover:bg-gray-100"
+                              >
+                                {cat.name}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <div className="relative">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Subcategory</label>
+                        <input
+                          type="text"
+                          required
+                          value={formData.subCategory}
+                          onChange={(e) => handleSubCategoryInput(e.target.value)}
+                          onFocus={() => formData.mainCategory && setShowSubCategoryDropdown(true)}
+                          disabled={!formData.mainCategory}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:bg-gray-100"
+                        />
+                        {showSubCategoryDropdown && filteredSubCategories.length > 0 && (
+                          <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
+                            {filteredSubCategories.map((sub) => (
+                              <button
+                                key={sub}
+                                type="button"
+                                onClick={() => {
+                                  setFormData({ ...formData, subCategory: sub })
+                                  setShowSubCategoryDropdown(false)
+                                }}
+                                className="w-full text-left px-3 py-2 hover:bg-gray-100"
+                              >
+                                {sub}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Checklist Items</label>
+                      <div className="space-y-2">
+                        {checklistItems.map((item) => (
+                          <div key={item.id} className="flex items-center gap-2 group">
+                            <span className="text-gray-400">{item.order + 1}.</span>
+                            {editingChecklistId === item.id ? (
+                              <form 
+                                onSubmit={(e) => {
+                                  e.preventDefault()
+                                  handleEditChecklistItem(item.id, editChecklistText)
+                                }}
+                                className="flex-1 flex items-center gap-2"
+                              >
+                                <input
+                                  type="text"
+                                  value={editChecklistText}
+                                  onChange={(e) => setEditChecklistText(e.target.value)}
+                                  className="flex-1 text-sm px-2 py-1 border border-purple-300 rounded focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                  autoFocus
+                                  onBlur={() => handleEditChecklistItem(item.id, editChecklistText)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Escape') {
+                                      setEditingChecklistId(null)
+                                      setEditChecklistText('')
+                                    }
+                                  }}
+                                />
+                              </form>
+                            ) : (
+                              <span 
+                                onClick={() => startEditingChecklistItem(item.id, item.text)}
+                                className="flex-1 text-sm cursor-pointer hover:text-purple-600"
+                              >
+                                {item.text}
+                              </span>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteChecklistItem(item.id)}
+                              className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-all duration-200"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          </div>
+                        ))}
+                        
+                        {addingChecklistItem ? (
+                          <form 
+                            onSubmit={(e) => {
+                              e.preventDefault()
+                              handleAddChecklistItem()
+                            }}
+                            className="flex items-center gap-2 mt-2"
+                          >
+                            <input
+                              type="text"
+                              value={newChecklistText}
+                              onChange={(e) => setNewChecklistText(e.target.value)}
+                              placeholder="Add checklist item..."
+                              className="flex-1 text-sm px-3 py-1.5 border border-gray-200 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                              autoFocus
+                            />
+                            <button
+                              type="submit"
+                              className="text-green-600 hover:text-green-700"
+                            >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setAddingChecklistItem(false)
+                                setNewChecklistText('')
+                              }}
+                              className="text-gray-400 hover:text-gray-600"
+                            >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          </form>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setAddingChecklistItem(true)}
+                            className="text-sm text-gray-400 hover:text-gray-600 transition-all duration-200 mt-2"
+                          >
+                            + Add checklist item
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-6 flex gap-3">
+                    <button
+                      type="submit"
+                      className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors"
+                    >
+                      Create Module
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowCreateForm(false)
+                        setFormData({ title: '', description: '', loomUrl: '', mainCategory: '', subCategory: '' })
+                        setChecklistItems([])
+                      }}
+                      className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          ) : selectedModule ? (
+            <div className="max-w-6xl mx-auto">
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                {/* Module Display */}
+                <div className="mb-6 flex justify-between items-start">
+                  <div>
+                    <h2 className="text-2xl font-semibold">{selectedModule.title}</h2>
+                    <p className="text-gray-600 mt-1">{selectedModule.description}</p>
+                    <div className="mt-2 flex gap-2">
+                      <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">
+                        {selectedModule.mainCategory}
+                      </span>
+                      <span className="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                        {selectedModule.subCategory}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setSelectedModule(null)}
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                    {isAdmin && (
+                      <button
+                        onClick={() => handleDeleteModule(selectedModule.id)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Loom Video */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-3">Training Video</h3>
+                    <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                      {extractLoomVideoId(selectedModule.loomUrl) ? (
+                        <iframe
+                          src={`https://www.loom.com/embed/${extractLoomVideoId(selectedModule.loomUrl)}`}
+                          frameBorder="0"
+                          allowFullScreen
+                          className="w-full h-full"
+                        />
+                      ) : (
+                        <div className="flex items-center justify-center h-full text-gray-500">
+                          Invalid Loom URL
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Checklist */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-3">Checklist</h3>
+                    <div className="space-y-2">
+                      {selectedModule.checklist.map((item, index) => (
+                        <label key={item.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded">
+                          <input type="checkbox" className="h-5 w-5 text-purple-600 rounded" />
+                          <span className="text-sm">{item.text}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Comments Section */}
+                <div className="mt-8 border-t pt-6">
+                  <h3 className="text-lg font-semibold mb-4">Comments & Tasks</h3>
+                  <div className="space-y-4">
+                    {selectedModule.comments?.map((comment) => (
+                      <div key={comment.id} className="bg-gray-50 rounded-lg p-4">
+                        <p className="text-sm text-gray-700">{comment.text}</p>
+                        {comment.asanaTaskUrl && (
+                          <a
+                            href={comment.asanaTaskUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sm text-purple-600 hover:text-purple-700 mt-1 inline-block"
+                          >
+                            View Asana Task →
+                          </a>
+                        )}
+                        <p className="text-xs text-gray-500 mt-2">
+                          By {comment.createdByEmail} • {new Date(comment.createdAt).toLocaleDateString()}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Add Comment Form */}
+                  <div className="mt-4 space-y-3">
+                    <textarea
+                      value={commentText}
+                      onChange={(e) => setCommentText(e.target.value)}
+                      placeholder="Add a comment..."
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      rows={3}
+                    />
+                    <input
+                      type="url"
+                      value={asanaTaskUrl}
+                      onChange={(e) => setAsanaTaskUrl(e.target.value)}
+                      placeholder="Asana task URL (optional)"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                    <button
+                      onClick={handleAddComment}
+                      disabled={!commentText.trim()}
+                      className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors disabled:bg-gray-400"
+                    >
+                      Add Comment
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            /* Module Grid */
+            <div>
+              <div className="mb-6">
+                <h2 className="text-2xl font-semibold text-gray-900">
+                  {selectedSubCategory 
+                    ? `${selectedCategory} - ${selectedSubCategory}`
+                    : selectedCategory 
+                    ? `All ${selectedCategory} Modules`
+                    : searchQuery
+                    ? `Search Results for "${searchQuery}"`
+                    : 'All Training Modules'
+                  }
+                </h2>
+                <p className="text-gray-600 mt-1">
+                  {getFilteredModules().length} module{getFilteredModules().length !== 1 ? 's' : ''} found
+                </p>
+              </div>
+
+              {getFilteredModules().length === 0 ? (
+                <div className="bg-white rounded-xl shadow-sm p-12 text-center">
+                  <svg className="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <p className="text-gray-500">No modules found. Create your first training module to get started!</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {getFilteredModules().map((module) => (
+                    <button
+                      key={module.id}
+                      onClick={() => setSelectedModule(module)}
+                      className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300 text-left group"
+                    >
+                      {/* Video Thumbnail */}
+                      <div className="aspect-video bg-gray-100 relative overflow-hidden">
+                        {getLoomThumbnail(module.loomUrl) ? (
+                          <img 
+                            src={getLoomThumbnail(module.loomUrl)} 
+                            alt={module.title}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none'
+                            }}
+                          />
+                        ) : null}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="absolute bottom-4 left-4 text-white">
+                            <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M8 5v14l11-7z"/>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Content */}
+                      <div className="p-6">
+                        <h3 className="font-semibold text-gray-900 mb-2 line-clamp-1">{module.title}</h3>
+                        <p className="text-sm text-gray-600 mb-4 line-clamp-2">{module.description}</p>
+                        <div className="flex gap-2">
+                          <span className="inline-block px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs">
+                            {module.mainCategory}
+                          </span>
+                          <span className="inline-block px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs">
+                            {module.subCategory}
+                          </span>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   )
 }

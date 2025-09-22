@@ -4,7 +4,7 @@ import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '@/lib/firebase'
 import { signOut } from 'firebase/auth'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, lazy, Suspense } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { AssetManagementStatus, DivisionTask, TaxReturn } from '@/types/goal'
@@ -22,6 +22,15 @@ import {
 } from '@/lib/firebase/compat-service'
 import { getTaxFilingsData, updateTaxReturnStatus, updatePropertyTaxStatus, getPriorTaxYear } from '@/lib/firebase/taxes'
 import { initializeAssetManagementTasks } from '@/lib/firebase/asset-management-init'
+
+// Lazy load dashboard components for better performance
+const AssetManagementCard = lazy(() => import('@/components/dashboard/BusinessDivisionCards').then(mod => ({ default: mod.AssetManagementCard })))
+const RealEstateCard = lazy(() => import('@/components/dashboard/RealEstateCard').then(mod => ({ default: mod.RealEstateCard })))
+const VenturesCard = lazy(() => import('@/components/dashboard/VenturesCard').then(mod => ({ default: mod.VenturesCard })))
+const TaxFilingsCard = lazy(() => import('@/components/dashboard/TaxFilingsCard').then(mod => ({ default: mod.TaxFilingsCard })))
+
+// Import loading skeleton
+import { CardSkeleton } from '@/components/dashboard/CardSkeleton'
 
 interface Project {
   id: string;
@@ -375,6 +384,18 @@ export default function DashboardPage() {
 
   const apps = [
     {
+      name: 'Gemini',
+      icon: (
+        <svg className="w-12 h-12" viewBox="0 0 48 48" fill="none">
+          <path d="M24 4C20.24 4 16.62 5.38 13.86 7.86L7.86 13.86C5.38 16.62 4 20.24 4 24C4 27.76 5.38 31.38 7.86 34.14L13.86 40.14C16.62 42.62 20.24 44 24 44C31.72 44 38.26 38.98 40.44 31.98" stroke="#1A73E8" strokeWidth="3" strokeLinecap="round" fill="none"/>
+          <path d="M24 4C27.76 4 31.38 5.38 34.14 7.86L40.14 13.86C42.62 16.62 44 20.24 44 24C44 27.76 42.62 31.38 40.14 34.14L34.14 40.14C31.38 42.62 27.76 44 24 44C16.28 44 9.74 38.98 7.56 31.98" stroke="#EA4335" strokeWidth="3" strokeLinecap="round" fill="none"/>
+        </svg>
+      ),
+      href: 'https://gemini.google.com/app',
+      external: true,
+      color: 'hover:bg-blue-50 border-blue-200'
+    },
+    {
       name: 'Gmail',
       icon: (
         <svg className="w-12 h-12" viewBox="0 0 48 48" fill="none">
@@ -434,6 +455,21 @@ export default function DashboardPage() {
       href: 'https://app.asana.com',
       external: true,
       color: 'hover:bg-pink-50 border-pink-200'
+    },
+    {
+      name: 'Training',
+      icon: (
+        <svg className="w-12 h-12" viewBox="0 0 48 48" fill="none">
+          <rect x="6" y="8" width="36" height="32" rx="2" fill="#8B5CF6" stroke="#8B5CF6" strokeWidth="2"/>
+          <rect x="10" y="12" width="28" height="20" fill="white" rx="1"/>
+          <path d="M17 20L23 25L31 18" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <rect x="14" y="35" width="20" height="3" rx="1.5" fill="#8B5CF6"/>
+          <rect x="20" y="38" width="8" height="2" rx="1" fill="#8B5CF6"/>
+        </svg>
+      ),
+      href: '/training',
+      external: false,
+      color: 'hover:bg-purple-50 border-purple-200'
     }
   ]
 
@@ -671,7 +707,7 @@ export default function DashboardPage() {
         </div>
 
         {/* App Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12 max-w-3xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-12 max-w-3xl mx-auto">
           {apps.map((app) => (
             app.external ? (
               <a
@@ -700,510 +736,88 @@ export default function DashboardPage() {
         {/* Business Division Status - First Row */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {/* Asset Management */}
-          <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow duration-300 flex flex-col min-h-[500px]">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Asset Management</h3>
-              <div className="text-xs text-gray-500">{assetChecklistComplete}/7</div>
-            </div>
-            
-            {/* Progress Bar */}
-            <div className="h-1 bg-gray-100 rounded-full mb-4 overflow-hidden">
-              <div 
-                className="h-full bg-green-500 rounded-full transition-all duration-500 ease-out"
-                style={{ width: `${(assetChecklistComplete / 7) * 100}%` }}
-              />
-          </div>
-
-            <div className="space-y-3">
-              <label className={`flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 -mx-2 rounded-lg transition-colors duration-200 ${justCompletedTask === 'asset-booksClosedOut' ? 'bg-green-50' : ''}`}>
-                <input
-                  type="checkbox"
-                  checked={assetStatus.booksClosedOut}
-                  onChange={() => handleAssetStatusChange('booksClosedOut')}
-                  className="h-5 w-5 text-green-600 rounded focus:ring-2 focus:ring-green-500 transition-transform hover:scale-110"
-                />
-                <span className={`text-sm transition-all duration-300 ${assetStatus.booksClosedOut ? 'text-gray-400 line-through' : 'text-gray-700'}`}>
-                  <strong>{priorMonth}</strong> books closed
-                </span>
-                {justCompletedTask === 'asset-booksClosedOut' && (
-                  <span className="text-green-500 ml-auto animate-ping">✓</span>
-                )}
-              </label>
-              
-              <label className={`flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 -mx-2 rounded-lg transition-colors duration-200 ${justCompletedTask === 'asset-rentsCollected' ? 'bg-green-50' : ''}`}>
-                <input
-                  type="checkbox"
-                  checked={assetStatus.rentsCollected}
-                  onChange={() => handleAssetStatusChange('rentsCollected')}
-                  className="h-5 w-5 text-green-600 rounded focus:ring-2 focus:ring-green-500 transition-transform hover:scale-110"
-                />
-                <span className={`text-sm transition-all duration-300 ${assetStatus.rentsCollected ? 'text-gray-400 line-through' : 'text-gray-700'}`}>
-                  All <strong>{currentMonth}</strong> rents collected
-                </span>
-                {justCompletedTask === 'asset-rentsCollected' && (
-                  <span className="text-green-500 ml-auto animate-ping">✓</span>
-                )}
-              </label>
-              
-              <label className={`flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 -mx-2 rounded-lg transition-colors duration-200 ${justCompletedTask === 'asset-loansPaymentsMade' ? 'bg-green-50' : ''}`}>
-                <input
-                  type="checkbox"
-                  checked={assetStatus.loansPaymentsMade}
-                  onChange={() => handleAssetStatusChange('loansPaymentsMade')}
-                  className="h-5 w-5 text-green-600 rounded focus:ring-2 focus:ring-green-500 transition-transform hover:scale-110"
-                />
-                <span className={`text-sm transition-all duration-300 ${assetStatus.loansPaymentsMade ? 'text-gray-400 line-through' : 'text-gray-700'}`}>
-                  All loans paid
-                </span>
-                {justCompletedTask === 'asset-loansPaymentsMade' && (
-                  <span className="text-green-500 ml-auto animate-ping">✓</span>
-                )}
-              </label>
-              
-              <label className={`flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 -mx-2 rounded-lg transition-colors duration-200 ${justCompletedTask === 'asset-vendorsPaymentsMade' ? 'bg-green-50' : ''}`}>
-                <input
-                  type="checkbox"
-                  checked={assetStatus.vendorsPaymentsMade}
-                  onChange={() => handleAssetStatusChange('vendorsPaymentsMade')}
-                  className="h-5 w-5 text-green-600 rounded focus:ring-2 focus:ring-green-500 transition-transform hover:scale-110"
-                />
-                <span className={`text-sm transition-all duration-300 ${assetStatus.vendorsPaymentsMade ? 'text-gray-400 line-through' : 'text-gray-700'}`}>
-                  All vendors paid
-                </span>
-                {justCompletedTask === 'asset-vendorsPaymentsMade' && (
-                  <span className="text-green-500 ml-auto animate-ping">✓</span>
-                )}
-              </label>
-              
-              <label className={`flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 -mx-2 rounded-lg transition-colors duration-200 ${justCompletedTask === 'asset-propertyTaxesPaid' ? 'bg-green-50' : ''}`}>
-                <input
-                  type="checkbox"
-                  checked={assetStatus.propertyTaxesPaid}
-                  onChange={() => handleAssetStatusChange('propertyTaxesPaid')}
-                  className="h-5 w-5 text-green-600 rounded focus:ring-2 focus:ring-green-500 transition-transform hover:scale-110"
-                />
-                <span className={`text-sm transition-all duration-300 ${assetStatus.propertyTaxesPaid ? 'text-gray-400 line-through' : 'text-gray-700'}`}>
-                  All property taxes paid
-                </span>
-                {justCompletedTask === 'asset-propertyTaxesPaid' && (
-                  <span className="text-green-500 ml-auto animate-ping">✓</span>
-                )}
-              </label>
-              
-              <label className={`flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 -mx-2 rounded-lg transition-colors duration-200 ${justCompletedTask === 'asset-insurancePoliciesActive' ? 'bg-green-50' : ''}`}>
-                <input
-                  type="checkbox"
-                  checked={assetStatus.insurancePoliciesActive}
-                  onChange={() => handleAssetStatusChange('insurancePoliciesActive')}
-                  className="h-5 w-5 text-green-600 rounded focus:ring-2 focus:ring-green-500 transition-transform hover:scale-110"
-                />
-                <span className={`text-sm transition-all duration-300 ${assetStatus.insurancePoliciesActive ? 'text-gray-400 line-through' : 'text-gray-700'}`}>
-                  All{' '}
-                  <a 
-                    href="https://docs.google.com/spreadsheets/d/1rD7CuJ6RqhSPBdROHhYxVjO386wdDWLVRvMDq5pItck/edit?gid=1798179087#gid=1798179087"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline hover:text-blue-600"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    insurance policies
-                  </a>
-                  {' '}active
-                </span>
-                {justCompletedTask === 'asset-insurancePoliciesActive' && (
-                  <span className="text-green-500 ml-auto animate-ping">✓</span>
-                )}
-              </label>
-              
-              <label className={`flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 -mx-2 rounded-lg transition-colors duration-200 ${justCompletedTask === 'asset-entitiesRenewed' ? 'bg-green-50' : ''}`}>
-                <input
-                  type="checkbox"
-                  checked={assetStatus.entitiesRenewed}
-                  onChange={() => handleAssetStatusChange('entitiesRenewed')}
-                  className="h-5 w-5 text-green-600 rounded focus:ring-2 focus:ring-green-500 transition-transform hover:scale-110"
-                />
-                <span className={`text-sm transition-all duration-300 ${assetStatus.entitiesRenewed ? 'text-gray-400 line-through' : 'text-gray-700'}`}>
-                  All{' '}
-                  <a 
-                    href="https://docs.google.com/spreadsheets/d/1rD7CuJ6RqhSPBdROHhYxVjO386wdDWLVRvMDq5pItck/edit?gid=0#gid=0"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline hover:text-blue-600"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    entities
-                  </a>
-                  {' '}renewed
-                </span>
-                {justCompletedTask === 'asset-entitiesRenewed' && (
-                  <span className="text-green-500 ml-auto animate-ping">✓</span>
-                )}
-              </label>
-            </div>
-          </div>
+          <Suspense fallback={<CardSkeleton />}>
+            <AssetManagementCard
+              assetStatus={assetStatus}
+              handleAssetStatusChange={handleAssetStatusChange}
+              justCompletedTask={justCompletedTask}
+              assetChecklistComplete={assetChecklistComplete}
+              priorMonth={priorMonth}
+              currentMonth={currentMonth}
+            />
+          </Suspense>
 
           {/* Real Estate */}
-          <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow duration-300 flex flex-col min-h-[500px]">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Real Estate</h3>
-              <div className="text-xs text-gray-500">{realEstateTasksComplete}/{realEstateTasks.length}</div>
-            </div>
-            
-            {/* Progress Bar */}
-            <div className="h-1 bg-gray-100 rounded-full mb-4 overflow-hidden">
-              <div 
-                className="h-full bg-blue-500 rounded-full transition-all duration-500 ease-out"
-                style={{ width: realEstateTasks.length > 0 ? `${(realEstateTasksComplete / realEstateTasks.length) * 100}%` : '0%' }}
-              />
-            </div>
-
-            <div className="space-y-3 flex-1 overflow-y-auto">
-              {realEstateTasks.map((task, index) => (
-                <div 
-                  key={task.id} 
-                  className={`flex items-center gap-3 hover:bg-gray-50 p-2 -mx-2 rounded-lg transition-colors duration-200 group cursor-move ${
-                    justCompletedTask === task.id ? 'bg-blue-50' : ''
-                  } ${
-                    dragOverIndex === index && draggedTask?.division === 'real-estate-development' ? 'border-t-2 border-blue-500' : ''
-                  } ${
-                    draggedTask?.id === task.id ? 'dragging' : ''
-                  }`}
-                  draggable={editingTaskId !== task.id}
-                  onDragStart={(e) => handleDragStart(e, task)}
-                  onDragOver={(e) => handleDragOver(e, index)}
-                  onDragEnd={handleDragEnd}
-                  onDrop={(e) => handleDrop(e, index, realEstateTasks, 'real-estate-development')}>
-                  <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="currentColor" viewBox="0 0 16 16">
-                    <circle cx="4" cy="4" r="1.5" />
-                    <circle cx="4" cy="8" r="1.5" />
-                    <circle cx="4" cy="12" r="1.5" />
-                    <circle cx="12" cy="4" r="1.5" />
-                    <circle cx="12" cy="8" r="1.5" />
-                    <circle cx="12" cy="12" r="1.5" />
-                  </svg>
-                  <input
-                    type="checkbox"
-                    checked={task.isChecked}
-                    onChange={() => handleTaskCheck(task.id, task.isChecked, 'real-estate-development')}
-                    className="h-5 w-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500 transition-transform hover:scale-110 cursor-pointer"
-                  />
-                  {editingTaskId === task.id ? (
-                    <form 
-                      onSubmit={(e) => {
-                        e.preventDefault()
-                        handleEditTask(task.id, 'real-estate-development', editText)
-                      }}
-                      className="flex-1 flex items-center gap-2"
-                    >
-                      <input
-                        type="text"
-                        value={editText}
-                        onChange={(e) => setEditText(e.target.value)}
-                        className="flex-1 text-sm px-2 py-1 border border-blue-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        autoFocus
-                        onBlur={() => handleEditTask(task.id, 'real-estate-development', editText)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Escape') {
-                            setEditingTaskId(null)
-                            setEditText('')
-                          }
-                        }}
-                      />
-                    </form>
-                  ) : (
-                    <span 
-                      onClick={() => startEditingTask(task.id, task.title)}
-                      className={`text-sm transition-all duration-300 flex-1 cursor-pointer hover:text-blue-600 ${task.isChecked ? 'text-gray-400 line-through' : 'text-gray-700'}`}
-                    >
-                      {task.title}
-                    </span>
-                  )}
-                  {justCompletedTask === task.id && (
-                    <span className="text-blue-500 animate-ping">✓</span>
-                  )}
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault()
-                      handleDeleteTask(task.id, 'real-estate-development')
-                    }}
-                    className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-all duration-200"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-              ))}
-              
-              {realEstateTasks.length < 10 && (
-                addingTask === 'real-estate-development' ? (
-                  <form 
-                    onSubmit={(e) => {
-                      e.preventDefault()
-                      handleAddTask('real-estate-development')
-                    }}
-                    className="flex items-center gap-2 mt-2"
-                  >
-                    <input
-                      type="text"
-                      value={newText}
-                      onChange={(e) => setNewText(e.target.value)}
-                      placeholder="Add objective..."
-                      className="flex-1 text-sm px-3 py-1.5 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      autoFocus
-                    />
-                    <button
-                      type="submit"
-                      className="text-green-600 hover:text-green-700"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setAddingTask(null)
-                        setNewText('')
-                      }}
-                      className="text-gray-400 hover:text-gray-600"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </form>
-                ) : (
-                  <button
-                    onClick={() => setAddingTask('real-estate-development')}
-                    className="text-sm text-gray-400 hover:text-gray-600 transition-all duration-200 mt-2"
-                  >
-                    + Add objective
-                  </button>
-                )
-              )}
-            </div>
-          </div>
+          <Suspense fallback={<CardSkeleton />}>
+            <RealEstateCard
+              realEstateTasks={realEstateTasks}
+              realEstateTasksComplete={realEstateTasksComplete}
+              handleTaskCheck={handleTaskCheck}
+              handleDeleteTask={handleDeleteTask}
+              handleAddTask={handleAddTask}
+              handleEditTask={handleEditTask}
+              startEditingTask={startEditingTask}
+              handleDragStart={handleDragStart}
+              handleDragOver={handleDragOver}
+              handleDragEnd={handleDragEnd}
+              handleDrop={handleDrop}
+              justCompletedTask={justCompletedTask}
+              editingTaskId={editingTaskId}
+              editText={editText}
+              setEditText={setEditText}
+              setEditingTaskId={setEditingTaskId}
+              draggedTask={draggedTask}
+              dragOverIndex={dragOverIndex}
+              addingTask={addingTask}
+              setAddingTask={setAddingTask}
+              newText={newText}
+              setNewText={setNewText}
+            />
+          </Suspense>
 
           {/* Ventures */}
-          <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow duration-300 flex flex-col min-h-[500px]">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Ventures</h3>
-              <div className="text-xs text-gray-500">{venturesTasksComplete}/{venturesTasks.length}</div>
-            </div>
-            
-            {/* Progress Bar */}
-            <div className="h-1 bg-gray-100 rounded-full mb-4 overflow-hidden">
-              <div 
-                className="h-full bg-purple-500 rounded-full transition-all duration-500 ease-out"
-                style={{ width: venturesTasks.length > 0 ? `${(venturesTasksComplete / venturesTasks.length) * 100}%` : '0%' }}
-              />
-            </div>
-
-            <div className="space-y-3 flex-1 overflow-y-auto">
-              {venturesTasks.map((task, index) => (
-                <div 
-                  key={task.id} 
-                  className={`flex items-center gap-3 hover:bg-gray-50 p-2 -mx-2 rounded-lg transition-colors duration-200 group cursor-move ${
-                    justCompletedTask === task.id ? 'bg-purple-50' : ''
-                  } ${
-                    dragOverIndex === index && draggedTask?.division === 'ventures' ? 'border-t-2 border-purple-500' : ''
-                  } ${
-                    draggedTask?.id === task.id ? 'dragging' : ''
-                  }`}
-                  draggable={editingTaskId !== task.id}
-                  onDragStart={(e) => handleDragStart(e, task)}
-                  onDragOver={(e) => handleDragOver(e, index)}
-                  onDragEnd={handleDragEnd}
-                  onDrop={(e) => handleDrop(e, index, venturesTasks, 'ventures')}>
-                  <svg className="w-4 h-4 text-gray-400 flex-shrink-0" fill="currentColor" viewBox="0 0 16 16">
-                    <circle cx="4" cy="4" r="1.5" />
-                    <circle cx="4" cy="8" r="1.5" />
-                    <circle cx="4" cy="12" r="1.5" />
-                    <circle cx="12" cy="4" r="1.5" />
-                    <circle cx="12" cy="8" r="1.5" />
-                    <circle cx="12" cy="12" r="1.5" />
-                  </svg>
-                  <input
-                    type="checkbox"
-                    checked={task.isChecked}
-                    onChange={() => handleTaskCheck(task.id, task.isChecked, 'ventures')}
-                    className="h-5 w-5 text-purple-600 rounded focus:ring-2 focus:ring-purple-500 transition-transform hover:scale-110 cursor-pointer"
-                  />
-                  {editingTaskId === task.id ? (
-                    <form 
-                      onSubmit={(e) => {
-                        e.preventDefault()
-                        handleEditTask(task.id, 'ventures', editText)
-                      }}
-                      className="flex-1 flex items-center gap-2"
-                    >
-                      <input
-                        type="text"
-                        value={editText}
-                        onChange={(e) => setEditText(e.target.value)}
-                        className="flex-1 text-sm px-2 py-1 border border-purple-300 rounded focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                        autoFocus
-                        onBlur={() => handleEditTask(task.id, 'ventures', editText)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Escape') {
-                            setEditingTaskId(null)
-                            setEditText('')
-                          }
-                        }}
-                      />
-                    </form>
-                  ) : (
-                    <span 
-                      onClick={() => startEditingTask(task.id, task.title)}
-                      className={`text-sm transition-all duration-300 flex-1 cursor-pointer hover:text-purple-600 ${task.isChecked ? 'text-gray-400 line-through' : 'text-gray-700'}`}
-                    >
-                      {task.title}
-                    </span>
-                  )}
-                  {justCompletedTask === task.id && (
-                    <span className="text-purple-500 animate-ping">✓</span>
-                  )}
-                  <button
-                    onClick={(e) => {
-                      e.preventDefault()
-                      handleDeleteTask(task.id, 'ventures')
-                    }}
-                    className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-all duration-200"
-                  >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-              ))}
-              
-              {venturesTasks.length < 10 && (
-                addingTask === 'ventures' ? (
-                  <form 
-                    onSubmit={(e) => {
-                      e.preventDefault()
-                      handleAddTask('ventures')
-                    }}
-                    className="flex items-center gap-2 mt-2"
-                  >
-                    <input
-                      type="text"
-                      value={newText}
-                      onChange={(e) => setNewText(e.target.value)}
-                      placeholder="Add objective..."
-                      className="flex-1 text-sm px-3 py-1.5 border border-gray-200 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      autoFocus
-                    />
-                    <button
-                      type="submit"
-                      className="text-green-600 hover:text-green-700"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setAddingTask(null)
-                        setNewText('')
-                      }}
-                      className="text-gray-400 hover:text-gray-600"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                  </form>
-                ) : (
-                  <button
-                    onClick={() => setAddingTask('ventures')}
-                    className="text-sm text-gray-400 hover:text-gray-600 transition-all duration-200 mt-2"
-                  >
-                    + Add objective
-                  </button>
-                )
-              )}
-            </div>
-          </div>
+          <Suspense fallback={<CardSkeleton />}>
+            <VenturesCard
+              venturesTasks={venturesTasks}
+              venturesTasksComplete={venturesTasksComplete}
+              handleTaskCheck={handleTaskCheck}
+              handleDeleteTask={handleDeleteTask}
+              handleAddTask={handleAddTask}
+              handleEditTask={handleEditTask}
+              startEditingTask={startEditingTask}
+              handleDragStart={handleDragStart}
+              handleDragOver={handleDragOver}
+              handleDragEnd={handleDragEnd}
+              handleDrop={handleDrop}
+              justCompletedTask={justCompletedTask}
+              editingTaskId={editingTaskId}
+              editText={editText}
+              setEditText={setEditText}
+              setEditingTaskId={setEditingTaskId}
+              draggedTask={draggedTask}
+              dragOverIndex={dragOverIndex}
+              addingTask={addingTask}
+              setAddingTask={setAddingTask}
+              newText={newText}
+              setNewText={setNewText}
+            />
+          </Suspense>
         </div>
 
         {/* Business Division Status - Second Row */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {/* Tax Filings */}
-          <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow duration-300 flex flex-col min-h-[500px]">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">Tax Filings</h3>
-              <div className="text-xs text-gray-500">
-                {taxReturns.filter(t => t.isFiled).length + (propertyTaxH1Paid ? 1 : 0) + (propertyTaxH2Paid ? 1 : 0)}/{taxReturns.length + 2}
-              </div>
-            </div>
-            
-            {/* Progress Bar */}
-            <div className="h-1 bg-gray-100 rounded-full mb-4 overflow-hidden">
-              <div 
-                className="h-full bg-indigo-500 rounded-full transition-all duration-500 ease-out"
-                style={{ 
-                  width: taxReturns.length + 2 > 0 
-                    ? `${((taxReturns.filter(t => t.isFiled).length + (propertyTaxH1Paid ? 1 : 0) + (propertyTaxH2Paid ? 1 : 0)) / (taxReturns.length + 2)) * 100}%` 
-                    : '0%' 
-                }}
-              />
-            </div>
-
-            <div className="space-y-3 flex-1 overflow-y-auto">
-              {taxReturns.map(taxReturn => (
-                <label key={taxReturn.id} className={`flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 -mx-2 rounded-lg transition-colors duration-200 ${justCompletedTask === `tax-${taxReturn.id}` ? 'bg-indigo-50' : ''}`}>
-                  <input
-                    type="checkbox"
-                    checked={taxReturn.isFiled}
-                    onChange={() => handleTaxReturnChange(taxReturn.id, taxReturn.isFiled)}
-                    className="h-5 w-5 text-indigo-600 rounded focus:ring-2 focus:ring-indigo-500 transition-transform hover:scale-110"
-                  />
-                  <span className={`text-sm transition-all duration-300 flex-1 ${taxReturn.isFiled ? 'text-gray-400 line-through' : 'text-gray-700'}`}>
-                    {taxReturn.year} {taxReturn.country} Tax Return Filed - {taxReturn.entity}
-                  </span>
-                  {justCompletedTask === `tax-${taxReturn.id}` && (
-                    <span className="text-indigo-500 animate-ping">✓</span>
-                  )}
-                </label>
-              ))}
-              
-              {/* Property Tax Items */}
-              <div className="border-t border-gray-100 mt-4 pt-4">
-                <label className={`flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 -mx-2 rounded-lg transition-colors duration-200 ${justCompletedTask === 'property-tax-h1' ? 'bg-indigo-50' : ''}`}>
-                  <input
-                    type="checkbox"
-                    checked={propertyTaxH1Paid}
-                    onChange={() => handlePropertyTaxChange('H1')}
-                    className="h-5 w-5 text-indigo-600 rounded focus:ring-2 focus:ring-indigo-500 transition-transform hover:scale-110"
-                  />
-                  <span className={`text-sm transition-all duration-300 flex-1 ${propertyTaxH1Paid ? 'text-gray-400 line-through' : 'text-gray-700'}`}>
-                    All {currentDate.getFullYear()} H1 Property Taxes Paid
-                  </span>
-                  {justCompletedTask === 'property-tax-h1' && (
-                    <span className="text-indigo-500 animate-ping">✓</span>
-                  )}
-                </label>
-                
-                <label className={`flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 -mx-2 rounded-lg transition-colors duration-200 ${justCompletedTask === 'property-tax-h2' ? 'bg-indigo-50' : ''}`}>
-                  <input
-                    type="checkbox"
-                    checked={propertyTaxH2Paid}
-                    onChange={() => handlePropertyTaxChange('H2')}
-                    className="h-5 w-5 text-indigo-600 rounded focus:ring-2 focus:ring-indigo-500 transition-transform hover:scale-110"
-                  />
-                  <span className={`text-sm transition-all duration-300 flex-1 ${propertyTaxH2Paid ? 'text-gray-400 line-through' : 'text-gray-700'}`}>
-                    All {currentDate.getFullYear()} H2 Property Taxes Paid
-                  </span>
-                  {justCompletedTask === 'property-tax-h2' && (
-                    <span className="text-indigo-500 animate-ping">✓</span>
-                  )}
-                </label>
-              </div>
-            </div>
-          </div>
+          <Suspense fallback={<CardSkeleton />}>
+            <TaxFilingsCard
+              taxReturns={taxReturns}
+              propertyTaxH1Paid={propertyTaxH1Paid}
+              propertyTaxH2Paid={propertyTaxH2Paid}
+              handleTaxReturnChange={handleTaxReturnChange}
+              handlePropertyTaxChange={handlePropertyTaxChange}
+              justCompletedTask={justCompletedTask}
+              currentDate={currentDate}
+            />
+          </Suspense>
         </div>
       </main>
     </div>

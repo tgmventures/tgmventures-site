@@ -6,16 +6,20 @@ import Image from 'next/image'
 export default function HomePage() {
   return (
     <div className="min-h-screen relative overflow-hidden">
-      {/* Background image with opacity */}
-      <div 
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage: `url(/images/tgm-warehouse-large.jpg)`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center center',
-          backgroundRepeat: 'no-repeat'
-        }}
-      />
+      {/* Optimized background image with Next.js Image */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/images/tgm-warehouse-large.jpg"
+          alt="TGM Ventures warehouse"
+          fill
+          sizes="100vw"
+          quality={85}
+          priority
+          placeholder="blur"
+          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAASACADASIAAhEBAxEB/8QAFwAAAwEAAAAAAAAAAAAAAAAAAQMEBf/EACQQAAIBAwMEAwEAAAAAAAAAAAECAwAEEQUSITFBUWETInGR/8QAFgEBAQEAAAAAAAAAAAAAAAAAAgME/8QAGREAAwEBAQAAAAAAAAAAAAAAAAECEQMh/9oADAMBAAIRAxEAPwDTt76KOJQIvxRz3p2n3MUdsjADnvU19HFJA+5fHGKxba8eztoo5FLeORzipROq8NVLm1uXdWQYTgcdaJ061e0aT67WLE9D5xWdeTNbzJIittPXg9K2beaOa2DLn9J9UKQ21o//2Q=="
+          className="object-cover"
+        />
+      </div>
       
       {/* Black overlay */}
       <div className="absolute inset-0 bg-black opacity-70 z-10" />

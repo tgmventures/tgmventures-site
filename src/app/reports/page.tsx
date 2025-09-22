@@ -131,16 +131,21 @@ export default function ReportsPage() {
                   className="hover:opacity-80 transition-opacity"
                 />
               </Link>
-              <h1 className="text-xl font-semibold text-gray-900">Reports</h1>
+              <h1 className="text-xl font-semibold text-gray-900">Weekly Progress</h1>
             </div>
           </div>
         </div>
       </header>
 
       <main className="px-4 sm:px-6 lg:px-8 py-8 max-w-7xl mx-auto">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">Weekly Progress Tracker</h2>
+          <p className="text-gray-600">Monitor your team's objectives completion and progress</p>
+        </div>
+
         {/* Date Selection */}
         <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-          <h2 className="text-lg font-semibold mb-4">Report Period</h2>
+          <h2 className="text-lg font-semibold mb-4">Select Time Period</h2>
           
           <div className="flex flex-wrap gap-2 mb-4">
             {(['week', 'month', 'quarter', 'year'] as const).map((period) => (
@@ -184,7 +189,7 @@ export default function ReportsPage() {
             disabled={loading_}
             className="mt-4 bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors disabled:bg-gray-400"
           >
-            {loading_ ? 'Generating...' : 'Generate Report'}
+            {loading_ ? 'Loading Progress...' : 'View Progress'}
           </button>
         </div>
 
@@ -198,81 +203,138 @@ export default function ReportsPage() {
         {/* Report Results */}
         {reportData && (
           <>
-            {/* Summary Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                <h3 className="text-sm font-medium text-gray-500 mb-2">Objectives Completed</h3>
-                <p className="text-3xl font-bold text-green-600">{reportData.summary.objectivesCompleted}</p>
+            {/* Weekly Progress Overview */}
+            <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl shadow-lg p-8 mb-8 text-white">
+              <div className="text-center mb-6">
+                <h3 className="text-2xl font-bold mb-2">This Week's Progress</h3>
+                <p className="text-purple-100">{reportData.period}</p>
               </div>
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                <h3 className="text-sm font-medium text-gray-500 mb-2">Objectives Added</h3>
-                <p className="text-3xl font-bold text-blue-600">{reportData.summary.objectivesAdded}</p>
-              </div>
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                <h3 className="text-sm font-medium text-gray-500 mb-2">Training Completed</h3>
-                <p className="text-3xl font-bold text-purple-600">{reportData.summary.trainingCompleted}</p>
-              </div>
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                <h3 className="text-sm font-medium text-gray-500 mb-2">Active Users</h3>
-                <p className="text-3xl font-bold text-gray-900">{reportData.summary.activeUsers}</p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div className="text-center">
+                  <div className="bg-white/20 rounded-xl p-4 backdrop-blur-sm">
+                    <p className="text-4xl font-bold mb-1">{reportData.summary.objectivesCompleted}</p>
+                    <p className="text-sm text-purple-100">Completed</p>
+                  </div>
+                </div>
+                <div className="text-center">
+                  <div className="bg-white/20 rounded-xl p-4 backdrop-blur-sm">
+                    <p className="text-4xl font-bold mb-1">{reportData.summary.objectivesAdded}</p>
+                    <p className="text-sm text-purple-100">Added</p>
+                  </div>
+                </div>
+                <div className="text-center">
+                  <div className="bg-white/20 rounded-xl p-4 backdrop-blur-sm">
+                    <p className="text-4xl font-bold mb-1">{reportData.summary.activeUsers}</p>
+                    <p className="text-sm text-purple-100">Active Team</p>
+                  </div>
+                </div>
+                <div className="text-center">
+                  <div className="bg-white/20 rounded-xl p-4 backdrop-blur-sm">
+                    <p className="text-4xl font-bold mb-1">
+                      {reportData.summary.objectivesCompleted > 0 
+                        ? Math.round((reportData.summary.objectivesCompleted / (reportData.summary.objectivesCompleted + reportData.summary.objectivesAdded)) * 100)
+                        : 0}%
+                    </p>
+                    <p className="text-sm text-purple-100">Completion</p>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* By User */}
+            {/* Team Progress */}
             <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-              <h2 className="text-lg font-semibold mb-4">Activity by Team Member</h2>
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left py-2 px-4">Team Member</th>
-                      <th className="text-center py-2 px-4">Objectives Completed</th>
-                      <th className="text-center py-2 px-4">Objectives Added</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {reportData.byUser.map((user: any) => (
-                      <tr key={user.email} className="border-b hover:bg-gray-50">
-                        <td className="py-3 px-4">
-                          <div>
-                            <p className="font-medium">{user.name}</p>
-                            <p className="text-sm text-gray-500">{user.email}</p>
+              <h2 className="text-lg font-semibold mb-4">Team Member Progress</h2>
+              <div className="space-y-4">
+                {reportData.byUser.map((user: any) => {
+                  const completed = user.completed || user.count || 0;
+                  const added = user.added || 0;
+                  const total = completed + added;
+                  const completionRate = total > 0 ? (completed / total) * 100 : 0;
+                  
+                  return (
+                    <div key={user.email} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                      <div className="flex items-center justify-between mb-3">
+                        <div>
+                          <p className="font-semibold text-gray-900">{user.name}</p>
+                          <p className="text-sm text-gray-500">{user.email}</p>
+                        </div>
+                        <div className="flex gap-6 text-sm">
+                          <div className="text-center">
+                            <p className="text-2xl font-bold text-green-600">{completed}</p>
+                            <p className="text-gray-500">Completed</p>
                           </div>
-                        </td>
-                        <td className="text-center py-3 px-4 font-medium text-green-600">{user.completed}</td>
-                        <td className="text-center py-3 px-4 font-medium text-blue-600">{user.added}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                          <div className="text-center">
+                            <p className="text-2xl font-bold text-blue-600">{added}</p>
+                            <p className="text-gray-500">Added</p>
+                          </div>
+                        </div>
+                      </div>
+                      {/* Progress Bar */}
+                      <div className="mt-3">
+                        <div className="flex justify-between text-xs text-gray-600 mb-1">
+                          <span>Progress</span>
+                          <span>{Math.round(completionRate)}%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-gradient-to-r from-purple-600 to-blue-600 h-2 rounded-full transition-all duration-500"
+                            style={{ width: `${completionRate}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
-            {/* By Category */}
+            {/* Progress by Category */}
             <div className="bg-white rounded-xl shadow-sm p-6">
-              <h2 className="text-lg font-semibold mb-4">Activity by Category</h2>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="font-medium">Asset Management</span>
-                  <div className="flex gap-4">
-                    <span className="text-green-600">{reportData.byCategory.assetManagement.completed} completed</span>
-                    <span className="text-blue-600">{reportData.byCategory.assetManagement.added} added</span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="font-medium">Real Estate</span>
-                  <div className="flex gap-4">
-                    <span className="text-green-600">{reportData.byCategory.realEstate.completed} completed</span>
-                    <span className="text-blue-600">{reportData.byCategory.realEstate.added} added</span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="font-medium">Ventures</span>
-                  <div className="flex gap-4">
-                    <span className="text-green-600">{reportData.byCategory.ventures.completed} completed</span>
-                    <span className="text-blue-600">{reportData.byCategory.ventures.added} added</span>
-                  </div>
-                </div>
+              <h2 className="text-lg font-semibold mb-4">Progress by Category</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  { name: 'Asset Management', data: reportData.byCategory.assetManagement, icon: '💼' },
+                  { name: 'Real Estate', data: reportData.byCategory.realEstate, icon: '🏢' },
+                  { name: 'Ventures', data: reportData.byCategory.ventures, icon: '🚀' },
+                  { name: 'Taxes', data: reportData.byCategory.taxes || { completed: 0, added: 0 }, icon: '📊' }
+                ].map((category) => {
+                  const total = category.data.completed + category.data.added;
+                  const completionRate = total > 0 ? (category.data.completed / total) * 100 : 0;
+                  
+                  return (
+                    <div key={category.name} className="bg-gray-50 rounded-lg p-4">
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-2xl">{category.icon}</span>
+                          <h3 className="font-medium text-gray-900">{category.name}</h3>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm text-gray-600">
+                            <span className="font-semibold text-green-600">{category.data.completed}</span> / 
+                            <span className="font-semibold text-gray-900"> {total}</span>
+                          </p>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between text-xs text-gray-600">
+                          <span>{category.data.completed} completed</span>
+                          <span>{category.data.added} added</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            className={`h-2 rounded-full transition-all duration-500 ${
+                              category.name === 'Asset Management' ? 'bg-blue-500' :
+                              category.name === 'Real Estate' ? 'bg-green-500' :
+                              category.name === 'Ventures' ? 'bg-purple-500' :
+                              'bg-orange-500'
+                            }`}
+                            style={{ width: `${completionRate}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 

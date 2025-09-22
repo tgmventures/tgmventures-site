@@ -84,6 +84,7 @@ export default function DashboardPage() {
   const [loadingBusinessUnit, setLoadingBusinessUnit] = useState(true)
   const [showSuccessToast, setShowSuccessToast] = useState(false)
   const [weeklyCompletedCount, setWeeklyCompletedCount] = useState(0)
+  const [showOtherApps, setShowOtherApps] = useState(false)
 
   useEffect(() => {
     if (!loading && !user) {
@@ -497,7 +498,7 @@ export default function DashboardPage() {
   const totalVentureObjectives = visibleVentureObjectives.length
 
   // Define apps for each business unit
-  const assetManagementApps = [
+  const assetManagementMainApps = [
     {
       name: 'Gemini',
       icon: '/images/gemini-icon.png',
@@ -532,7 +533,10 @@ export default function DashboardPage() {
       href: 'https://app.asana.com/0/1200134672573905/1200139775097871',
       external: true,
       color: 'hover:bg-gray-50 border-gray-200'
-    },
+    }
+  ]
+
+  const assetManagementOtherApps = [
     {
       name: 'Training',
       icon: '🎓',
@@ -541,7 +545,7 @@ export default function DashboardPage() {
       color: 'hover:bg-gray-50 border-gray-200'
     },
     {
-      name: 'Reports',
+      name: 'Weekly Progress',
       icon: '📊',
       href: '/reports',
       external: false,
@@ -549,7 +553,7 @@ export default function DashboardPage() {
     }
   ]
 
-  const venturesApps = [
+  const venturesMainApps = [
     {
       name: 'Gemini',
       icon: '/images/gemini-icon.png',
@@ -591,8 +595,26 @@ export default function DashboardPage() {
     }
   ]
 
+  const venturesOtherApps = [
+    {
+      name: 'Training',
+      icon: '🎓',
+      href: '/training',
+      external: false,
+      color: 'hover:bg-gray-50 border-gray-200'
+    },
+    {
+      name: 'Weekly Progress',
+      icon: '📊',
+      href: '/reports',
+      external: false,
+      color: 'hover:bg-gray-50 border-gray-200'
+    }
+  ]
+
   // Select apps based on business unit
-  const apps = businessUnit === 'asset-management' ? assetManagementApps : venturesApps
+  const mainApps = businessUnit === 'asset-management' ? assetManagementMainApps : venturesMainApps
+  const otherApps = businessUnit === 'asset-management' ? assetManagementOtherApps : venturesOtherApps
 
 
   const renderProjects = (
@@ -891,9 +913,9 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* App Grid */}
-        <div className="flex flex-wrap justify-center gap-6 mb-12 max-w-6xl mx-auto">
-          {apps.map((app) => (
+        {/* Main Apps Grid */}
+        <div className="flex flex-wrap justify-center gap-6 mb-8 max-w-6xl mx-auto">
+          {mainApps.map((app) => (
             app.external ? (
               <a
                 key={app.name}
@@ -963,6 +985,85 @@ export default function DashboardPage() {
             )
           ))}
                   </div>
+
+        {/* Other Apps - Collapsible Section */}
+        <div className="max-w-6xl mx-auto mb-12">
+          <button
+            onClick={() => setShowOtherApps(!showOtherApps)}
+            className="w-full text-center py-4 px-6 bg-gray-50 hover:bg-gray-100 rounded-lg transition-all duration-300 flex items-center justify-center gap-2 text-gray-700 font-medium"
+          >
+            <span>Other Apps</span>
+            <svg 
+              className={`w-5 h-5 transition-transform duration-300 ${showOtherApps ? 'rotate-180' : ''}`} 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          
+          {/* Collapsible Other Apps Grid */}
+          <div className={`overflow-hidden transition-all duration-500 ${showOtherApps ? 'max-h-96 mt-6' : 'max-h-0'}`}>
+            <div className="flex flex-wrap justify-center gap-6">
+              {otherApps.map((app) => (
+                app.external ? (
+                  <a
+                    key={app.name}
+                    href={app.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`bg-white rounded-xl shadow-sm border-2 p-6 flex flex-col items-center justify-center hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 w-40 h-40 ${app.color}`}
+                  >
+                    <div className="mb-3 transition-transform duration-300 hover:scale-110">
+                      {typeof app.icon === 'string' ? (
+                        app.icon.startsWith('/') ? (
+                          <Image
+                            src={app.icon}
+                            alt={`${app.name} icon`}
+                            width={48}
+                            height={48}
+                            className="w-12 h-12"
+                          />
+                        ) : (
+                          <span className="text-4xl">{app.icon}</span>
+                        )
+                      ) : (
+                        app.icon
+                      )}
+                    </div>
+                    <span className="text-sm font-medium text-gray-900">{app.name}</span>
+                  </a>
+                ) : (
+                  <Link
+                    key={app.name}
+                    href={app.href}
+                    className={`bg-white rounded-xl shadow-sm border-2 p-6 flex flex-col items-center justify-center hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 w-40 h-40 ${app.color}`}
+                  >
+                    <div className="mb-3 transition-transform duration-300 hover:scale-110">
+                      {typeof app.icon === 'string' ? (
+                        app.icon.startsWith('/') ? (
+                          <Image
+                            src={app.icon}
+                            alt={`${app.name} icon`}
+                            width={48}
+                            height={48}
+                            className="w-12 h-12"
+                          />
+                        ) : (
+                          <span className="text-4xl">{app.icon}</span>
+                        )
+                      ) : (
+                        app.icon
+                      )}
+                    </div>
+                    <span className="text-sm font-medium text-gray-900">{app.name}</span>
+                  </Link>
+                )
+              ))}
+            </div>
+          </div>
+        </div>
 
         {/* Business Division Status - First Row */}
         {businessUnit === 'asset-management' ? (

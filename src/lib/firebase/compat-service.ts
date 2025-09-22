@@ -82,8 +82,10 @@ export async function getDivisionTasksCompat(divisionId: string): Promise<Divisi
       return tasks.sort((a, b) => {
         if (a.order !== b.order) return a.order - b.order;
         // Handle both Timestamp objects and Date objects
-        const aTime = a.createdAt?.seconds || (a.createdAt instanceof Date ? a.createdAt.getTime() / 1000 : 0);
-        const bTime = b.createdAt?.seconds || (b.createdAt instanceof Date ? b.createdAt.getTime() / 1000 : 0);
+        const aCreatedAt = a.createdAt as any;
+        const bCreatedAt = b.createdAt as any;
+        const aTime = aCreatedAt?.seconds || (a.createdAt instanceof Date ? a.createdAt.getTime() / 1000 : 0);
+        const bTime = bCreatedAt?.seconds || (b.createdAt instanceof Date ? b.createdAt.getTime() / 1000 : 0);
         return aTime - bTime;
       });
     } else {

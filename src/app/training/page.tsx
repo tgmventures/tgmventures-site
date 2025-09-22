@@ -35,6 +35,7 @@ interface TrainingModule {
   subCategory: string
   checklist: ChecklistItem[]
   comments: Comment[]
+  asanaTaskUrl?: string
   createdBy: string
   createdByEmail: string
   createdAt: any
@@ -72,7 +73,8 @@ export default function TrainingPage() {
     description: '',
     loomUrl: '',
     mainCategory: '',
-    subCategory: ''
+    subCategory: '',
+    asanaTaskUrl: ''
   })
   const [checklistItems, setChecklistItems] = useState<ChecklistItem[]>([])
   const [addingChecklistItem, setAddingChecklistItem] = useState(false)
@@ -82,7 +84,6 @@ export default function TrainingPage() {
   const [editingModuleChecklistId, setEditingModuleChecklistId] = useState<string | null>(null)
   const [editModuleChecklistText, setEditModuleChecklistText] = useState('')
   const [commentText, setCommentText] = useState('')
-  const [asanaTaskUrl, setAsanaTaskUrl] = useState('')
   const [showMainCategoryDropdown, setShowMainCategoryDropdown] = useState(false)
   const [showSubCategoryDropdown, setShowSubCategoryDropdown] = useState(false)
   const [filteredMainCategories, setFilteredMainCategories] = useState<Category[]>([])
@@ -132,6 +133,7 @@ export default function TrainingPage() {
           subCategory: data.subCategory || '',
           checklist: Array.isArray(data.checklist) ? data.checklist : [],
           comments: Array.isArray(data.comments) ? data.comments : [],
+          asanaTaskUrl: data.asanaTaskUrl || '',
           createdBy: data.createdBy || '',
           createdByEmail: data.createdByEmail || '',
           createdAt: data.createdAt
@@ -241,7 +243,7 @@ export default function TrainingPage() {
       }
 
       // Reset form
-      setFormData({ title: '', description: '', loomUrl: '', mainCategory: '', subCategory: '' })
+      setFormData({ title: '', description: '', loomUrl: '', mainCategory: '', subCategory: '', asanaTaskUrl: '' })
       setChecklistItems([])
       setShowCreateForm(false)
       setEditingModule(null)
@@ -259,7 +261,8 @@ export default function TrainingPage() {
       description: module.description,
       loomUrl: module.loomUrl,
       mainCategory: module.mainCategory,
-      subCategory: module.subCategory
+      subCategory: module.subCategory,
+      asanaTaskUrl: module.asanaTaskUrl || ''
     })
     setChecklistItems(module.checklist)
     setShowCreateForm(true)
@@ -287,7 +290,6 @@ export default function TrainingPage() {
       const newComment = {
         id: Date.now().toString(),
         text: commentText,
-        asanaTaskUrl: asanaTaskUrl || undefined,
         createdBy: user.uid,
         createdByEmail: user.email!,
         createdAt: new Date()
@@ -298,7 +300,6 @@ export default function TrainingPage() {
       })
 
       setCommentText('')
-      setAsanaTaskUrl('')
       loadModules()
     } catch (error) {
       console.error('Error adding comment:', error)
@@ -464,7 +465,7 @@ export default function TrainingPage() {
               onClick={() => {
                 setShowCreateForm(true)
                 setEditingModule(null)
-                setFormData({ title: '', description: '', loomUrl: '', mainCategory: '', subCategory: '' })
+                setFormData({ title: '', description: '', loomUrl: '', mainCategory: '', subCategory: '', asanaTaskUrl: '' })
                 setChecklistItems([])
               }}
               className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2 ml-4"
@@ -559,6 +560,16 @@ export default function TrainingPage() {
                         placeholder="https://www.loom.com/share/..."
                         value={formData.loomUrl}
                         onChange={(e) => setFormData({ ...formData, loomUrl: e.target.value })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Asana Task URL (Optional)</label>
+                      <input
+                        type="url"
+                        placeholder="https://app.asana.com/..."
+                        value={formData.asanaTaskUrl}
+                        onChange={(e) => setFormData({ ...formData, asanaTaskUrl: e.target.value })}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                       />
                     </div>
@@ -731,7 +742,7 @@ export default function TrainingPage() {
                       onClick={() => {
                         setShowCreateForm(false)
                         setEditingModule(null)
-                        setFormData({ title: '', description: '', loomUrl: '', mainCategory: '', subCategory: '' })
+                        setFormData({ title: '', description: '', loomUrl: '', mainCategory: '', subCategory: '', asanaTaskUrl: '' })
                         setChecklistItems([])
                       }}
                       className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 transition-colors"
@@ -747,8 +758,26 @@ export default function TrainingPage() {
               <div className="bg-white rounded-xl shadow-sm p-6">
                 {/* Module Display */}
                 <div className="mb-6 flex justify-between items-start">
-                  <div>
-                    <h2 className="text-2xl font-semibold">{selectedModule.title}</h2>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3">
+                      <h2 className="text-2xl font-semibold">{selectedModule.title}</h2>
+                      {selectedModule.asanaTaskUrl && (
+                        <a
+                          href={selectedModule.asanaTaskUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:opacity-80 transition-opacity"
+                          title="View Asana Task"
+                        >
+                          <Image
+                            src="/images/asana-icon.png"
+                            alt="Asana"
+                            width={24}
+                            height={24}
+                          />
+                        </a>
+                      )}
+                    </div>
                     <p className="text-gray-600 mt-1">{selectedModule.description}</p>
                     <div className="mt-2 flex gap-2">
                       <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">
@@ -795,7 +824,7 @@ export default function TrainingPage() {
                   {/* Loom Video - 30% larger */}
                   <div>
                     <h3 className="text-lg font-semibold mb-3">Training Video</h3>
-                    <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+                    <div className="aspect-[16/12] bg-gray-100 rounded-lg overflow-hidden">
                       {extractLoomVideoId(selectedModule.loomUrl) ? (
                         <iframe
                           src={`https://www.loom.com/embed/${extractLoomVideoId(selectedModule.loomUrl)}`}
@@ -813,7 +842,7 @@ export default function TrainingPage() {
 
                   {/* Checklist - Smaller */}
                   <div>
-                    <h3 className="text-lg font-semibold mb-3">Checklist</h3>
+                    <h3 className="text-lg font-semibold mb-3">Checklist/Process</h3>
                     <div className="space-y-2">
                       {selectedModule.checklist.map((item) => (
                         <div key={item.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded">
@@ -862,21 +891,11 @@ export default function TrainingPage() {
 
                 {/* Comments Section */}
                 <div className="mt-8 border-t pt-6">
-                  <h3 className="text-lg font-semibold mb-4">Comments & Tasks</h3>
+                  <h3 className="text-lg font-semibold mb-4">Comments</h3>
                   <div className="space-y-4">
                     {selectedModule.comments?.map((comment) => (
                       <div key={comment.id} className="bg-gray-50 rounded-lg p-4">
                         <p className="text-sm text-gray-700">{comment.text}</p>
-                        {comment.asanaTaskUrl && (
-                          <a
-                            href={comment.asanaTaskUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-sm text-purple-600 hover:text-purple-700 mt-1 inline-block"
-                          >
-                            View Asana Task →
-                          </a>
-                        )}
                         <p className="text-xs text-gray-500 mt-2">
                           By {comment.createdByEmail} • {new Date(comment.createdAt).toLocaleDateString()}
                         </p>
@@ -885,7 +904,7 @@ export default function TrainingPage() {
                   </div>
 
                   {/* Add Comment Form */}
-                  <div className="mt-4 space-y-3">
+                  <div className="mt-4">
                     <textarea
                       value={commentText}
                       onChange={(e) => setCommentText(e.target.value)}
@@ -893,17 +912,10 @@ export default function TrainingPage() {
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                       rows={3}
                     />
-                    <input
-                      type="url"
-                      value={asanaTaskUrl}
-                      onChange={(e) => setAsanaTaskUrl(e.target.value)}
-                      placeholder="Asana task URL (optional)"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    />
                     <button
                       onClick={handleAddComment}
                       disabled={!commentText.trim()}
-                      className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors disabled:bg-gray-400"
+                      className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors disabled:bg-gray-400 mt-3"
                     >
                       Add Comment
                     </button>

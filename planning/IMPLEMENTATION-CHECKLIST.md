@@ -116,6 +116,9 @@
 - [x] **Double-Click Checklist Editing**: TESTED - Checklist items editable via double-click in module view
 - [x] **Fixed React Key Warnings**: TESTED - Proper unique keys for all mapped elements
 - [x] **Larger Video Display**: TESTED - Training video 30% larger in module view for better visibility
+- [x] **Improved Asana Integration**: TESTED - Module-level Asana URLs with icon display next to title
+- [x] **Video Height Enhancement**: TESTED - Training videos are 25% taller (16:12 aspect ratio)
+- [x] **UI Text Updates**: TESTED - "Comments & Tasks" → "Comments", "Checklist" → "Checklist/Process"
 
 ## 📱 Phase 7: Future Enhancements
 - [ ] **Mobile App**: Consider native mobile applications

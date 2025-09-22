@@ -42,9 +42,9 @@ export function TaxFilingsCard({
         />
       </div>
 
-      <div className="space-y-3 flex-1 overflow-y-auto">
+      <div className="space-y-3 flex-1 overflow-y-auto px-2 -mx-2">
         {taxReturns.map(taxReturn => (
-          <label key={taxReturn.id} className={`flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 -mx-2 rounded-lg transition-colors duration-200 ${justCompletedTask === `tax-${taxReturn.id}` ? 'bg-indigo-50' : ''}`}>
+          <label key={taxReturn.id} className={`flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors duration-200 ${justCompletedTask === `tax-${taxReturn.id}` ? 'bg-indigo-50' : ''}`}>
             <input
               type="checkbox"
               checked={taxReturn.isFiled}
@@ -61,8 +61,8 @@ export function TaxFilingsCard({
         ))}
         
         {/* Property Tax Items */}
-        <div className="border-t border-gray-100 mt-4 pt-4">
-          <label className={`flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 -mx-2 rounded-lg transition-colors duration-200 ${justCompletedTask === 'property-tax-h1' ? 'bg-indigo-50' : ''}`}>
+        <div className="border-t border-gray-100 mt-4 pt-4 space-y-3">
+          <label className={`flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors duration-200 ${justCompletedTask === 'property-tax-h1' ? 'bg-indigo-50' : ''}`}>
             <input
               type="checkbox"
               checked={propertyTaxH1Paid}
@@ -77,7 +77,7 @@ export function TaxFilingsCard({
             )}
           </label>
           
-          <label className={`flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 -mx-2 rounded-lg transition-colors duration-200 ${justCompletedTask === 'property-tax-h2' ? 'bg-indigo-50' : ''}`}>
+          <label className={`flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors duration-200 ${justCompletedTask === 'property-tax-h2' ? 'bg-indigo-50' : ''}`}>
             <input
               type="checkbox"
               checked={propertyTaxH2Paid}

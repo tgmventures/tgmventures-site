@@ -1,5 +1,15 @@
 # 📋 TGM Ventures Implementation Checklist
 
+## 🎉 Latest Achievement: Phase 5 Complete!
+**Business Unit Separation Successfully Implemented** 
+- ✅ Separated Asset Management and Ventures into distinct dashboard views
+- ✅ User preferences persist across sessions (last selected view remembered)
+- ✅ Dynamic venture cards with drag-and-drop functionality
+- ✅ Professional UI/UX improvements throughout
+- ✅ All features tested and working smoothly
+
+---
+
 ## 🧹 Phase 1: Project Cleanup & Organization (Current Sprint)
 - [x] **Project Structure Audit**: Review entire codebase for unused files, dependencies, and outdated code - COMPLETED
   - [x] Check for unused imports and dependencies - Removed 76 unused npm packages
@@ -53,16 +63,24 @@
   - [x] Removes Ventures count from Outstanding Objectives section
   - [x] Added Gemini app as position #1
   - [x] Kept current 4 apps: Gmail, Google Drive, Rent Manager, Asana
-  - [x] Added Training app as 6th tile
+  - [x] Added Training app as 6th tile (placeholder for Phase 6)
 - [x] **Ventures View**: TESTED and verified - Full dynamic card system with drag-and-drop
   - [x] App grid shows: Gemini, Firebase, GitHub, Google Cloud, Gmail
   - [x] Outstanding Objectives shows only Venture items
   - [x] Dynamic card system with real-time Firestore sync
-  - [x] "New Card" button creates cards with custom titles
-  - [x] Card deletion with confirmation dialog
+  - [x] "New Card" button creates cards with custom titles (small plus icon)
+  - [x] Card deletion with confirmation dialog (trash only shows when editing)
   - [x] Custom card titles - click to edit inline
   - [x] Drag-and-drop cards to reorder
-- [x] **Testing**: TESTED and verified - Toggle works, preferences persist
+  - [x] Inline editing for objectives - click to edit
+- [x] **UI/UX Improvements**: TESTED and verified - Professional polish
+  - [x] App grid centers horizontally with equal margins
+  - [x] Supports up to 6 apps per row on XL screens
+  - [x] Fixed view flash on login - waits for preferences
+  - [x] Smaller, cleaner "New Card" button (circular plus)
+  - [x] Conditional trash icon visibility
+  - [x] Added tooltips for better discoverability
+- [x] **Testing**: TESTED and verified - All features working smoothly
 
 ## 📚 Phase 6: Training & SOPs Module (Following Sprint)
 - [ ] **Training App**: Add 6th app tile to Asset Management view only, routes to /training

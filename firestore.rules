@@ -1,0 +1,37 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow authenticated users to read
+    match /{document=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.token.email.matches('.*@tgmventures[.]com$');
+    }
+    
+    // Special rules for dashboard data that needs to be accessible
+    match /dashboard_status/{document=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.token.email.matches('.*@tgmventures[.]com$');
+    }
+    
+    match /division_tasks/{document=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.token.email.matches('.*@tgmventures[.]com$');
+    }
+    
+    match /division_objectives/{document=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.token.email.matches('.*@tgmventures[.]com$');
+    }
+    
+    match /dashboard_projects/{document=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.token.email.matches('.*@tgmventures[.]com$');
+    }
+    
+    // For the new structure (when we migrate)
+    match /organizations/{orgId}/{document=**} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.token.email.matches('.*@tgmventures[.]com$');
+    }
+  }
+}

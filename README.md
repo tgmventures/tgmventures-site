@@ -1,4 +1,4 @@
-# TGM Ventures Website - Next.js
+# TGM Ventures Website
 
 A modern Next.js application for TGM Ventures, Inc., a Washington state corporation specializing in building, buying, and managing businesses and real estate.
 
@@ -8,137 +8,143 @@ A modern Next.js application for TGM Ventures, Inc., a Washington state corporat
 # Install dependencies
 npm install
 
-# Create .env.local from example
-cp .env.example .env.local
-# Edit .env.local and add your Firebase API key
+# Start development server with secure secrets
+./scripts/start-local.sh
 
-# Run development server
-npm run dev
+# Or manually with Firebase emulators
+firebase emulators:start --only firestore,auth,functions
+NEXT_PUBLIC_FIREBASE_API_KEY=$(gcloud secrets versions access latest --secret="FIREBASE_API_KEY") npm run dev
 ```
 
-## 🔐 Environment Variables
+## 🔐 Security & Credentials
 
-Create a `.env.local` file with:
-```
-NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key_here
-```
+This project uses **Google Secret Manager** for all sensitive credentials:
+- No API keys are stored in the codebase
+- All secrets are fetched at runtime
+- See [SECURITY.md](SECURITY.md) for detailed security practices
 
 ## 📦 Deployment
 
-### Option 1: Deploy to Vercel (Recommended)
-1. Push code to GitHub
-2. Import project to Vercel
-3. Add environment variable: `NEXT_PUBLIC_FIREBASE_API_KEY`
-4. Deploy
+The site is deployed on Firebase Hosting at https://tgmventures.com
 
-### Option 2: Deploy to Firebase Hosting
-1. Build the project: `npm run build`
-2. Deploy: `firebase deploy --only hosting`
+```bash
+# Build and deploy everything (fetches API key from Secret Manager)
+NEXT_PUBLIC_FIREBASE_API_KEY=$(gcloud secrets versions access latest --secret="FIREBASE_API_KEY") firebase deploy
 
-Note: For full functionality with API routes and authentication, Vercel deployment is recommended.
+# Deploy only hosting
+NEXT_PUBLIC_FIREBASE_API_KEY=$(gcloud secrets versions access latest --secret="FIREBASE_API_KEY") firebase deploy --only hosting
+
+# Deploy only functions (no API key needed)
+firebase deploy --only functions
+```
 
 ## 🚨 CRITICAL PRESERVATION RULES
 
 ### Core Pages - DO NOT MODIFY WITHOUT EXPLICIT PERMISSION
 The following pages must remain **EXACTLY** as they are and maintain their simple, elegant design:
 
-- **Homepage (`index.html`)** - Simple black background with warehouse image, TGM logo, and tagline
-- **Privacy Policy (`privacy-policy.html`)** - Comprehensive legal document 
-- **Terms of Service (`terms-of-service.html`)** - Comprehensive legal document
+- **Homepage** - Simple black background with warehouse image, TGM logo, and tagline
+- **Privacy Policy** - Comprehensive legal document 
+- **Terms of Service** - Comprehensive legal document
 
 **⚠️ IMPORTANT**: These pages are intentionally minimal and professional. Any changes to their design, content, or functionality require explicit user approval before implementation.
 
-### Legacy Projects - GRANDFATHERED & PROTECTED
-The following files and directories are legacy projects that must NOT be touched or modified:
-
-```
-/refihub/                    # Complete RefiHub project directory
-/refihub-deal-analyzer.html  # Legacy RefiHub files in root
-/refihub-game.html
-/refihub-loan-request.html
-/stock-game.html
-```
-
-These files are grandfathered into the V2 structure and should be preserved exactly as-is.
-
 ## Project Structure
 
-### V2 Architecture (Current)
 ```
 /
-├── src/                     # Modern web app source code
-├── public/                  # Static assets and build output
-├── projects/               # Legacy projects (organized)
-│   ├── refihub/           # Moved from root /refihub/
-│   └── legacy-games/      # Other legacy HTML games
-├── README.md              # This file
-├── .cursorrules          # AI development guidelines
+├── src/                    # Next.js source code
+│   ├── app/               # App router pages
+│   │   ├── api/          # API routes
+│   │   ├── contact/      # Contact form page
+│   │   ├── dashboard/    # Internal team dashboard
+│   │   ├── login/        # Authentication page
+│   │   ├── page.tsx      # Homepage
+│   │   ├── privacy-policy/
+│   │   └── terms-of-service/
+│   ├── components/        # React components
+│   │   └── ui/           # UI components
+│   ├── lib/              # Utilities and services
+│   │   ├── firebase/     # Firebase services
+│   │   └── firebase*.ts  # Firebase utilities
+│   └── types/            # TypeScript types
+├── public/                # Static assets
+│   └── images/           # Images and logos
+├── functions/            # Firebase Cloud Functions
+├── scripts/              # Helper scripts
+│   └── start-local.sh    # Local dev startup script
+├── firebase.json         # Firebase configuration
+├── firestore.rules       # Security rules
+├── next.config.js        # Next.js configuration
 └── package.json          # Dependencies and scripts
 ```
 
-### Core Pages
-- **Homepage**: Clean, minimal design with TGM branding
-- **Privacy Policy**: Legal compliance document
-- **Terms of Service**: Legal compliance document  
-- **Contact**: New dynamic contact form (V2 addition)
+## Features
+
+### ✅ Implemented
+
+#### Public Features
+- Professional homepage with elegant black design
+- Contact form with multiple inquiry types
+- reCAPTCHA v2 spam protection  
+- SendGrid email integration (no direct email exposure)
+- Responsive design across all devices
+- Legal pages (Privacy Policy, Terms of Service)
+
+#### Internal Team Dashboard
+- Google OAuth authentication with @tgmventures.com domain restriction
+- Three business divisions:
+  - **Asset Management**: Monthly task tracking with automatic reset
+  - **Real Estate**: Dynamic task management
+  - **Ventures**: Dynamic task management
+- **Tax Filings**: Annual tax return tracking with property tax management
+- Task features:
+  - Click to edit task text inline
+  - Drag and drop to reorder tasks
+  - Persistent state across sessions
+  - Progress tracking and visual indicators
+  - Automatic monthly/annual resets
+- User profile dropdown with Google account integration
+
+## Technology Stack
+
+- **Framework**: Next.js 15 with App Router
+- **Styling**: Tailwind CSS with Poppins font
+- **Database**: Firebase Firestore
+- **Authentication**: Firebase Auth (Google OAuth)
+- **Functions**: Firebase Cloud Functions
+- **Email**: SendGrid integration
+- **Hosting**: Firebase Hosting
+- **Security**: reCAPTCHA v2, Google Secret Manager
+- **State Management**: React hooks with real-time Firestore sync
 
 ## Development Guidelines
 
 ### What CAN be modified:
-- Project organization and file structure
-- Adding new dynamic functionality
-- Creating new pages (like contact forms)
+- Adding new features to the dashboard
+- Creating new internal tools
 - Improving build processes and tooling
-- Adding modern web app capabilities
+- Adding new API endpoints
+- Enhancing security measures
 
 ### What CANNOT be modified without permission:
 - Visual design of core pages (homepage, privacy, terms)
 - Content of legal documents
-- User experience of existing pages
-- Legacy project files
+- User experience of existing public pages
+- Authentication domain restrictions
 
-## Technology Stack
+## 🔗 Important Links
 
-### V1 (Legacy)
-- Pure HTML/CSS/JavaScript
-- Poppins font family
-- Simple, static design
+- **Production Site**: https://tgmventures.com
+- **Firebase Console**: https://console.firebase.google.com/project/tgm-ventures-site
+- **GitHub Repository**: https://github.com/tgmventures/tgmventures-site
 
-### V2 (Current)
-- Modern web application framework
-- Dynamic form handling
-- Email integration with CAPTCHA
-- Scalable architecture for future MVPs
+## 📝 Documentation
 
-## Contact Form Requirements
-
-The new contact form must include:
-- ✅ Multiple contact reason options
-- ✅ CAPTCHA spam protection  
-- ✅ Email submission (no direct email exposure)
-- ✅ Professional styling consistent with brand
-- ✅ Mobile responsive design
-
-## Future Development
-
-This structure supports:
-- Adding new product MVPs in `/projects/` directory
-- Dynamic functionality and user interactions
-- Scalable web application features
-- Integration with external services
-
-## AI Development Instructions
-
-When working on this project:
-
-1. **ALWAYS** check this README before making changes
-2. **NEVER** modify core pages without explicit permission
-3. **PRESERVE** the simple, professional aesthetic
-4. **ORGANIZE** new projects in the `/projects/` directory
-5. **MAINTAIN** visual consistency with existing brand
-6. **TEST** thoroughly before deployment
+- [LOCAL-DEVELOPMENT.md](LOCAL-DEVELOPMENT.md) - Local development setup guide
+- [DEPLOYMENT.md](DEPLOYMENT.md) - Production deployment instructions
+- [SECURITY.md](SECURITY.md) - Security best practices and guidelines
 
 ---
 
 *This project represents the digital presence of TGM Ventures, Inc. Maintain professionalism and simplicity in all modifications.*
-

@@ -10,7 +10,7 @@ export default function HomePage() {
       <div 
         className="absolute inset-0 z-0"
         style={{
-          backgroundImage: `url(/images/tgm-warehouse.jpg)`,
+          backgroundImage: `url(/images/tgm-warehouse-large.jpg)`,
           backgroundSize: 'cover',
           backgroundPosition: 'center center',
           backgroundRepeat: 'no-repeat'
@@ -45,9 +45,9 @@ export default function HomePage() {
             style={{
               fontSize: '26px',
               fontWeight: '600',
-              marginTop: '20px',
+              marginTop: '30px',
               padding: '0 5px',
-              lineHeight: '1.3',
+              lineHeight: '1.6',
               fontFamily: 'Poppins, sans-serif'
             }}
           >

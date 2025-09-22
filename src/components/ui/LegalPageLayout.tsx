@@ -63,27 +63,35 @@ export default function LegalPageLayout({ title, children }: LegalPageLayoutProp
           flex: 1
         }}
       >
-        <h1 
-          style={{
-            fontSize: '36px',
-            fontWeight: '700',
-            marginBottom: '10px',
-            color: '#111',
-            fontFamily: 'Poppins, sans-serif'
-          }}
-        >
-          {title}
-        </h1>
         <div 
           style={{
-            fontSize: '14px',
-            color: '#666',
-            marginBottom: '30px',
-            fontFamily: 'Poppins, sans-serif'
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'baseline',
+            marginBottom: '30px'
           }}
         >
-          <strong>Effective Date:</strong> September 19, 2025<br />
-          <strong>Last Updated:</strong> September 19, 2025
+          <h1 
+            style={{
+              fontSize: '36px',
+              fontWeight: '700',
+              margin: 0,
+              color: '#111',
+              fontFamily: 'Poppins, sans-serif'
+            }}
+          >
+            {title}
+          </h1>
+          <div 
+            style={{
+              fontSize: '14px',
+              color: '#666',
+              fontFamily: 'Poppins, sans-serif',
+              textAlign: 'right'
+            }}
+          >
+            <strong>Last Updated:</strong> September 19, 2025
+          </div>
         </div>
         <div style={{ fontFamily: 'Poppins, sans-serif' }}>
           {children}

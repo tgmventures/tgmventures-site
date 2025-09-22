@@ -1,56 +1,147 @@
-# TGM Ventures - Deployment Summary
+# TGM Ventures - Deployment Guide
 
-## 🚀 Current Status
+## 🚀 Production Deployment
 
-### ✅ Successfully Deployed:
-1. **Firebase Functions**: Contact form handler deployed at:
-   - URL: `https://us-central1-tgm-ventures-site.cloudfunctions.net/submitContactForm`
-   - Stores submissions in Firestore
-   - Ready for email integration (SendGrid can be added later)
+This guide covers deploying the TGM Ventures website to Firebase Hosting.
 
-2. **GitHub Repository**: All code pushed and secure
-   - No exposed API keys
-   - Proper .gitignore configuration
-   - Environment variables documented
+### Prerequisites
+1. Firebase CLI installed: `npm install -g firebase-tools`
+2. Google Cloud CLI installed and authenticated
+3. Access to `tgm-ventures-site` Firebase project
+4. Access to Google Secret Manager
 
-3. **Local Development**: Running on http://localhost:3002
-   - Firebase Authentication integrated
-   - Dashboard with app links
-   - Contact form functional
+### Deployment Steps
 
-## 📦 Deployment Options
+#### 1. Ensure Latest Code
+```bash
+# Pull latest changes
+git pull origin main
 
-### Option 1: Vercel (Recommended for Next.js)
-1. Go to https://vercel.com
-2. Import from GitHub: https://github.com/tgmventures/tgmventures-site
-3. Add environment variable:
-   - `NEXT_PUBLIC_FIREBASE_API_KEY` = `[Your Firebase API Key - see Firebase Console]`
-4. Deploy
+# Install dependencies
+npm install
+cd functions && npm install && cd ..
+```
 
-### Option 2: Firebase Hosting (Static assets only)
-- Current setup serves static files from `/public`
-- API routes and authentication require Vercel or similar platform
+#### 2. Test Locally
+```bash
+# Start with secure secrets
+./scripts/start-local.sh
 
-## 🔐 Security Status
-- ✅ No hardcoded API keys in codebase
-- ✅ Environment variables properly configured
-- ✅ Firebase Functions deployed
-- ✅ Domain restriction ready (@tgmventures.com)
-- ✅ .gitignore excludes sensitive files
+# Test all critical features:
+# - Homepage loads
+# - Contact form submits
+# - Dashboard authentication works
+# - All dashboard features function
+```
 
-## 🔑 Environment Setup
-1. Copy `env.example` to `.env.local`
-2. Get your Firebase API key from: https://console.firebase.google.com/project/tgm-ventures-site/settings/general
-3. Fill in the actual values in `.env.local`
-4. Never commit `.env.local` to version control
+#### 3. Deploy to Production
+```bash
+# Full deployment (hosting + functions)
+NEXT_PUBLIC_FIREBASE_API_KEY=$(gcloud secrets versions access latest --secret="FIREBASE_API_KEY") firebase deploy
 
-## 🔗 Important URLs
-- GitHub: https://github.com/tgmventures/tgmventures-site
-- Firebase Console: https://console.firebase.google.com/project/tgm-ventures-site
-- Contact Form Function: https://us-central1-tgm-ventures-site.cloudfunctions.net/submitContactForm
+# Deploy only hosting (faster for UI changes)
+NEXT_PUBLIC_FIREBASE_API_KEY=$(gcloud secrets versions access latest --secret="FIREBASE_API_KEY") firebase deploy --only hosting
 
-## 📝 Next Steps
-1. Enable Google OAuth in Firebase Console
-2. Deploy to Vercel for full functionality
-3. Update DNS for custom domain
-4. Configure SendGrid for email notifications
+# Deploy only functions (for backend changes)
+firebase deploy --only functions
+```
+
+### Post-Deployment Verification
+
+1. **Check Production Site**: https://tgmventures.com
+   - Homepage loads correctly
+   - All images display
+   - Navigation works
+
+2. **Test Contact Form**:
+   - Submit a test contact form
+   - Verify email arrives at management@tgmventures.com
+
+3. **Test Authentication**:
+   - Login with @tgmventures.com Google account
+   - Verify dashboard access
+   - Check all dashboard features
+
+4. **Monitor Firebase Console**:
+   - Check for any errors in Functions logs
+   - Verify Firestore operations
+   - Monitor authentication events
+
+## 🔐 Security Checklist
+
+Before deploying, ensure:
+- [ ] No hardcoded API keys in code
+- [ ] All secrets use Google Secret Manager
+- [ ] `.gitignore` excludes sensitive files
+- [ ] Firebase security rules are properly configured
+- [ ] Authentication domain restrictions are active
+
+## 🚨 Rollback Procedure
+
+If issues occur after deployment:
+
+```bash
+# View deployment history
+firebase hosting:releases:list
+
+# Rollback to previous version
+firebase hosting:rollback
+```
+
+## 📊 Current Architecture
+
+### Firebase Services Used:
+- **Hosting**: Next.js SSR application
+- **Firestore**: Database for dashboard data
+- **Authentication**: Google OAuth with domain restriction
+- **Cloud Functions**: Contact form handler
+- **Secret Manager**: API key storage
+
+### External Services:
+- **SendGrid**: Email delivery
+- **reCAPTCHA**: Spam protection
+- **Google Workspace**: Email domain
+
+## 🔧 Troubleshooting
+
+### Common Issues:
+
+**Build Failures:**
+```bash
+# Clear Next.js cache
+rm -rf .next
+npm run build
+```
+
+**Secret Manager Access:**
+```bash
+# Verify authentication
+gcloud auth list
+gcloud config get-value project
+
+# Test secret access
+gcloud secrets versions access latest --secret="FIREBASE_API_KEY"
+```
+
+**Function Deployment Errors:**
+```bash
+# Check function logs
+firebase functions:log
+
+# Test functions locally first
+cd functions && npm test
+```
+
+### Environment Variables Required:
+- `NEXT_PUBLIC_FIREBASE_API_KEY` - From Secret Manager
+- `SENDGRID_API_KEY` - Stored in Firebase Functions config
+
+## 📞 Support Contacts
+
+- **Firebase Console**: https://console.firebase.google.com/project/tgm-ventures-site
+- **GitHub Issues**: https://github.com/tgmventures/tgmventures-site/issues
+- **Email Monitoring**: management@tgmventures.com
+
+---
+
+*Always test thoroughly before deploying to production. The website represents TGM Ventures' professional presence.*

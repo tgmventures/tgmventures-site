@@ -18,6 +18,7 @@
   "description": "Cloud Functions for TGM Ventures",
   "dependencies": {
     "@google-cloud/recaptcha-enterprise": "^6.3.0",
+    "@google-cloud/secret-manager": "^6.1.0",
     "@sendgrid/mail": "^8.1.6",
     "cors": "^2.8.5",
     "firebase-admin": "^13.5.0",

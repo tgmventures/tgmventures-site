@@ -9,6 +9,7 @@ import {
   deleteVentureCard,
   addObjectiveToCard,
   updateObjectiveStatus,
+  updateObjectiveText,
   deleteObjectiveFromCard,
   reorderVentureCards,
   subscribeToVentureCards
@@ -26,6 +27,8 @@ export function VentureCardSystem({ userId }: VentureCardSystemProps) {
   const [editingTitle, setEditingTitle] = useState('')
   const [addingObjective, setAddingObjective] = useState<string | null>(null)
   const [newObjectiveText, setNewObjectiveText] = useState('')
+  const [editingObjective, setEditingObjective] = useState<{ cardId: string; objectiveId: string } | null>(null)
+  const [editingObjectiveText, setEditingObjectiveText] = useState('')
   const [draggedCard, setDraggedCard] = useState<VentureCard | null>(null)
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
   const [justCompletedObjective, setJustCompletedObjective] = useState<string | null>(null)
@@ -115,6 +118,18 @@ export function VentureCardSystem({ userId }: VentureCardSystemProps) {
       await deleteObjectiveFromCard(cardId, objectiveId)
     } catch (error) {
       console.error('Error deleting objective:', error)
+    }
+  }
+
+  const handleUpdateObjectiveText = async (cardId: string, objectiveId: string) => {
+    if (!editingObjectiveText.trim()) return
+    
+    try {
+      await updateObjectiveText(cardId, objectiveId, editingObjectiveText.trim())
+      setEditingObjective(null)
+      setEditingObjectiveText('')
+    } catch (error) {
+      console.error('Error updating objective text:', error)
     }
   }
 
@@ -277,9 +292,34 @@ export function VentureCardSystem({ userId }: VentureCardSystemProps) {
                     onChange={() => handleObjectiveCheck(card.id, objective)}
                     className="h-4 w-4 text-purple-600 rounded focus:ring-2 focus:ring-purple-500"
                   />
-                  <span className={`flex-1 text-sm ${objective.isChecked ? 'text-gray-400 line-through' : 'text-gray-700'}`}>
-                    {objective.text}
-                  </span>
+                  {editingObjective?.cardId === card.id && editingObjective?.objectiveId === objective.id ? (
+                    <form 
+                      onSubmit={(e) => {
+                        e.preventDefault()
+                        handleUpdateObjectiveText(card.id, objective.id)
+                      }}
+                      className="flex-1 flex items-center gap-2"
+                    >
+                      <input
+                        type="text"
+                        value={editingObjectiveText}
+                        onChange={(e) => setEditingObjectiveText(e.target.value)}
+                        className="flex-1 text-sm px-1 py-0.5 border-b-2 border-purple-500 focus:outline-none"
+                        autoFocus
+                        onBlur={() => handleUpdateObjectiveText(card.id, objective.id)}
+                      />
+                    </form>
+                  ) : (
+                    <span 
+                      onClick={() => {
+                        setEditingObjective({ cardId: card.id, objectiveId: objective.id })
+                        setEditingObjectiveText(objective.text)
+                      }}
+                      className={`flex-1 text-sm cursor-pointer hover:text-purple-600 ${objective.isChecked ? 'text-gray-400 line-through' : 'text-gray-700'}`}
+                    >
+                      {objective.text}
+                    </span>
+                  )}
                   {justCompletedObjective === `${card.id}-${objective.id}` && (
                     <span className="text-purple-500 animate-ping">✓</span>
                   )}

@@ -152,6 +152,41 @@ export async function addObjectiveToCard(cardId: string, text: string): Promise<
 }
 
 /**
+ * Update objective text
+ */
+export async function updateObjectiveText(
+  cardId: string, 
+  objectiveId: string, 
+  text: string
+): Promise<void> {
+  try {
+    const cardRef = doc(db, VENTURES_CARDS_COLLECTION, cardId)
+    const cardDoc = await getDocs(query(collection(db, VENTURES_CARDS_COLLECTION)))
+    
+    let currentCard: VentureCard | null = null
+    cardDoc.forEach((doc) => {
+      if (doc.id === cardId) {
+        currentCard = { id: doc.id, ...doc.data() } as VentureCard
+      }
+    })
+    
+    if (!currentCard) throw new Error('Card not found')
+    
+    const updatedObjectives = currentCard.objectives.map(obj => 
+      obj.id === objectiveId ? { ...obj, text } : obj
+    )
+    
+    await updateDoc(cardRef, {
+      objectives: updatedObjectives,
+      updatedAt: Timestamp.now()
+    })
+  } catch (error) {
+    console.error('Error updating objective text:', error)
+    throw error
+  }
+}
+
+/**
  * Update objective status
  */
 export async function updateObjectiveStatus(

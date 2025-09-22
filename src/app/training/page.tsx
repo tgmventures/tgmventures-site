@@ -79,6 +79,8 @@ export default function TrainingPage() {
   const [newChecklistText, setNewChecklistText] = useState('')
   const [editingChecklistId, setEditingChecklistId] = useState<string | null>(null)
   const [editChecklistText, setEditChecklistText] = useState('')
+  const [editingModuleChecklistId, setEditingModuleChecklistId] = useState<string | null>(null)
+  const [editModuleChecklistText, setEditModuleChecklistText] = useState('')
   const [commentText, setCommentText] = useState('')
   const [asanaTaskUrl, setAsanaTaskUrl] = useState('')
   const [showMainCategoryDropdown, setShowMainCategoryDropdown] = useState(false)
@@ -100,6 +102,20 @@ export default function TrainingPage() {
       loadCategories()
     }
   }, [user])
+
+  // Add ESC key listener for closing module view
+  useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && selectedModule) {
+        setSelectedModule(null)
+      }
+    }
+
+    document.addEventListener('keydown', handleEscKey)
+    return () => {
+      document.removeEventListener('keydown', handleEscKey)
+    }
+  }, [selectedModule])
 
   const loadModules = async () => {
     try {
@@ -289,6 +305,37 @@ export default function TrainingPage() {
     }
   }
 
+  const handleEditModuleChecklistItem = async (itemId: string, newText: string) => {
+    if (!selectedModule || !newText.trim()) {
+      setEditingModuleChecklistId(null)
+      setEditModuleChecklistText('')
+      return
+    }
+
+    try {
+      const moduleRef = doc(db, 'trainingModules', selectedModule.id)
+      const updatedChecklist = selectedModule.checklist.map(item =>
+        item.id === itemId ? { ...item, text: newText.trim() } : item
+      )
+
+      await updateDoc(moduleRef, {
+        checklist: updatedChecklist
+      })
+
+      setEditingModuleChecklistId(null)
+      setEditModuleChecklistText('')
+      loadModules()
+      
+      // Update the selected module locally
+      setSelectedModule({
+        ...selectedModule,
+        checklist: updatedChecklist
+      })
+    } catch (error) {
+      console.error('Error updating checklist item:', error)
+    }
+  }
+
   const extractLoomVideoId = (url: string) => {
     const match = url.match(/(?:share|embed)\/([a-zA-Z0-9]+)/)
     return match ? match[1] : null
@@ -391,9 +438,12 @@ export default function TrainingPage() {
                   className="hover:opacity-80 transition-opacity cursor-pointer"
                 />
               </Link>
-              <Link href="/training" className="text-xl font-semibold text-gray-900 hover:text-gray-700 transition-colors">
+              <button 
+                onClick={() => setSelectedModule(null)}
+                className="text-xl font-semibold text-gray-900 hover:text-gray-700 transition-colors"
+              >
                 Training & SOPs
-              </Link>
+              </button>
               
               {/* Search Bar in Nav */}
               <div className="relative max-w-md flex-1 ml-8">
@@ -439,6 +489,7 @@ export default function TrainingPage() {
               onClick={() => {
                 setSelectedCategory(null)
                 setSelectedSubCategories([])
+                setSelectedModule(null)
               }}
               className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors mb-2 ${
                 !selectedCategory ? 'bg-purple-50 text-purple-700' : 'text-gray-700 hover:bg-gray-100'
@@ -455,6 +506,7 @@ export default function TrainingPage() {
                   onClick={() => {
                     setSelectedCategory(category.name)
                     setSelectedSubCategories([])
+                    setSelectedModule(null)
                   }}
                   className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                     selectedCategory === category.name 
@@ -552,9 +604,9 @@ export default function TrainingPage() {
                         />
                         {showSubCategoryDropdown && filteredSubCategories.length > 0 && (
                           <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
-                            {filteredSubCategories.map((sub, index) => (
+                            {filteredSubCategories.map((sub) => (
                               <button
-                                key={`${sub}-${index}`}
+                                key={sub}
                                 type="button"
                                 onClick={() => {
                                   setFormData({ ...formData, subCategory: sub })
@@ -764,10 +816,45 @@ export default function TrainingPage() {
                     <h3 className="text-lg font-semibold mb-3">Checklist</h3>
                     <div className="space-y-2">
                       {selectedModule.checklist.map((item) => (
-                        <label key={item.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded">
+                        <div key={item.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded">
                           <input type="checkbox" className="h-5 w-5 text-purple-600 rounded" />
-                          <span className="text-sm">{item.text}</span>
-                        </label>
+                          {editingModuleChecklistId === item.id ? (
+                            <form 
+                              onSubmit={(e) => {
+                                e.preventDefault()
+                                handleEditModuleChecklistItem(item.id, editModuleChecklistText)
+                              }}
+                              className="flex-1"
+                            >
+                              <input
+                                type="text"
+                                value={editModuleChecklistText}
+                                onChange={(e) => setEditModuleChecklistText(e.target.value)}
+                                className="w-full text-sm px-2 py-1 border border-purple-300 rounded focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                autoFocus
+                                onBlur={() => handleEditModuleChecklistItem(item.id, editModuleChecklistText)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Escape') {
+                                    setEditingModuleChecklistId(null)
+                                    setEditModuleChecklistText('')
+                                  }
+                                }}
+                              />
+                            </form>
+                          ) : (
+                            <span 
+                              onDoubleClick={() => {
+                                if (isAdmin || selectedModule.createdBy === user?.uid) {
+                                  setEditingModuleChecklistId(item.id)
+                                  setEditModuleChecklistText(item.text)
+                                }
+                              }}
+                              className="text-sm flex-1 cursor-pointer"
+                            >
+                              {item.text}
+                            </span>
+                          )}
+                        </div>
                       ))}
                     </div>
                   </div>
@@ -841,9 +928,9 @@ export default function TrainingPage() {
                 {/* Subcategory Filter Tags */}
                 {selectedCategory && getAvailableSubCategories().length > 0 && (
                   <div className="flex flex-wrap gap-2">
-                    {getAvailableSubCategories().map((subCategory, index) => (
+                    {getAvailableSubCategories().map((subCategory) => (
                       <button
-                        key={`${selectedCategory}-${subCategory}-${index}`}
+                        key={`${selectedCategory}-${subCategory}`}
                         onClick={() => toggleSubCategory(subCategory)}
                         className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
                           selectedSubCategories.includes(subCategory)

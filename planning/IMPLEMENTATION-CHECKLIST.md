@@ -112,6 +112,9 @@
 - [x] **Navigation Updates**: TESTED - TGM logo links to dashboard, "Training & SOPs" title links to /training
 - [x] **Improved Video Display**: TESTED - Shows Loom embed preview with proper single-click playback
 - [x] **Edit Buttons on Cards**: TESTED - Hover to show edit button on module cards for authorized users
+- [x] **Enhanced Navigation UX**: TESTED - ESC key closes module, clicking title/categories closes module
+- [x] **Double-Click Checklist Editing**: TESTED - Checklist items editable via double-click in module view
+- [x] **Fixed React Key Warnings**: TESTED - Proper unique keys for all mapped elements
 
 ## 📱 Phase 7: Future Enhancements
 - [ ] **Mobile App**: Consider native mobile applications

@@ -96,6 +96,9 @@ export default function DashboardPage() {
           const preferences = await getUserPreferences(user.uid)
           if (preferences?.businessUnit) {
             setBusinessUnit(preferences.businessUnit)
+          } else {
+            // If no preference, default to asset-management
+            setBusinessUnit('asset-management')
           }
         } catch (error) {
           console.error('Error loading user preferences:', error)
@@ -803,6 +806,8 @@ export default function DashboardPage() {
                         className={
                           app.name === 'Asana' ? "w-14 h-10 object-contain" :
                           app.name === 'Gmail' || app.name === 'Google Drive' ? "w-10 h-10" :
+                          app.name === 'Firebase' ? "w-10 h-12 object-contain" :
+                          app.name === 'Google Cloud' ? "w-12 h-11 object-contain" :
                           "w-12 h-12"
                         }
                       />
@@ -832,6 +837,8 @@ export default function DashboardPage() {
                         className={
                           app.name === 'Asana' ? "w-14 h-10 object-contain" :
                           app.name === 'Gmail' || app.name === 'Google Drive' ? "w-10 h-10" :
+                          app.name === 'Firebase' ? "w-10 h-12 object-contain" :
+                          app.name === 'Google Cloud' ? "w-12 h-11 object-contain" :
                           "w-12 h-12"
                         }
                       />

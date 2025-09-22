@@ -88,6 +88,11 @@ export default function TrainingPage() {
   const [showSubCategoryDropdown, setShowSubCategoryDropdown] = useState(false)
   const [filteredMainCategories, setFilteredMainCategories] = useState<Category[]>([])
   const [filteredSubCategories, setFilteredSubCategories] = useState<string[]>([])
+  
+  // Mobile sidebar state
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [touchStartX, setTouchStartX] = useState(0)
+  const [touchEndX, setTouchEndX] = useState(0)
 
   const isAdmin = user?.email === 'antonio@tgmventures.com' // Admin check
 
@@ -117,6 +122,57 @@ export default function TrainingPage() {
       document.removeEventListener('keydown', handleEscKey)
     }
   }, [selectedModule])
+
+  // Handle sidebar state on mount and window resize
+  useEffect(() => {
+    // Load sidebar state from localStorage
+    const savedSidebarState = localStorage.getItem('trainingSidebarOpen')
+    if (savedSidebarState !== null) {
+      setIsSidebarOpen(JSON.parse(savedSidebarState))
+    } else {
+      // Auto-collapse on mobile by default
+      setIsSidebarOpen(window.innerWidth >= 768)
+    }
+
+    // Handle window resize
+    const handleResize = () => {
+      if (window.innerWidth < 768 && isSidebarOpen) {
+        setIsSidebarOpen(false)
+      }
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  // Save sidebar state to localStorage
+  useEffect(() => {
+    localStorage.setItem('trainingSidebarOpen', JSON.stringify(isSidebarOpen))
+  }, [isSidebarOpen])
+
+  // Handle swipe gestures
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEndX(e.targetTouches[0].clientX)
+  }
+
+  const handleTouchEnd = () => {
+    if (!touchStartX || !touchEndX) return
+    
+    const distance = touchStartX - touchEndX
+    const isLeftSwipe = distance > 50
+    const isRightSwipe = distance < -50
+
+    if (isRightSwipe && !isSidebarOpen) {
+      setIsSidebarOpen(true)
+    }
+    if (isLeftSwipe && isSidebarOpen) {
+      setIsSidebarOpen(false)
+    }
+  }
 
   const loadModules = async () => {
     try {
@@ -430,6 +486,17 @@ export default function TrainingPage() {
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center flex-1">
+              {/* Hamburger Menu - Mobile Only */}
+              <button
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className="mr-3 p-2 rounded-lg hover:bg-gray-100 transition-colors md:hidden"
+                aria-label="Toggle sidebar"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isSidebarOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+                </svg>
+              </button>
+              
               <Link href="/dashboard" className="mr-4">
                 <Image
                   src="/images/tgm-logo-icon.png"
@@ -441,18 +508,18 @@ export default function TrainingPage() {
               </Link>
               <button 
                 onClick={() => setSelectedModule(null)}
-                className="text-xl font-semibold text-gray-900 hover:text-gray-700 transition-colors"
+                className="text-xl font-semibold text-gray-900 hover:text-gray-700 transition-colors hidden sm:block"
               >
                 Training & SOPs
               </button>
               
               {/* Search Bar in Nav */}
-              <div className="relative max-w-md flex-1 ml-8">
+              <div className="relative max-w-md flex-1 ml-4 sm:ml-8">
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search all modules..."
+                  placeholder="Search modules..."
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
                 />
                 <svg className="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -479,9 +546,21 @@ export default function TrainingPage() {
         </div>
       </header>
 
-      <div className="flex pt-16">
-        {/* Simplified Sidebar */}
-        <aside className="w-64 bg-white border-r border-gray-200 h-screen fixed left-0 top-16 overflow-y-auto">
+      <div className="flex pt-16" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
+        {/* Mobile Backdrop */}
+        {isSidebarOpen && (
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden" 
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+        
+        {/* Responsive Sidebar */}
+        <aside className={`
+          w-64 bg-white border-r border-gray-200 h-screen fixed left-0 top-16 overflow-y-auto z-40
+          transition-transform duration-300 ease-in-out
+          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+        `}>
           <div className="p-4">
             <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Categories</h3>
             
@@ -492,7 +571,7 @@ export default function TrainingPage() {
                 setSelectedSubCategories([])
                 setSelectedModule(null)
               }}
-              className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors mb-2 ${
+              className={`w-full text-left px-3 py-3 min-h-[44px] rounded-lg text-sm font-medium transition-colors mb-2 ${
                 !selectedCategory ? 'bg-purple-50 text-purple-700' : 'text-gray-700 hover:bg-gray-100'
               }`}
             >
@@ -509,7 +588,7 @@ export default function TrainingPage() {
                     setSelectedSubCategories([])
                     setSelectedModule(null)
                   }}
-                  className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  className={`w-full text-left px-3 py-3 min-h-[44px] rounded-lg text-sm font-medium transition-colors ${
                     selectedCategory === category.name 
                       ? 'bg-purple-50 text-purple-700' 
                       : 'text-gray-700 hover:bg-gray-100'
@@ -523,7 +602,7 @@ export default function TrainingPage() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 ml-64 p-8">
+        <main className="flex-1 md:ml-64 p-4 sm:p-6 lg:p-8">
           {showCreateForm ? (
             <div className="max-w-4xl mx-auto">
               <div className="bg-white rounded-xl shadow-sm p-6">
@@ -820,7 +899,7 @@ export default function TrainingPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-6">
+                <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-4 lg:gap-6">
                   {/* Loom Video - 30% larger */}
                   <div>
                     <h3 className="text-lg font-semibold mb-3">Training Video</h3>
@@ -977,7 +1056,7 @@ export default function TrainingPage() {
                   <p className="text-gray-500">No modules found. Create your first training module to get started!</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                   {getFilteredModules().map((module) => {
                     const videoId = extractLoomVideoId(module.loomUrl)
                     const isPlaying = playingVideoId === module.id

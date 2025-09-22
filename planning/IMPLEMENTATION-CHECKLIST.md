@@ -119,6 +119,8 @@
 - [x] **Improved Asana Integration**: TESTED - Module-level Asana URLs with icon display next to title
 - [x] **Video Height Enhancement**: TESTED - Training videos are 25% taller (16:12 aspect ratio)
 - [x] **UI Text Updates**: TESTED - "Comments & Tasks" → "Comments", "Checklist" → "Checklist/Process"
+- [x] **App Icon Styling**: TESTED - Changed all app icon borders from colored to gray for cleaner look
+- [x] **Tax Card Checkbox Fix**: TESTED - Fixed checkbox cutoff issue, matched Asset Management card styling
 
 ## 📱 Phase 7: Future Enhancements
 - [ ] **Mobile App**: Consider native mobile applications

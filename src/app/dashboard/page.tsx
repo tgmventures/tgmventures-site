@@ -782,7 +782,7 @@ export default function DashboardPage() {
         </div>
 
         {/* App Grid */}
-        <div className={`grid grid-cols-2 ${businessUnit === 'asset-management' ? 'md:grid-cols-3' : 'md:grid-cols-3'} gap-6 mb-12 max-w-3xl mx-auto`}>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 mb-12 max-w-6xl mx-auto">
           {apps.map((app) => (
             app.external ? (
               <a
@@ -800,7 +800,7 @@ export default function DashboardPage() {
                         alt={`${app.name} icon`}
                         width={48}
                         height={48}
-                        className="w-12 h-12"
+                        className={app.name === 'Asana' ? "w-14 h-10 object-contain" : "w-12 h-12"}
                       />
                     ) : (
                       <span className="text-4xl">{app.icon}</span>
@@ -825,7 +825,7 @@ export default function DashboardPage() {
                         alt={`${app.name} icon`}
                         width={48}
                         height={48}
-                        className="w-12 h-12"
+                        className={app.name === 'Asana' ? "w-14 h-10 object-contain" : "w-12 h-12"}
                       />
                     ) : (
                       <span className="text-4xl">{app.icon}</span>

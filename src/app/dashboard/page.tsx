@@ -479,13 +479,7 @@ export default function DashboardPage() {
     },
     {
       name: 'Firebase',
-      icon: (
-        <svg className="w-12 h-12" viewBox="0 0 48 48" fill="none">
-          <path d="M8 37L24 4L26.5 9.5L24 15L29 4L40 37L24 44L8 37Z" fill="#FFA000"/>
-          <path d="M14 21L8 37L24 44V15L14 21Z" fill="#F57C00"/>
-          <path d="M24 15L29 4L40 37L24 44V15Z" fill="#FFCA28"/>
-        </svg>
-      ),
+      icon: '/images/firebase-icon.png',
       href: 'https://console.firebase.google.com',
       external: true,
       color: 'hover:bg-orange-50 border-orange-200'
@@ -503,14 +497,7 @@ export default function DashboardPage() {
     },
     {
       name: 'Google Cloud',
-      icon: (
-        <svg className="w-12 h-12" viewBox="0 0 48 48" fill="none">
-          <path d="M30.4 19.2h1.6l4.6-4.6.2-2c-3.4-3-7.8-4.6-12.8-4.6-8.4 0-15.6 5.2-18.6 12.6.4-.2 1-.2 1.4 0l8-1.4s.4-.6.6-.6c2.2-3.6 6.2-6 10.8-6 2.4 0 4.6.8 6.4 2l-2.2 2.6z" fill="#EA4335"/>
-          <path d="M39.8 20.6c-.6-2.2-1.8-4.2-3.4-5.8L32 19.2c2 1.6 3.2 4 3.2 6.8 0 2-0.8 3.8-2 5.2v.2l5 5c.2-.2.6-.2.8-.4 2.6-3 4-7 4-11.4 0-2-0.4-4-1.2-6z" fill="#4285F4"/>
-          <path d="M24 32c-4.4 0-8-3.6-8-8s3.6-8 8-8c2.8 0 5.2 1.4 6.6 3.6l4.4-4.4C31.8 11.4 27.4 8 24 8 15.2 8 8 15.2 8 24s7.2 16 16 16c4.2 0 8-1.6 11-4.2l-5-5C28.2 31.6 26.2 32 24 32z" fill="#34A853"/>
-          <path d="M14 28.8L8.6 33.6C11.6 37.8 17.4 40 24 40c5.2 0 9.8-2 13.4-5.2l-5.6-4.6C29.8 31.4 27 32 24 32c-4.8 0-8.8-3-10.4-7.2z" fill="#FBBC05"/>
-        </svg>
-      ),
+      icon: '/images/google-cloud-icon.png',
       href: 'https://console.cloud.google.com',
       external: true,
       color: 'hover:bg-blue-50 border-blue-200'

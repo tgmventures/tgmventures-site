@@ -47,9 +47,18 @@ export async function getVentureCards(): Promise<VentureCard[]> {
     
     const cards: VentureCard[] = []
     snapshot.forEach((doc) => {
+      const data = doc.data()
       cards.push({
         id: doc.id,
-        ...doc.data()
+        ...data,
+        // Convert Firestore Timestamps to Dates
+        createdAt: data.createdAt?.toDate?.() || data.createdAt,
+        updatedAt: data.updatedAt?.toDate?.() || data.updatedAt,
+        // Convert objective timestamps
+        objectives: (data.objectives || []).map((obj: any) => ({
+          ...obj,
+          completedAt: obj.completedAt?.toDate?.() || obj.completedAt
+        }))
       } as VentureCard)
     })
     
@@ -300,9 +309,18 @@ export function subscribeToVentureCards(
   const unsubscribe = onSnapshot(q, (snapshot) => {
     const cards: VentureCard[] = []
     snapshot.forEach((doc) => {
+      const data = doc.data()
       cards.push({
         id: doc.id,
-        ...doc.data()
+        ...data,
+        // Convert Firestore Timestamps to Dates
+        createdAt: data.createdAt?.toDate?.() || data.createdAt,
+        updatedAt: data.updatedAt?.toDate?.() || data.updatedAt,
+        // Convert objective timestamps
+        objectives: (data.objectives || []).map((obj: any) => ({
+          ...obj,
+          completedAt: obj.completedAt?.toDate?.() || obj.completedAt
+        }))
       } as VentureCard)
     })
     callback(cards)

@@ -73,11 +73,18 @@ export async function getDivisionTasksCompat(divisionId: string): Promise<Divisi
     if (useNewStructure) {
       const tasksRef = collection(db, DB_PATHS.divisionTasks(divisionId));
       const snapshot = await getDocs(tasksRef);
-      const tasks = snapshot.docs.map((doc: any) => ({
-        id: doc.id,
-        order: doc.data().order ?? 999,
-        ...doc.data()
-      })) as DivisionTask[];
+      const tasks = snapshot.docs.map((doc: any) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          order: data.order ?? 999,
+          ...data,
+          // Convert Firestore Timestamp to Date for proper comparison
+          completedAt: data.completedAt?.toDate?.() || data.completedAt,
+          createdAt: data.createdAt?.toDate?.() || data.createdAt,
+          updatedAt: data.updatedAt?.toDate?.() || data.updatedAt
+        };
+      }) as DivisionTask[];
       // Sort by order, then by createdAt for tasks without order
       return tasks.sort((a, b) => {
         if (a.order !== b.order) return a.order - b.order;
@@ -93,11 +100,18 @@ export async function getDivisionTasksCompat(divisionId: string): Promise<Divisi
       const tasksRef = collection(db, 'division_tasks');
       const q = query(tasksRef, where('division', '==', divisionId), orderBy('createdAt'));
       const snapshot = await getDocs(q);
-      return snapshot.docs.map((doc, index) => ({
-        id: doc.id,
-        order: doc.data().order ?? index,
-        ...doc.data()
-      })) as DivisionTask[];
+      return snapshot.docs.map((doc, index) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          order: data.order ?? index,
+          ...data,
+          // Convert Firestore Timestamp to Date for proper comparison
+          completedAt: data.completedAt?.toDate?.() || data.completedAt,
+          createdAt: data.createdAt?.toDate?.() || data.createdAt,
+          updatedAt: data.updatedAt?.toDate?.() || data.updatedAt
+        };
+      }) as DivisionTask[];
     }
   } catch (error: any) {
     // If it's an index error, return empty array while index is building
@@ -299,7 +313,18 @@ export async function getAssetManagementStatusCompat(): Promise<AssetManagementS
       const docSnap = await getDoc(docRef);
       
       if (docSnap.exists()) {
-        return docSnap.data() as AssetManagementStatus;
+        const data = docSnap.data();
+        // Convert Firestore Timestamps to Dates for completedDates
+        if (data.completedDates) {
+          const convertedDates: any = {};
+          for (const [key, value] of Object.entries(data.completedDates)) {
+            convertedDates[key] = value && typeof value === 'object' && 'toDate' in value 
+              ? value.toDate() 
+              : value;
+          }
+          data.completedDates = convertedDates;
+        }
+        return data as AssetManagementStatus;
       } else {
         // Initialize with default values
         const defaultStatus = {

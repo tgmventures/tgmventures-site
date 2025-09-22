@@ -108,16 +108,25 @@ export default function DashboardPage() {
     const loadUserPreferences = async () => {
       if (user) {
         try {
-          // Initialize user data if needed
-          await initializeUserData(user.uid, user.email || '', user.displayName || '')
-          
-          // Get user preferences
-          const preferences = await getUserPreferences(user.uid)
-          if (preferences?.businessUnit) {
-            setBusinessUnit(preferences.businessUnit)
+          // Only initialize user data for @tgmventures.com users
+          if (user.email?.endsWith('@tgmventures.com')) {
+            // Initialize user data if needed
+            await initializeUserData(user.uid, user.email || '', user.displayName || '')
+            
+            // Get user preferences
+            const preferences = await getUserPreferences(user.uid)
+            if (preferences?.businessUnit) {
+              setBusinessUnit(preferences.businessUnit)
+            } else {
+              // If no preference, default to asset-management
+              setBusinessUnit('asset-management')
+            }
           } else {
-            // If no preference, default to asset-management
-            setBusinessUnit('asset-management')
+            // Redirect non-tgmventures users back to login
+            console.error('Access denied: User must have @tgmventures.com email')
+            await auth.signOut()
+            router.push('/login')
+            return
           }
         } catch (error) {
           console.error('Error loading user preferences:', error)
@@ -128,7 +137,7 @@ export default function DashboardPage() {
     }
     
     loadUserPreferences()
-  }, [user])
+  }, [user, router])
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -942,7 +951,7 @@ export default function DashboardPage() {
                         }
                       />
                     ) : (
-                      <span className="text-4xl">{app.icon}</span>
+                      <span className="text-4xl flex items-center justify-center w-12 h-12">{app.icon}</span>
                     )
                   ) : (
                     app.icon
@@ -974,7 +983,7 @@ export default function DashboardPage() {
                         }
                       />
                     ) : (
-                      <span className="text-4xl">{app.icon}</span>
+                      <span className="text-4xl flex items-center justify-center w-12 h-12">{app.icon}</span>
                     )
                   ) : (
                     app.icon
@@ -1026,7 +1035,7 @@ export default function DashboardPage() {
                             className="w-12 h-12"
                           />
                         ) : (
-                          <span className="text-4xl">{app.icon}</span>
+                          <span className="text-4xl flex items-center justify-center w-12 h-12">{app.icon}</span>
                         )
                       ) : (
                         app.icon
@@ -1051,7 +1060,7 @@ export default function DashboardPage() {
                             className="w-12 h-12"
                           />
                         ) : (
-                          <span className="text-4xl">{app.icon}</span>
+                          <span className="text-4xl flex items-center justify-center w-12 h-12">{app.icon}</span>
                         )
                       ) : (
                         app.icon
@@ -1066,6 +1075,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Business Division Status - First Row */}
+        <div className="max-w-[85rem] mx-auto">
         {businessUnit === 'asset-management' ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {/* Asset Management */}
@@ -1134,6 +1144,7 @@ export default function DashboardPage() {
           />}
                 </div>
       )}
+      </div>
 
       </main>
     </div>

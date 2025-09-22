@@ -387,7 +387,7 @@ export default function DashboardPage() {
   }
 
 
-  if (loading) {
+  if (loading || loadingBusinessUnit) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -800,7 +800,11 @@ export default function DashboardPage() {
                         alt={`${app.name} icon`}
                         width={48}
                         height={48}
-                        className={app.name === 'Asana' ? "w-14 h-10 object-contain" : "w-12 h-12"}
+                        className={
+                          app.name === 'Asana' ? "w-14 h-10 object-contain" :
+                          app.name === 'Gmail' || app.name === 'Google Drive' ? "w-10 h-10" :
+                          "w-12 h-12"
+                        }
                       />
                     ) : (
                       <span className="text-4xl">{app.icon}</span>
@@ -825,7 +829,11 @@ export default function DashboardPage() {
                         alt={`${app.name} icon`}
                         width={48}
                         height={48}
-                        className={app.name === 'Asana' ? "w-14 h-10 object-contain" : "w-12 h-12"}
+                        className={
+                          app.name === 'Asana' ? "w-14 h-10 object-contain" :
+                          app.name === 'Gmail' || app.name === 'Google Drive' ? "w-10 h-10" :
+                          "w-12 h-12"
+                        }
                       />
                     ) : (
                       <span className="text-4xl">{app.icon}</span>

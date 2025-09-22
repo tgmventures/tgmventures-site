@@ -45,36 +45,37 @@
   - [x] Optimized images with Next.js Image component
   - [x] Reviewed bundle size and kept under 250KB per page
 
-## 🏢 Phase 5: Business Unit Separation (Next Sprint)
-- [ ] **User Preference Storage**: Add businessUnit field ('asset-management' | 'ventures') to Firestore user document
-- [ ] **Profile Dropdown Toggle**: Add toggle switch below Sign Out button to switch between Asset Management and Ventures views
-- [ ] **Asset Management View** (modify existing dashboard):
-  - [ ] Hide Ventures column and keep only: Asset Management, Real Estate, Tax Filings
-  - [ ] Remove Ventures count from Outstanding Objectives section
-  - [ ] Add Gemini app (position #1, links to https://gemini.google.com/app)
-  - [ ] Keep current 4 apps: Gmail, Google Drive, Rent Manager, Asana (positions 2-5)
-  - [ ] Add 6th app tile for Training module (Phase 6)
-- [ ] **Ventures View** (new dashboard layout):
-  - [ ] Replace app grid with: Gemini (position #1), Firebase, GitHub, Google Cloud, Gmail
-  - [ ] Replace 3-column layout with dynamic card system
-  - [ ] Add "New Card" button to create custom objective cards
-  - [ ] Enable card deletion with confirmation
-  - [ ] Allow custom card titles
-  - [ ] Implement drag-and-drop between cards
-- [ ] **Testing**: Verify toggle works, preferences persist, data remains isolated
+## ✅ Phase 5: Business Unit Separation (Completed)
+- [x] **User Preference Storage**: TESTED and verified - Added businessUnit field to Firestore user document
+- [x] **Profile Dropdown Toggle**: TESTED and verified - Toggle switch below profile info switches between views
+- [x] **Asset Management View**: TESTED and verified - Shows only relevant content
+  - [x] Hides Ventures column, keeps: Asset Management, Real Estate, Tax Filings
+  - [x] Removes Ventures count from Outstanding Objectives section
+  - [x] Added Gemini app as position #1
+  - [x] Kept current 4 apps: Gmail, Google Drive, Rent Manager, Asana
+  - [x] Added Training app as 6th tile
+- [x] **Ventures View**: PARTIALLY COMPLETE - Basic view switching implemented
+  - [x] App grid shows: Gemini, Firebase, GitHub, Google Cloud, Gmail
+  - [x] Outstanding Objectives shows only Venture items
+  - [ ] Dynamic card system (placeholder added, to be implemented)
+  - [ ] "New Card" button functionality
+  - [ ] Card deletion with confirmation
+  - [ ] Custom card titles
+  - [ ] Drag-and-drop between cards
+- [x] **Testing**: TESTED and verified - Toggle works, preferences persist
 
-## ✅ Phase 6: Training & SOPs Module (Completed - Testing Locally)
-- [x] **Training App**: TESTED and verified - Added 6th app tile to Asset Management view, routes to /training
-- [x] **Module Creation** (any user can create):
-  - [x] Title, description, Loom URL fields implemented
-  - [x] Category field with auto-complete from existing categories
-  - [x] Store categories in Firestore for reuse
-- [x] **Module Display**:
-  - [x] Left side: Embedded Loom video (16:9)
-  - [x] Right side: Checklist items
-  - [x] Bottom: Comments section with Asana task links
-- [x] **Admin Features**: Only antonio@tgmventures.com can delete modules
-- [x] **Testing**: Ready for local testing - Loom embedding, categories auto-complete, admin permissions
+## 📚 Phase 6: Training & SOPs Module (Following Sprint)
+- [ ] **Training App**: Add 6th app tile to Asset Management view only, routes to /training
+- [ ] **Module Creation** (any user can create):
+  - [ ] Title, description, Loom URL fields
+  - [ ] Category field with auto-complete from existing categories
+  - [ ] Store categories in Firestore for reuse
+- [ ] **Module Display**:
+  - [ ] Left side: Embedded Loom video (16:9)
+  - [ ] Right side: Checklist items
+  - [ ] Bottom: Comments section with Asana task links
+- [ ] **Admin Features**: Only your account can delete modules
+- [ ] **Testing**: Verify Loom embedding works, categories auto-complete, admin permissions
 
 ## 📱 Phase 7: Future Enhancements
 - [ ] **Mobile App**: Consider native mobile applications

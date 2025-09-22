@@ -24,5 +24,7 @@ export const db = getFirestore(app)
 // Configure Google Auth Provider
 export const googleProvider = new GoogleAuthProvider()
 googleProvider.setCustomParameters({
-  hd: 'tgmventures.com' // Restrict to @tgmventures.com domain
+  hd: 'tgmventures.com', // Restrict to @tgmventures.com domain
+  auth_type: 'rerequest',
+  access_type: 'online'
 })

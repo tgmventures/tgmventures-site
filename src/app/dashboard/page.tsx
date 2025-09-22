@@ -433,42 +433,42 @@ export default function DashboardPage() {
       icon: '/images/gemini-icon.png',
       href: 'https://gemini.google.com/app',
       external: true,
-      color: 'hover:bg-blue-50 border-blue-200'
+      color: 'hover:bg-gray-50 border-gray-200'
     },
     {
       name: 'Gmail',
       icon: '/images/gmail-icon.png',
       href: 'https://mail.google.com',
       external: true,
-      color: 'hover:bg-red-50 border-red-200'
+      color: 'hover:bg-gray-50 border-gray-200'
     },
     {
       name: 'Google Drive',
       icon: '/images/google-drive-icon.png',
       href: 'https://drive.google.com',
       external: true,
-      color: 'hover:bg-blue-50 border-blue-200'
+      color: 'hover:bg-gray-50 border-gray-200'
     },
     {
       name: 'Rent Manager',
       icon: '🏠',
       href: 'https://rentmanager.com',
       external: true,
-      color: 'hover:bg-green-50 border-green-200'
+      color: 'hover:bg-gray-50 border-gray-200'
     },
     {
       name: 'Asana',
       icon: '/images/asana-icon.png',
       href: 'https://app.asana.com',
       external: true,
-      color: 'hover:bg-pink-50 border-pink-200'
+      color: 'hover:bg-gray-50 border-gray-200'
     },
     {
       name: 'Training',
       icon: '🎓',
       href: '/training',
       external: false,
-      color: 'hover:bg-purple-50 border-purple-200'
+      color: 'hover:bg-gray-50 border-gray-200'
     }
   ]
 
@@ -478,14 +478,14 @@ export default function DashboardPage() {
       icon: '/images/gemini-icon.png',
       href: 'https://gemini.google.com/app',
       external: true,
-      color: 'hover:bg-blue-50 border-blue-200'
+      color: 'hover:bg-gray-50 border-gray-200'
     },
     {
       name: 'Firebase',
       icon: '/images/firebase-icon.png',
       href: 'https://console.firebase.google.com',
       external: true,
-      color: 'hover:bg-orange-50 border-orange-200'
+      color: 'hover:bg-gray-50 border-gray-200'
     },
     {
       name: 'GitHub',
@@ -503,14 +503,14 @@ export default function DashboardPage() {
       icon: '/images/google-cloud-icon.png',
       href: 'https://console.cloud.google.com',
       external: true,
-      color: 'hover:bg-blue-50 border-blue-200'
+      color: 'hover:bg-gray-50 border-gray-200'
     },
     {
       name: 'Gmail',
       icon: '/images/gmail-icon.png',
       href: 'https://mail.google.com',
       external: true,
-      color: 'hover:bg-red-50 border-red-200'
+      color: 'hover:bg-gray-50 border-gray-200'
     }
   ]
 

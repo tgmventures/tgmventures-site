@@ -427,21 +427,21 @@ export default function DashboardPage() {
   const assetManagementApps = [
     {
       name: 'Gemini',
-      icon: '/images/gemini-icon.svg',
+      icon: '/images/gemini-icon.png',
       href: 'https://gemini.google.com/app',
       external: true,
       color: 'hover:bg-blue-50 border-blue-200'
     },
     {
       name: 'Gmail',
-      icon: '/images/gmail-icon.svg',
+      icon: '/images/gmail-icon.png',
       href: 'https://mail.google.com',
       external: true,
       color: 'hover:bg-red-50 border-red-200'
     },
     {
       name: 'Google Drive',
-      icon: '/images/google-drive-icon.svg',
+      icon: '/images/google-drive-icon.png',
       href: 'https://drive.google.com',
       external: true,
       color: 'hover:bg-blue-50 border-blue-200'
@@ -464,7 +464,7 @@ export default function DashboardPage() {
     },
     {
       name: 'Asana',
-      icon: '/images/asana-icon.svg',
+      icon: '/images/asana-icon.png',
       href: 'https://app.asana.com',
       external: true,
       color: 'hover:bg-pink-50 border-pink-200'
@@ -489,7 +489,7 @@ export default function DashboardPage() {
   const venturesApps = [
     {
       name: 'Gemini',
-      icon: '/images/gemini-icon.svg',
+      icon: '/images/gemini-icon.png',
       href: 'https://gemini.google.com/app',
       external: true,
       color: 'hover:bg-blue-50 border-blue-200'
@@ -534,7 +534,7 @@ export default function DashboardPage() {
     },
     {
       name: 'Gmail',
-      icon: '/images/gmail-icon.svg',
+      icon: '/images/gmail-icon.png',
       href: 'https://mail.google.com',
       external: true,
       color: 'hover:bg-red-50 border-red-200'
@@ -905,44 +905,6 @@ export default function DashboardPage() {
             />
           </Suspense>
 
-          {/* Ventures */}
-          <Suspense fallback={<CardSkeleton />}>
-            <VenturesCard
-              venturesTasks={venturesTasks}
-              venturesTasksComplete={venturesTasksComplete}
-              handleTaskCheck={handleTaskCheck}
-              handleDeleteTask={handleDeleteTask}
-              handleAddTask={handleAddTask}
-              handleEditTask={handleEditTask}
-              startEditingTask={startEditingTask}
-              handleDragStart={handleDragStart}
-              handleDragOver={handleDragOver}
-              handleDragEnd={handleDragEnd}
-              handleDrop={handleDrop}
-              justCompletedTask={justCompletedTask}
-              editingTaskId={editingTaskId}
-              editText={editText}
-              setEditText={setEditText}
-              setEditingTaskId={setEditingTaskId}
-              draggedTask={draggedTask}
-              dragOverIndex={dragOverIndex}
-              addingTask={addingTask}
-              setAddingTask={setAddingTask}
-              newText={newText}
-              setNewText={setNewText}
-            />
-          </Suspense>
-        </div>
-      ) : (
-        /* Ventures View - Dynamic Cards */
-        <div className="mb-8">
-          {user && <VentureCardSystem userId={user.uid} />}
-        </div>
-      )}
-
-        {/* Business Division Status - Second Row */}
-        {businessUnit === 'asset-management' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {/* Tax Filings */}
           <Suspense fallback={<CardSkeleton />}>
             <TaxFilingsCard
@@ -956,7 +918,13 @@ export default function DashboardPage() {
             />
           </Suspense>
         </div>
+      ) : (
+        /* Ventures View - Dynamic Cards */
+        <div className="mb-8">
+          {user && <VentureCardSystem userId={user.uid} />}
+        </div>
       )}
+
       </main>
     </div>
   )

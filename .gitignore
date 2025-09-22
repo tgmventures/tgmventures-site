@@ -47,6 +47,9 @@ npm-debug.log*
 test-*.js
 test-*.html
 
+# Firebase export files
+users.json
+
 # Temporary files
 *.tmp
 *.temp

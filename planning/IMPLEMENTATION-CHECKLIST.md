@@ -60,108 +60,39 @@
 
 ---
 
-## 📱 Phase 7: Mobile Optimization (Current Sprint)
-- [ ] **Training Sidebar Collapse**: Implement collapsible sidebar for mobile
-  - [ ] Add hamburger menu button on mobile viewport
-  - [ ] Slide-out animation for sidebar
-  - [ ] Auto-collapse on mobile screens (<768px)
-  - [ ] Swipe gestures for open/close
-  - [ ] Persist collapse state in localStorage
-- [ ] **Mobile Video Layout**: Optimize video display for small screens
-  - [ ] Stack video above checklist on mobile
-  - [ ] Full-width video player
-  - [ ] Improved touch controls
-- [ ] **Responsive Navigation**: Ensure all navigation works on mobile
-  - [ ] Touch-friendly button sizes
-  - [ ] Proper spacing for mobile interaction
-  - [ ] Test on various device sizes
+## 📱 Phase 7: Mobile UX Enhancement
+- [ ] **Training Sidebar**: Collapsible sidebar with hamburger menu (<768px auto-collapse)
+- [ ] **Responsive Layout**: Stack video above checklist on mobile, full-width player
+- [ ] **Touch Optimization**: Swipe gestures, touch-friendly targets, persistent state
 
-## 🌙 Phase 8: Task Completion Visibility
-- [ ] **Midnight Task Clearing**: Hide completed tasks after midnight
-  - [ ] Add completedAt timestamp to all task types
-  - [ ] Filter UI to hide tasks completed before today
-  - [ ] Keep data in Firestore (soft delete approach)
-  - [ ] Apply to Asset Management monthly tasks
-  - [ ] Apply to Tax Filing tasks
-  - [ ] Apply to Real Estate tasks
-  - [ ] Apply to Venture objectives
-- [ ] **Visual Feedback**: Show completion animations
-  - [ ] Fade out animation when marking complete
-  - [ ] Success toast notification
-  - [ ] Daily reset indicator
-- [ ] **Completion History**: Track historical completions
-  - [ ] Store completion history for reporting
-  - [ ] Enable "View History" option for admins
+## 🌙 Phase 8: Daily Task Reset
+- [ ] **Midnight Clear**: Completed tasks vanish at midnight (UI only, data preserved)
+  - [ ] Add completedAt timestamp to all task models
+  - [ ] Create universal date filter: `isVisibleToday(task)`
+  - [ ] Apply to: Asset Management, Tax, Real Estate, Ventures
+- [ ] **User Feedback**: Fade animation on complete, success toast, completion history
 
-## 📊 Phase 9: Weekly Reporting System
-- [ ] **Architecture Setup**: Design as standalone module
-  - [ ] Create /reports route and page
-  - [ ] Add Reports app tile to dashboard
-  - [ ] Design modular plugin system for data sources
-- [ ] **User Attribution**: Track who completes tasks
-  - [ ] Add completedBy field to all task types
-  - [ ] Store user email/name with completion
-  - [ ] Migrate existing completed tasks
-- [ ] **Core Report Features**: Weekly summary generation
-  - [ ] Date range selector (default: last 7 days)
-  - [ ] Objectives completed by user
-  - [ ] New objectives added
-  - [ ] Training modules created/completed
-  - [ ] Task completion metrics
-- [ ] **Data Source Plugins**: Extensible integration system
-  - [ ] Internal data sources (objectives, tasks, training)
-  - [ ] Asana API integration for external tasks
-  - [ ] Placeholder for Rent Manager financial data
-  - [ ] Placeholder for other future integrations
-- [ ] **Report Display**: Professional presentation
-  - [ ] Executive summary view
-  - [ ] Detailed breakdowns by category
-  - [ ] Charts and visualizations
-  - [ ] Export to PDF functionality
-  - [ ] Email report capability
+## 📊 Phase 9: Reporting Engine (Plugin Architecture)
+- [ ] **Core System**: Extensible report generator at `/reports`
+  - [ ] Plugin interface: `IReportDataSource { getData(), getMetrics(), getSchema() }`
+  - [ ] Date range selector with presets (week/month/quarter/year)
+  - [ ] User attribution: Add `completedBy` to all completable entities
+- [ ] **Data Plugins**:
+  - [ ] Internal: Tasks, Objectives, Training (built-in)
+  - [ ] External: Asana tasks, Rent Manager financials (via APIs)
+  - [ ] Extensible: Easy to add new data sources
+- [ ] **Output**: Interactive dashboard, PDF export, scheduled emails
 
-## 💼 Phase 10: Jobs Application Module
-- [ ] **Public Jobs Portal**: Browse and apply for positions
-  - [ ] Create /careers public route
-  - [ ] Job listing page with filters
-  - [ ] Individual job detail pages
-  - [ ] SEO optimization for job posts
-- [ ] **Job Management (Admin)**: Create and manage positions
-  - [ ] Job creation form (title, description, requirements)
-  - [ ] Loom video embed for job descriptions
-  - [ ] Active/inactive status toggle
-  - [ ] Department/category organization
-- [ ] **Application Builder**: Flexible questionnaire system
-  - [ ] Question types: Yes/No, Multiple Choice, Checkbox, Short Text, Long Text
-  - [ ] Drag-and-drop question ordering
-  - [ ] Required/optional field settings
-  - [ ] Conditional logic for questions
-  - [ ] Preview mode for testing
-- [ ] **Video Interview System**: One-take video responses
-  - [ ] WebRTC integration for recording
-  - [ ] Single-take enforcement (no retries)
-  - [ ] Automatic upload to Cloud Storage
-  - [ ] Multiple video questions per application
-  - [ ] Time limits for responses
-- [ ] **Application Process**: Seamless candidate experience
-  - [ ] Step-by-step application flow
-  - [ ] Progress indicator
-  - [ ] Auto-save functionality
-  - [ ] Mobile-optimized interface
-  - [ ] Confirmation emails
-- [ ] **Candidate Review System**: Efficient evaluation tools
-  - [ ] Application dashboard by position
-  - [ ] Three-pile system: Reject, Shortlist, Accept
-  - [ ] Drag-and-drop between piles
-  - [ ] Video playback interface
-  - [ ] Application scoring/rating
-  - [ ] Team collaboration features
-  - [ ] Bulk actions for efficiency
-- [ ] **Integration Features**: Connect with existing tools
-  - [ ] Export to Asana for hiring tasks
-  - [ ] Email notifications for new applications
-  - [ ] Calendar integration for interviews
-  - [ ] Analytics on application funnel
+## 💼 Phase 10: Careers Module (Video-First Hiring)
+- [ ] **Public Portal**: `/careers` with job listings, SEO-optimized
+- [ ] **Video Applications**: WebRTC one-take recordings → Cloud Storage
+  - [ ] Configurable questions per role
+  - [ ] Time limits, no retries
+  - [ ] Mobile-optimized recording
+- [ ] **Smart Forms**: Drag-drop question builder (Yes/No, MCQ, Text, Conditional Logic)
+- [ ] **Review Pipeline**: Three-pile system (Reject/Maybe/Accept)
+  - [ ] Bulk actions, team notes, scoring
+  - [ ] Export to Asana for next steps
 
 ## 🔧 Maintenance Tasks
 - [ ] **Weekly Security Scan**: Check for vulnerabilities

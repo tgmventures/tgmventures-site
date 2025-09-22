@@ -4,7 +4,8 @@ import {
   addDoc, 
   updateDoc, 
   deleteDoc, 
-  getDocs, 
+  getDocs,
+  getDoc, 
   query, 
   orderBy, 
   onSnapshot,
@@ -123,26 +124,24 @@ export async function deleteVentureCard(cardId: string): Promise<void> {
 export async function addObjectiveToCard(cardId: string, text: string): Promise<void> {
   try {
     const cardRef = doc(db, VENTURES_CARDS_COLLECTION, cardId)
-    const cardDoc = await getDocs(query(collection(db, VENTURES_CARDS_COLLECTION)))
+    const cardDoc = await getDoc(cardRef)
     
-    let currentCard: VentureCard | null = null
-    cardDoc.forEach((doc) => {
-      if (doc.id === cardId) {
-        currentCard = { id: doc.id, ...doc.data() } as VentureCard
-      }
-    })
+    if (!cardDoc.exists()) {
+      throw new Error('Card not found')
+    }
     
-    if (!currentCard) throw new Error('Card not found')
+    const cardData = cardDoc.data()
+    const currentObjectives = cardData?.objectives || []
     
     const newObjective: VentureObjective = {
       id: Date.now().toString(),
       text,
       isChecked: false,
-      order: currentCard.objectives.length
+      order: currentObjectives.length
     }
     
     await updateDoc(cardRef, {
-      objectives: [...currentCard.objectives, newObjective],
+      objectives: [...currentObjectives, newObjective],
       updatedAt: Timestamp.now()
     })
   } catch (error) {
@@ -161,18 +160,16 @@ export async function updateObjectiveText(
 ): Promise<void> {
   try {
     const cardRef = doc(db, VENTURES_CARDS_COLLECTION, cardId)
-    const cardDoc = await getDocs(query(collection(db, VENTURES_CARDS_COLLECTION)))
+    const cardDoc = await getDoc(cardRef)
     
-    let currentCard: VentureCard | null = null
-    cardDoc.forEach((doc) => {
-      if (doc.id === cardId) {
-        currentCard = { id: doc.id, ...doc.data() } as VentureCard
-      }
-    })
+    if (!cardDoc.exists()) {
+      throw new Error('Card not found')
+    }
     
-    if (!currentCard) throw new Error('Card not found')
+    const cardData = cardDoc.data()
+    const currentObjectives = cardData?.objectives || []
     
-    const updatedObjectives = currentCard.objectives.map(obj => 
+    const updatedObjectives = currentObjectives.map((obj: VentureObjective) => 
       obj.id === objectiveId ? { ...obj, text } : obj
     )
     
@@ -196,18 +193,16 @@ export async function updateObjectiveStatus(
 ): Promise<void> {
   try {
     const cardRef = doc(db, VENTURES_CARDS_COLLECTION, cardId)
-    const cardDoc = await getDocs(query(collection(db, VENTURES_CARDS_COLLECTION)))
+    const cardDoc = await getDoc(cardRef)
     
-    let currentCard: VentureCard | null = null
-    cardDoc.forEach((doc) => {
-      if (doc.id === cardId) {
-        currentCard = { id: doc.id, ...doc.data() } as VentureCard
-      }
-    })
+    if (!cardDoc.exists()) {
+      throw new Error('Card not found')
+    }
     
-    if (!currentCard) throw new Error('Card not found')
+    const cardData = cardDoc.data()
+    const currentObjectives = cardData?.objectives || []
     
-    const updatedObjectives = currentCard.objectives.map(obj => 
+    const updatedObjectives = currentObjectives.map((obj: VentureObjective) => 
       obj.id === objectiveId ? { ...obj, isChecked } : obj
     )
     
@@ -230,20 +225,18 @@ export async function deleteObjectiveFromCard(
 ): Promise<void> {
   try {
     const cardRef = doc(db, VENTURES_CARDS_COLLECTION, cardId)
-    const cardDoc = await getDocs(query(collection(db, VENTURES_CARDS_COLLECTION)))
+    const cardDoc = await getDoc(cardRef)
     
-    let currentCard: VentureCard | null = null
-    cardDoc.forEach((doc) => {
-      if (doc.id === cardId) {
-        currentCard = { id: doc.id, ...doc.data() } as VentureCard
-      }
-    })
+    if (!cardDoc.exists()) {
+      throw new Error('Card not found')
+    }
     
-    if (!currentCard) throw new Error('Card not found')
+    const cardData = cardDoc.data()
+    const currentObjectives = cardData?.objectives || []
     
-    const updatedObjectives = currentCard.objectives
-      .filter(obj => obj.id !== objectiveId)
-      .map((obj, index) => ({ ...obj, order: index }))
+    const updatedObjectives = currentObjectives
+      .filter((obj: VentureObjective) => obj.id !== objectiveId)
+      .map((obj: VentureObjective, index: number) => ({ ...obj, order: index }))
     
     await updateDoc(cardRef, {
       objectives: updatedObjectives,

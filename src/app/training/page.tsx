@@ -358,19 +358,24 @@ export default function TrainingPage() {
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center flex-1">
-              <Link href="/dashboard" className="flex items-center group mr-8">
-                <svg className="w-6 h-6 mr-2 text-gray-600 group-hover:text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-                <Image
-                  src="/images/tgm-logo-icon.png"
-                  alt="TGM"
-                  width={32}
-                  height={32}
-                  className="mr-3"
-                />
-                <h1 className="text-xl font-semibold text-gray-900">Training & SOPs</h1>
-              </Link>
+              <div className="flex items-center mr-8">
+                <Link href="/dashboard" className="flex items-center group">
+                  <svg className="w-6 h-6 mr-2 text-gray-600 group-hover:text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  <span className="text-sm text-gray-600 group-hover:text-gray-900">Back</span>
+                </Link>
+                <div className="flex items-center ml-4">
+                  <Image
+                    src="/images/tgm-logo-icon.png"
+                    alt="TGM"
+                    width={32}
+                    height={32}
+                    className="mr-3"
+                  />
+                  <h1 className="text-xl font-semibold text-gray-900">Training & SOPs</h1>
+                </div>
+              </div>
               
               {/* Search Bar in Nav */}
               <div className="relative max-w-md flex-1">
@@ -849,36 +854,50 @@ export default function TrainingPage() {
                       >
                         {/* Embedded Video Player */}
                         <div className="aspect-video bg-gray-100 relative">
-                          {isPlaying && videoId ? (
-                            <iframe
-                              src={`https://www.loom.com/embed/${videoId}?autoplay=1`}
-                              frameBorder="0"
-                              allowFullScreen
-                              className="w-full h-full"
-                            />
-                          ) : (
-                            <button
-                              onClick={() => setPlayingVideoId(module.id)}
-                              className="w-full h-full relative group"
-                            >
-                              {videoId && (
+                          {videoId ? (
+                            isPlaying ? (
+                              <iframe
+                                src={`https://www.loom.com/embed/${videoId}?autoplay=1`}
+                                frameBorder="0"
+                                allowFullScreen
+                                className="w-full h-full"
+                                allow="autoplay"
+                              />
+                            ) : (
+                              <button
+                                onClick={() => setPlayingVideoId(module.id)}
+                                className="w-full h-full relative group overflow-hidden"
+                              >
                                 <img 
                                   src={`https://cdn.loom.com/sessions/thumbnails/${videoId}-00001.jpg`}
                                   alt={module.title}
                                   className="w-full h-full object-cover"
                                   onError={(e) => {
-                                    e.currentTarget.style.display = 'none'
+                                    // If thumbnail fails, try alternative format
+                                    const target = e.currentTarget as HTMLImageElement
+                                    if (!target.dataset.retried) {
+                                      target.dataset.retried = 'true'
+                                      target.src = `https://cdn.loom.com/sessions/thumbnails/${videoId}-with-play.jpg`
+                                    }
                                   }}
                                 />
-                              )}
-                              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                                <div className="bg-white/90 rounded-full p-4 transform group-hover:scale-110 transition-transform">
-                                  <svg className="w-8 h-8 text-gray-800" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M8 5v14l11-7z"/>
-                                  </svg>
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                  <div className="absolute inset-0 flex items-center justify-center">
+                                    <div className="bg-white rounded-full p-3 shadow-lg transform group-hover:scale-110 transition-transform">
+                                      <svg className="w-10 h-10 text-gray-900 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                      </svg>
+                                    </div>
+                                  </div>
                                 </div>
-                              </div>
-                            </button>
+                              </button>
+                            )
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                              <svg className="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                              </svg>
+                            </div>
                           )}
                         </div>
                         

@@ -448,16 +448,7 @@ export default function DashboardPage() {
     },
     {
       name: 'Rent Manager',
-      icon: (
-        <svg className="w-12 h-12" viewBox="0 0 48 48" fill="none">
-          <rect x="8" y="12" width="32" height="28" rx="2" fill="#2E7D32" stroke="#2E7D32" strokeWidth="2"/>
-          <rect x="12" y="8" width="24" height="4" rx="1" fill="#66BB6A"/>
-          <rect x="14" y="18" width="8" height="6" fill="white"/>
-          <rect x="26" y="18" width="8" height="6" fill="white"/>
-          <rect x="14" y="28" width="8" height="6" fill="white"/>
-          <rect x="26" y="28" width="8" height="6" fill="white"/>
-        </svg>
-      ),
+      icon: '🏠',
       href: 'https://rentmanager.com',
       external: true,
       color: 'hover:bg-green-50 border-green-200'
@@ -471,15 +462,7 @@ export default function DashboardPage() {
     },
     {
       name: 'Training',
-      icon: (
-        <svg className="w-12 h-12" viewBox="0 0 48 48" fill="none">
-          <rect x="6" y="8" width="36" height="32" rx="2" fill="#8B5CF6" stroke="#8B5CF6" strokeWidth="2"/>
-          <rect x="10" y="12" width="28" height="20" fill="white" rx="1"/>
-          <path d="M17 20L23 25L31 18" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          <rect x="14" y="35" width="20" height="3" rx="1.5" fill="#8B5CF6"/>
-          <rect x="20" y="38" width="8" height="2" rx="1" fill="#8B5CF6"/>
-        </svg>
-      ),
+      icon: '🎓',
       href: '/training',
       external: false,
       color: 'hover:bg-purple-50 border-purple-200'
@@ -824,13 +807,17 @@ export default function DashboardPage() {
               >
                 <div className="mb-3 transition-transform duration-300 hover:scale-110">
                   {typeof app.icon === 'string' ? (
-                    <Image
-                      src={app.icon}
-                      alt={`${app.name} icon`}
-                      width={48}
-                      height={48}
-                      className="w-12 h-12"
-                    />
+                    app.icon.startsWith('/') ? (
+                      <Image
+                        src={app.icon}
+                        alt={`${app.name} icon`}
+                        width={48}
+                        height={48}
+                        className="w-12 h-12"
+                      />
+                    ) : (
+                      <span className="text-4xl">{app.icon}</span>
+                    )
                   ) : (
                     app.icon
                   )}
@@ -845,13 +832,17 @@ export default function DashboardPage() {
               >
                 <div className="mb-3 transition-transform duration-300 hover:scale-110">
                   {typeof app.icon === 'string' ? (
-                    <Image
-                      src={app.icon}
-                      alt={`${app.name} icon`}
-                      width={48}
-                      height={48}
-                      className="w-12 h-12"
-                    />
+                    app.icon.startsWith('/') ? (
+                      <Image
+                        src={app.icon}
+                        alt={`${app.name} icon`}
+                        width={48}
+                        height={48}
+                        className="w-12 h-12"
+                      />
+                    ) : (
+                      <span className="text-4xl">{app.icon}</span>
+                    )
                   ) : (
                     app.icon
                   )}

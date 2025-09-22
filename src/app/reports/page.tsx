@@ -1,7 +1,8 @@
 'use client'
 
 import { useAuthState } from 'react-firebase-hooks/auth'
-import { auth } from '@/lib/firebase'
+import { auth, functions } from '@/lib/firebase'
+import { httpsCallable } from 'firebase/functions'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
@@ -20,6 +21,9 @@ export default function ReportsPage() {
   const [endDate, setEndDate] = useState<Date>(() => new Date())
   const [reportData, setReportData] = useState<any>(null)
   const [loading_, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [showEmailPreview, setShowEmailPreview] = useState(false)
+  const [emailPreview, setEmailPreview] = useState<string>('')
 
   useEffect(() => {
     if (!loading && !user) {
@@ -29,41 +33,53 @@ export default function ReportsPage() {
 
   const generateReport = async () => {
     setLoading(true)
+    setError(null)
     try {
-      // TODO: Fetch report data from Firebase
-      // This will aggregate:
-      // - Tasks completed by user
-      // - New tasks added
-      // - Training modules completed
-      // - Future: Asana tasks, Rent Manager data
+      const reportFunction = httpsCallable(functions, 'getWeeklyReport')
+      const result = await reportFunction({ 
+        startDate: startDate.toISOString(), 
+        endDate: endDate.toISOString() 
+      })
       
-      // For now, mock data
+      const data = result.data as any
       setReportData({
         period: `${startDate.toLocaleDateString()} - ${endDate.toLocaleDateString()}`,
         summary: {
-          tasksCompleted: 42,
-          tasksAdded: 15,
-          trainingCompleted: 3,
-          activeUsers: 5
+          objectivesCompleted: data.totalCompleted || 0,
+          objectivesAdded: data.totalAdded || 0,
+          trainingCompleted: data.totalTrainingModules || 0,
+          activeUsers: data.activeUsers || 0
         },
-        byUser: [
-          {
-            name: 'Antonio',
-            email: 'antonio@tgmventures.com',
-            completed: 18,
-            added: 8
-          }
-        ],
-        byCategory: {
-          assetManagement: { completed: 12, added: 4 },
-          realEstate: { completed: 8, added: 3 },
-          ventures: { completed: 22, added: 8 }
+        byUser: data.completedByUser || [],
+        byCategory: data.byCategory || {
+          assetManagement: { completed: 0, added: 0 },
+          realEstate: { completed: 0, added: 0 },
+          ventures: { completed: 0, added: 0 },
+          taxes: { completed: 0, added: 0 }
         }
       })
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error generating report:', error)
+      setError(error.message || 'Failed to generate report')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchEmailPreview = async () => {
+    try {
+      const previewFunction = httpsCallable(functions, 'getWeeklyReportEmailPreview')
+      const result = await previewFunction({ 
+        startDate: startDate.toISOString(), 
+        endDate: endDate.toISOString() 
+      })
+      
+      const data = result.data as any
+      setEmailPreview(data.html)
+      setShowEmailPreview(true)
+    } catch (error: any) {
+      console.error('Error fetching email preview:', error)
+      setError(error.message || 'Failed to fetch email preview')
     }
   }
 
@@ -172,18 +188,25 @@ export default function ReportsPage() {
           </button>
         </div>
 
+        {/* Error Display */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
+            <p className="font-medium">Error: {error}</p>
+          </div>
+        )}
+        
         {/* Report Results */}
         {reportData && (
           <>
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
               <div className="bg-white rounded-xl shadow-sm p-6">
-                <h3 className="text-sm font-medium text-gray-500 mb-2">Tasks Completed</h3>
-                <p className="text-3xl font-bold text-green-600">{reportData.summary.tasksCompleted}</p>
+                <h3 className="text-sm font-medium text-gray-500 mb-2">Objectives Completed</h3>
+                <p className="text-3xl font-bold text-green-600">{reportData.summary.objectivesCompleted}</p>
               </div>
               <div className="bg-white rounded-xl shadow-sm p-6">
-                <h3 className="text-sm font-medium text-gray-500 mb-2">Tasks Added</h3>
-                <p className="text-3xl font-bold text-blue-600">{reportData.summary.tasksAdded}</p>
+                <h3 className="text-sm font-medium text-gray-500 mb-2">Objectives Added</h3>
+                <p className="text-3xl font-bold text-blue-600">{reportData.summary.objectivesAdded}</p>
               </div>
               <div className="bg-white rounded-xl shadow-sm p-6">
                 <h3 className="text-sm font-medium text-gray-500 mb-2">Training Completed</h3>
@@ -203,8 +226,8 @@ export default function ReportsPage() {
                   <thead>
                     <tr className="border-b">
                       <th className="text-left py-2 px-4">Team Member</th>
-                      <th className="text-center py-2 px-4">Tasks Completed</th>
-                      <th className="text-center py-2 px-4">Tasks Added</th>
+                      <th className="text-center py-2 px-4">Objectives Completed</th>
+                      <th className="text-center py-2 px-4">Objectives Added</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -253,8 +276,20 @@ export default function ReportsPage() {
               </div>
             </div>
 
-            {/* Email Report Button */}
-            <div className="mt-6 text-center">
+            {/* Email Report Buttons */}
+            <div className="mt-6 text-center flex justify-center gap-4">
+              <button
+                className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+                onClick={fetchEmailPreview}
+              >
+                <span className="flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  Preview Email
+                </span>
+              </button>
               <button
                 className="bg-gray-800 text-white px-6 py-2 rounded-lg hover:bg-gray-900 transition-colors"
                 onClick={async () => {
@@ -279,6 +314,31 @@ export default function ReportsPage() {
               </button>
             </div>
           </>
+        )}
+        
+        {/* Email Preview Modal */}
+        {showEmailPreview && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setShowEmailPreview(false)}>
+            <div className="bg-white rounded-lg max-w-4xl max-h-[90vh] overflow-hidden flex flex-col" onClick={e => e.stopPropagation()}>
+              <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+                <h3 className="text-lg font-semibold">Email Preview</h3>
+                <button
+                  onClick={() => setShowEmailPreview(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div className="flex-1 overflow-auto p-6">
+                <div 
+                  className="border border-gray-200 rounded-lg" 
+                  dangerouslySetInnerHTML={{ __html: emailPreview }}
+                />
+              </div>
+            </div>
+          </div>
         )}
       </main>
     </div>

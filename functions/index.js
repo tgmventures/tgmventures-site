@@ -352,3 +352,5 @@ exports.checkAuthDomain = functions.https.onCall(async (data, context) => {
 const weeklyReport = require('./weekly-report');
 exports.weeklyReportEmail = weeklyReport.weeklyReportEmail;
 exports.sendWeeklyReportNow = weeklyReport.sendWeeklyReportNow;
+exports.getWeeklyReport = weeklyReport.getWeeklyReport;
+exports.getWeeklyReportEmailPreview = weeklyReport.getWeeklyReportEmailPreview;

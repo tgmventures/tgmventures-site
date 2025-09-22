@@ -18,9 +18,11 @@ import {
 interface VentureCardSystemProps {
   userEmail?: string;
   userName?: string;
+  setShowSuccessToast?: (show: boolean) => void;
+  setTodayCompletedCount?: (fn: (prev: number) => number) => void;
 }
 
-export function VentureCardSystem({ userEmail, userName }: VentureCardSystemProps) {
+export function VentureCardSystem({ userEmail, userName, setShowSuccessToast, setTodayCompletedCount }: VentureCardSystemProps) {
   const [cards, setCards] = useState<VentureCard[]>([])
   const [addingCard, setAddingCard] = useState(false)
   const [newCardTitle, setNewCardTitle] = useState('')
@@ -108,6 +110,16 @@ export function VentureCardSystem({ userEmail, userName }: VentureCardSystemProp
       await updateObjectiveStatus(cardId, objective.id, !objective.isChecked, userEmail, userName)
       if (!objective.isChecked) {
         setJustCompletedObjective(`${cardId}-${objective.id}`)
+        if (setShowSuccessToast) setShowSuccessToast(true)
+        if (setTodayCompletedCount) setTodayCompletedCount(prev => prev + 1)
+        
+        // Hide toast after 3 seconds
+        if (setShowSuccessToast) {
+          setTimeout(() => setShowSuccessToast(false), 3000)
+        }
+      } else {
+        // Decrement counter when unchecking
+        if (setTodayCompletedCount) setTodayCompletedCount(prev => Math.max(0, prev - 1))
       }
     } catch (error) {
       console.error('Error updating objective:', error)

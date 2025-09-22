@@ -217,6 +217,9 @@ export default function DashboardPage() {
         
         // Hide toast after 3 seconds
         setTimeout(() => setShowSuccessToast(false), 3000)
+      } else {
+        // Decrement counter when unchecking
+        setTodayCompletedCount(prev => Math.max(0, prev - 1))
       }
     } catch (error) {
       console.error('Error updating status:', error)
@@ -235,6 +238,9 @@ export default function DashboardPage() {
         
         // Hide toast after 3 seconds
         setTimeout(() => setShowSuccessToast(false), 3000)
+      } else {
+        // Decrement counter when unchecking
+        setTodayCompletedCount(prev => Math.max(0, prev - 1))
       }
     } catch (error) {
       console.error('Error updating tax return status:', error)
@@ -260,6 +266,9 @@ export default function DashboardPage() {
         
         // Hide toast after 3 seconds
         setTimeout(() => setShowSuccessToast(false), 3000)
+      } else {
+        // Decrement counter when unchecking
+        setTodayCompletedCount(prev => Math.max(0, prev - 1))
       }
       
       // Update in Firestore
@@ -313,6 +322,9 @@ export default function DashboardPage() {
         
         // Hide toast after 3 seconds
         setTimeout(() => setShowSuccessToast(false), 3000)
+      } else {
+        // Decrement counter when unchecking
+        setTodayCompletedCount(prev => Math.max(0, prev - 1))
       }
     } catch (error) {
       console.error('Error updating task:', error)
@@ -639,7 +651,7 @@ export default function DashboardPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
             <div>
-              <p className="font-medium">Great job! Task completed</p>
+              <p className="font-medium">Great job! Objective completed</p>
               <p className="text-sm text-green-100">This will clear at midnight</p>
             </div>
           </div>
@@ -650,7 +662,7 @@ export default function DashboardPage() {
       {todayCompletedCount > 0 && (
         <div className="bg-green-50 border-b border-green-200 px-4 py-2">
           <p className="text-sm text-green-800 text-center">
-            🎉 You've completed {todayCompletedCount} task{todayCompletedCount !== 1 ? 's' : ''} today!
+            🎉 You've completed {todayCompletedCount} objective{todayCompletedCount !== 1 ? 's' : ''} today!
           </p>
         </div>
       )}
@@ -991,7 +1003,12 @@ export default function DashboardPage() {
       ) : (
         /* Ventures View - Dynamic Cards */
         <div className="mb-8">
-          {user && <VentureCardSystem userEmail={user.email || ''} userName={user.displayName || ''} />}
+          {user && <VentureCardSystem 
+            userEmail={user.email || ''} 
+            userName={user.displayName || ''} 
+            setShowSuccessToast={setShowSuccessToast}
+            setTodayCompletedCount={setTodayCompletedCount}
+          />}
                 </div>
       )}
 

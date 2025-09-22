@@ -785,7 +785,7 @@ export default function DashboardPage() {
         </div>
 
         {/* App Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6 mb-12 max-w-6xl mx-auto">
+        <div className="flex flex-wrap justify-center gap-6 mb-12 max-w-6xl mx-auto">
           {apps.map((app) => (
             app.external ? (
               <a
@@ -793,7 +793,7 @@ export default function DashboardPage() {
                 href={app.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`bg-white rounded-xl shadow-sm border-2 p-6 flex flex-col items-center justify-center hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 ${app.color}`}
+                className={`bg-white rounded-xl shadow-sm border-2 p-6 flex flex-col items-center justify-center hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 w-40 h-40 ${app.color}`}
               >
                 <div className="mb-3 transition-transform duration-300 hover:scale-110">
                   {typeof app.icon === 'string' ? (
@@ -824,7 +824,7 @@ export default function DashboardPage() {
               <Link
                 key={app.name}
                 href={app.href}
-                className={`bg-white rounded-xl shadow-sm border-2 p-6 flex flex-col items-center justify-center hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 ${app.color}`}
+                className={`bg-white rounded-xl shadow-sm border-2 p-6 flex flex-col items-center justify-center hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 w-40 h-40 ${app.color}`}
               >
                 <div className="mb-3 transition-transform duration-300 hover:scale-110">
                   {typeof app.icon === 'string' ? (

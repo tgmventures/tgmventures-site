@@ -51,10 +51,11 @@
 - [ ] **Asset Management View** (modify existing dashboard):
   - [ ] Hide Ventures column and keep only: Asset Management, Real Estate, Tax Filings
   - [ ] Remove Ventures count from Outstanding Objectives section
-  - [ ] Keep current 4 apps: Gmail, Google Drive, Rent Manager, Asana
-  - [ ] Add 5th app tile for Training module (Phase 6)
+  - [ ] Add Gemini app (position #1, links to https://gemini.google.com/app)
+  - [ ] Keep current 4 apps: Gmail, Google Drive, Rent Manager, Asana (positions 2-5)
+  - [ ] Add 6th app tile for Training module (Phase 6)
 - [ ] **Ventures View** (new dashboard layout):
-  - [ ] Replace app grid with: Firebase, GitHub, Google Cloud, Gmail
+  - [ ] Replace app grid with: Gemini (position #1), Firebase, GitHub, Google Cloud, Gmail
   - [ ] Replace 3-column layout with dynamic card system
   - [ ] Add "New Card" button to create custom objective cards
   - [ ] Enable card deletion with confirmation
@@ -63,7 +64,7 @@
 - [ ] **Testing**: Verify toggle works, preferences persist, data remains isolated
 
 ## 📚 Phase 6: Training & SOPs Module (Following Sprint)
-- [ ] **Training App**: Add 5th app tile to Asset Management view only, routes to /training
+- [ ] **Training App**: Add 6th app tile to Asset Management view only, routes to /training
 - [ ] **Module Creation** (any user can create):
   - [ ] Title, description, Loom URL fields
   - [ ] Category field with auto-complete from existing categories

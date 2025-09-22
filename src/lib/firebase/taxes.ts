@@ -96,7 +96,12 @@ export async function getTaxReturns(): Promise<TaxReturn[]> {
 }
 
 // Update a specific tax return status
-export async function updateTaxReturnStatus(taxReturnId: string, isFiled: boolean): Promise<void> {
+export async function updateTaxReturnStatus(
+  taxReturnId: string, 
+  isFiled: boolean,
+  userEmail?: string,
+  userName?: string
+): Promise<void> {
   const year = getPriorTaxYear();
   const docId = `taxes-${year}`;
   const docRef = doc(db, TAX_COLLECTION, docId);
@@ -110,8 +115,14 @@ export async function updateTaxReturnStatus(taxReturnId: string, isFiled: boolea
         const updated: any = { ...tr, isFiled, lastUpdated: new Date() };
         if (isFiled) {
           updated.completedAt = new Date();
+          if (userEmail) {
+            updated.completedBy = userEmail;
+            updated.completedByName = userName || userEmail;
+          }
         } else {
           updated.completedAt = null;
+          updated.completedBy = null;
+          updated.completedByName = null;
         }
         return updated;
       }
@@ -126,7 +137,12 @@ export async function updateTaxReturnStatus(taxReturnId: string, isFiled: boolea
 }
 
 // Update property tax status (stored with current year's tax data)
-export async function updatePropertyTaxStatus(period: 'H1' | 'H2', isPaid: boolean): Promise<void> {
+export async function updatePropertyTaxStatus(
+  period: 'H1' | 'H2', 
+  isPaid: boolean,
+  userEmail?: string,
+  userName?: string
+): Promise<void> {
   // Property taxes are for the current year, but we store them with the prior year's tax filing data
   const year = getPriorTaxYear();
   const docId = `taxes-${year}`;
@@ -134,6 +150,7 @@ export async function updatePropertyTaxStatus(period: 'H1' | 'H2', isPaid: boole
   
   const field = period === 'H1' ? 'propertyTaxH1Paid' : 'propertyTaxH2Paid';
   const completedField = period === 'H1' ? 'propertyTaxH1CompletedAt' : 'propertyTaxH2CompletedAt';
+  const completedByField = period === 'H1' ? 'propertyTaxH1CompletedBy' : 'propertyTaxH2CompletedBy';
   
   const updates: any = {
     [field]: isPaid,
@@ -142,8 +159,15 @@ export async function updatePropertyTaxStatus(period: 'H1' | 'H2', isPaid: boole
   
   if (isPaid) {
     updates[completedField] = serverTimestamp();
+    if (userEmail) {
+      updates[completedByField] = {
+        email: userEmail,
+        name: userName || userEmail
+      };
+    }
   } else {
     updates[completedField] = null;
+    updates[completedByField] = null;
   }
   
   await updateDoc(docRef, updates);

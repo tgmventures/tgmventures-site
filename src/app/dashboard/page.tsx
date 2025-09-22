@@ -207,9 +207,9 @@ export default function DashboardPage() {
     }
   }
 
-  const handleAssetStatusChange = async (field: keyof Omit<AssetManagementStatus, 'lastUpdated'>) => {
+  const handleAssetStatusChange = async (field: keyof Omit<AssetManagementStatus, 'lastUpdated' | 'completedDates' | 'completedBy'>) => {
     try {
-      await updateAssetManagementStatusCompat(field, !assetStatus[field])
+      await updateAssetManagementStatusCompat(field, !assetStatus[field], user?.email || '', user?.displayName || '')
       if (!assetStatus[field]) {
         setJustCompletedTask(`asset-${field}`)
         setShowSuccessToast(true)
@@ -225,7 +225,7 @@ export default function DashboardPage() {
   
   const handleTaxReturnChange = async (taxReturnId: string, currentStatus: boolean) => {
     try {
-      await updateTaxReturnStatus(taxReturnId, !currentStatus)
+      await updateTaxReturnStatus(taxReturnId, !currentStatus, user?.email || '', user?.displayName || '')
       const updatedData = await getTaxFilingsData()
       setTaxReturns(updatedData.returns)
       if (!currentStatus) {
@@ -263,7 +263,7 @@ export default function DashboardPage() {
       }
       
       // Update in Firestore
-      await updatePropertyTaxStatus(period, newValue)
+      await updatePropertyTaxStatus(period, newValue, user?.email || '', user?.displayName || '')
     } catch (error) {
       console.error('Error updating property tax status:', error)
       // Revert on error
@@ -305,7 +305,7 @@ export default function DashboardPage() {
 
   const handleTaskCheck = async (taskId: string, isChecked: boolean, divisionId: string) => {
     try {
-      await updateTaskStatusCompat(divisionId, taskId, !isChecked)
+      await updateTaskStatusCompat(divisionId, taskId, !isChecked, user?.email || '', user?.displayName || '')
       if (!isChecked) {
         setJustCompletedTask(taskId)
         setShowSuccessToast(true)
@@ -505,6 +505,13 @@ export default function DashboardPage() {
       name: 'Training',
       icon: '🎓',
       href: '/training',
+      external: false,
+      color: 'hover:bg-gray-50 border-gray-200'
+    },
+    {
+      name: 'Reports',
+      icon: '📊',
+      href: '/reports',
       external: false,
       color: 'hover:bg-gray-50 border-gray-200'
     }
@@ -816,37 +823,37 @@ export default function DashboardPage() {
             <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm">
               {businessUnit === 'asset-management' && (
                 <>
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-indigo-500"></div>
-                    <div className="text-gray-600">
-                      <span className="whitespace-nowrap">{taxReturns.filter(t => !t.isFiled).length + (propertyTaxH1Paid ? 0 : 1) + (propertyTaxH2Paid ? 0 : 1)}/{taxReturns.length + 2}</span>{' '}
-                      <span>Tax</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                    <div className="text-gray-600">
-                      <span className="whitespace-nowrap">{7 - assetChecklistComplete}/7</span>{' '}
-                      <span className="whitespace-nowrap">Asset Management</span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="h-2 w-2 rounded-full bg-blue-500"></div>
-                    <div className="text-gray-600">
+              <div className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-indigo-500"></div>
+                <div className="text-gray-600">
+                  <span className="whitespace-nowrap">{taxReturns.filter(t => !t.isFiled).length + (propertyTaxH1Paid ? 0 : 1) + (propertyTaxH2Paid ? 0 : 1)}/{taxReturns.length + 2}</span>{' '}
+                  <span>Tax</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                <div className="text-gray-600">
+                  <span className="whitespace-nowrap">{7 - assetChecklistComplete}/7</span>{' '}
+                  <span className="whitespace-nowrap">Asset Management</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-blue-500"></div>
+                <div className="text-gray-600">
                       <span className="whitespace-nowrap">{realEstateVisibleCounts.total - realEstateVisibleCounts.completed}/{realEstateVisibleCounts.total}</span>{' '}
-                      <span className="whitespace-nowrap">Real Estate</span>
-                    </div>
-                  </div>
+                  <span className="whitespace-nowrap">Real Estate</span>
+                </div>
+              </div>
                 </>
               )}
               {businessUnit === 'ventures' && (
-                <div className="flex items-center gap-2">
-                  <div className="h-2 w-2 rounded-full bg-purple-500"></div>
-                  <div className="text-gray-600">
+              <div className="flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-purple-500"></div>
+                <div className="text-gray-600">
                     <span className="whitespace-nowrap">{totalVentureObjectives - completedVentureObjectives}/{totalVentureObjectives}</span>{' '}
                     <span>Venture Objectives</span>
-                  </div>
                 </div>
+              </div>
               )}
             </div>
           </div>
@@ -927,7 +934,7 @@ export default function DashboardPage() {
 
         {/* Business Division Status - First Row */}
         {businessUnit === 'asset-management' ? (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {/* Asset Management */}
           <Suspense fallback={<CardSkeleton />}>
             <AssetManagementCard
@@ -967,7 +974,7 @@ export default function DashboardPage() {
               setNewText={setNewText}
             />
           </Suspense>
-
+            
           {/* Tax Filings */}
           <Suspense fallback={<CardSkeleton />}>
             <TaxFilingsCard
@@ -980,12 +987,12 @@ export default function DashboardPage() {
               currentDate={currentDate}
             />
           </Suspense>
-        </div>
+            </div>
       ) : (
         /* Ventures View - Dynamic Cards */
         <div className="mb-8">
-          {user && <VentureCardSystem />}
-        </div>
+          {user && <VentureCardSystem userEmail={user.email || ''} userName={user.displayName || ''} />}
+                </div>
       )}
 
       </main>

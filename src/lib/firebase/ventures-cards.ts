@@ -21,6 +21,8 @@ export interface VentureObjective {
   isChecked: boolean
   order: number
   completedAt?: Date
+  completedBy?: string
+  completedByName?: string
 }
 
 export interface VentureCard {
@@ -185,7 +187,9 @@ export async function updateObjectiveText(
 export async function updateObjectiveStatus(
   cardId: string, 
   objectiveId: string, 
-  isChecked: boolean
+  isChecked: boolean,
+  userEmail?: string,
+  userName?: string
 ): Promise<void> {
   try {
     const cardRef = doc(db, VENTURES_CARDS_COLLECTION, cardId)
@@ -203,8 +207,14 @@ export async function updateObjectiveStatus(
         const updated: any = { ...obj, isChecked };
         if (isChecked) {
           updated.completedAt = new Date();
+          if (userEmail) {
+            updated.completedBy = userEmail;
+            updated.completedByName = userName || userEmail;
+          }
         } else {
           updated.completedAt = null;
+          updated.completedBy = null;
+          updated.completedByName = null;
         }
         return updated;
       }

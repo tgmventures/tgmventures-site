@@ -347,3 +347,8 @@ exports.checkAuthDomain = functions.https.onCall(async (data, context) => {
 
   return { authorized: true, email };
 });
+
+// Export weekly report functions
+const weeklyReport = require('./weekly-report');
+exports.weeklyReportEmail = weeklyReport.weeklyReportEmail;
+exports.sendWeeklyReportNow = weeklyReport.sendWeeklyReportNow;

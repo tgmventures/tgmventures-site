@@ -15,7 +15,12 @@ import {
   subscribeToVentureCards
 } from '@/lib/firebase/ventures-cards'
 
-export function VentureCardSystem() {
+interface VentureCardSystemProps {
+  userEmail?: string;
+  userName?: string;
+}
+
+export function VentureCardSystem({ userEmail, userName }: VentureCardSystemProps) {
   const [cards, setCards] = useState<VentureCard[]>([])
   const [addingCard, setAddingCard] = useState(false)
   const [newCardTitle, setNewCardTitle] = useState('')
@@ -100,7 +105,7 @@ export function VentureCardSystem() {
 
   const handleObjectiveCheck = async (cardId: string, objective: VentureObjective) => {
     try {
-      await updateObjectiveStatus(cardId, objective.id, !objective.isChecked)
+      await updateObjectiveStatus(cardId, objective.id, !objective.isChecked, userEmail, userName)
       if (!objective.isChecked) {
         setJustCompletedObjective(`${cardId}-${objective.id}`)
       }

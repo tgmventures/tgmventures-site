@@ -143,7 +143,13 @@ export async function addDivisionTaskCompat(divisionId: string, title: string) {
   }
 }
 
-export async function updateTaskStatusCompat(divisionId: string, taskId: string, isChecked: boolean) {
+export async function updateTaskStatusCompat(
+  divisionId: string, 
+  taskId: string, 
+  isChecked: boolean,
+  userEmail?: string,
+  userName?: string
+) {
   await checkDatabaseStructure();
   
   const updates: any = {
@@ -151,11 +157,17 @@ export async function updateTaskStatusCompat(divisionId: string, taskId: string,
     updatedAt: serverTimestamp(),
   };
   
-  // Add completedAt timestamp when checking, remove when unchecking
+  // Add completedAt timestamp and user info when checking, remove when unchecking
   if (isChecked) {
     updates.completedAt = serverTimestamp();
+    if (userEmail) {
+      updates.completedBy = userEmail;
+      updates.completedByName = userName || userEmail;
+    }
   } else {
     updates.completedAt = null;
+    updates.completedBy = null;
+    updates.completedByName = null;
   }
   
   if (useNewStructure) {
@@ -322,7 +334,9 @@ export async function getAssetManagementStatusCompat(): Promise<AssetManagementS
 
 export async function updateAssetManagementStatusCompat(
   field: string,
-  value: boolean
+  value: boolean,
+  userEmail?: string,
+  userName?: string
 ) {
   await checkDatabaseStructure();
   
@@ -355,11 +369,17 @@ export async function updateAssetManagementStatusCompat(
           updatedAt: serverTimestamp()
         };
         
-        // Add completedAt timestamp when checking, remove when unchecking
+        // Add completedAt timestamp and user info when checking, remove when unchecking
         if (value) {
           updates.completedAt = serverTimestamp();
+          if (userEmail) {
+            updates.completedBy = userEmail;
+            updates.completedByName = userName || userEmail;
+          }
         } else {
           updates.completedAt = null;
+          updates.completedBy = null;
+          updates.completedByName = null;
         }
         
         await updateDoc(taskDoc.ref, updates);
@@ -391,11 +411,18 @@ export async function updateAssetManagementStatusCompat(
         lastUpdated: serverTimestamp()
       };
       
-      // Update completedDates
+      // Update completedDates and completedBy
       if (value) {
         updates[`completedDates.${field}`] = serverTimestamp();
+        if (userEmail) {
+          updates[`completedBy.${field}`] = {
+            email: userEmail,
+            name: userName || userEmail
+          };
+        }
       } else {
         updates[`completedDates.${field}`] = null;
+        updates[`completedBy.${field}`] = null;
       }
       
       await updateDoc(docRef, updates);

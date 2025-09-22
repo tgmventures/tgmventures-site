@@ -99,6 +99,15 @@ export interface AssetManagementStatus {
     insurancePoliciesActive?: Date;
     entitiesRenewed?: Date;
   };
+  completedBy?: {
+    booksClosedOut?: { email: string; name: string };
+    rentsCollected?: { email: string; name: string };
+    loansPaymentsMade?: { email: string; name: string };
+    vendorsPaymentsMade?: { email: string; name: string };
+    propertyTaxesPaid?: { email: string; name: string };
+    insurancePoliciesActive?: { email: string; name: string };
+    entitiesRenewed?: { email: string; name: string };
+  };
 }
 
 export interface DivisionTask {
@@ -110,6 +119,8 @@ export interface DivisionTask {
   createdAt: Date;
   updatedAt: Date;
   completedAt?: Date;
+  completedBy?: string; // User email who completed the task
+  completedByName?: string; // User display name
 }
 
 export interface TaxReturn {
@@ -120,4 +131,6 @@ export interface TaxReturn {
   isFiled: boolean;
   lastUpdated: Date;
   completedAt?: Date;
+  completedBy?: string;
+  completedByName?: string;
 }

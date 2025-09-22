@@ -791,8 +791,8 @@ export default function TrainingPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Loom Video */}
+                <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-6">
+                  {/* Loom Video - 30% larger */}
                   <div>
                     <h3 className="text-lg font-semibold mb-3">Training Video</h3>
                     <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
@@ -811,7 +811,7 @@ export default function TrainingPage() {
                     </div>
                   </div>
 
-                  {/* Checklist */}
+                  {/* Checklist - Smaller */}
                   <div>
                     <h3 className="text-lg font-semibold mb-3">Checklist</h3>
                     <div className="space-y-2">

@@ -104,10 +104,22 @@ export default function TrainingPage() {
     try {
       const q = query(collection(db, 'trainingModules'), orderBy('createdAt', 'desc'))
       const snapshot = await getDocs(q)
-      const modulesData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      } as TrainingModule))
+      const modulesData = snapshot.docs.map(doc => {
+        const data = doc.data()
+        return {
+          id: doc.id,
+          title: data.title || '',
+          description: data.description || '',
+          loomUrl: data.loomUrl || '',
+          mainCategory: data.mainCategory || data.category || '',
+          subCategory: data.subCategory || '',
+          checklist: Array.isArray(data.checklist) ? data.checklist : [],
+          comments: Array.isArray(data.comments) ? data.comments : [],
+          createdBy: data.createdBy || '',
+          createdByEmail: data.createdByEmail || '',
+          createdAt: data.createdAt
+        } as TrainingModule
+      })
       setModules(modulesData)
     } catch (error) {
       console.error('Error loading modules:', error)
@@ -117,10 +129,14 @@ export default function TrainingPage() {
   const loadCategories = async () => {
     try {
       const snapshot = await getDocs(collection(db, 'trainingCategories'))
-      const categoriesData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      } as Category))
+      const categoriesData = snapshot.docs.map(doc => {
+        const data = doc.data()
+        return {
+          id: doc.id,
+          name: data.name || '',
+          subCategories: data.subCategories || []
+        } as Category
+      })
       setCategories(categoriesData)
     } catch (error) {
       console.error('Error loading categories:', error)
@@ -273,8 +289,8 @@ export default function TrainingPage() {
       const category = categories.find(cat => 
         cat.name.toLowerCase() === formData.mainCategory.toLowerCase()
       )
-      if (category) {
-        const filtered = category.subCategories.filter(sub => 
+      if (category && category.subCategories) {
+        const filtered = (category.subCategories || []).filter(sub => 
           sub.toLowerCase().includes(value.toLowerCase())
         )
         setFilteredSubCategories(filtered)
@@ -705,7 +721,7 @@ export default function TrainingPage() {
                   
                   {expandedCategories.includes(category.name) && (
                     <div className="border-t border-gray-100">
-                      {category.subCategories.map((subCategory) => {
+                      {(category.subCategories || []).map((subCategory) => {
                         const moduleCount = getModulesByCategory(category.name, subCategory).length
                         return (
                           <div key={subCategory} className="border-b border-gray-50 last:border-0">

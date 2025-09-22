@@ -350,7 +350,8 @@ exports.checkAuthDomain = functions.https.onCall(async (data, context) => {
 
 // Export weekly report functions
 const weeklyReport = require('./weekly-report');
-exports.weeklyReportEmail = weeklyReport.weeklyReportEmail;
+// TODO: Fix pubsub schedule function
+// exports.weeklyReportEmail = weeklyReport.weeklyReportEmail;
 exports.sendWeeklyReportNow = weeklyReport.sendWeeklyReportNow;
 exports.getWeeklyReport = weeklyReport.getWeeklyReport;
 exports.getWeeklyReportEmailPreview = weeklyReport.getWeeklyReportEmailPreview;

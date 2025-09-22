@@ -325,6 +325,8 @@ async function getWeeklyTrainingModules(start, end) {
 }
 
 // Scheduled function to run every Saturday at 9 AM EST
+// TODO: Fix pubsub schedule function
+/*
 exports.weeklyReportEmail = functions.pubsub
   .schedule('0 9 * * 6')
   .timeZone('America/New_York')
@@ -362,8 +364,9 @@ exports.weeklyReportEmail = functions.pubsub
       throw error;
     }
   });
+*/
 
-// Manual trigger function for testing
+// Manual trigger function for testing  
 exports.sendWeeklyReportNow = functions.https.onCall(async (data, context) => {
   // Check that the user is authenticated and is antonio@tgmventures.com
   if (!context.auth || context.auth.token.email !== 'antonio@tgmventures.com') {

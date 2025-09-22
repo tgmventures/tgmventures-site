@@ -16,8 +16,7 @@ import {
   orderBy, 
   serverTimestamp,
   updateDoc,
-  arrayUnion,
-  where
+  arrayUnion
 } from 'firebase/firestore'
 
 interface ChecklistItem {
@@ -64,9 +63,9 @@ export default function TrainingPage() {
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [selectedModule, setSelectedModule] = useState<TrainingModule | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null)
-  const [expandedCategories, setExpandedCategories] = useState<string[]>([])
+  const [selectedSubCategories, setSelectedSubCategories] = useState<string[]>([])
   const [searchQuery, setSearchQuery] = useState('')
+  const [playingVideoId, setPlayingVideoId] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -302,11 +301,11 @@ export default function TrainingPage() {
     }
   }
 
-  const toggleCategory = (categoryName: string) => {
-    setExpandedCategories(prev => 
-      prev.includes(categoryName) 
-        ? prev.filter(c => c !== categoryName)
-        : [...prev, categoryName]
+  const toggleSubCategory = (subCategory: string) => {
+    setSelectedSubCategories(prev => 
+      prev.includes(subCategory) 
+        ? prev.filter(s => s !== subCategory)
+        : [...prev, subCategory]
     )
   }
 
@@ -317,27 +316,29 @@ export default function TrainingPage() {
     if (searchQuery) {
       filtered = filtered.filter(m => 
         m.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        m.description.toLowerCase().includes(searchQuery.toLowerCase())
+        m.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        m.mainCategory.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        m.subCategory.toLowerCase().includes(searchQuery.toLowerCase())
       )
     }
 
-    // Filter by category/subcategory
+    // Filter by category
     if (selectedCategory) {
       filtered = filtered.filter(m => m.mainCategory === selectedCategory)
     }
-    if (selectedSubCategory) {
-      filtered = filtered.filter(m => m.subCategory === selectedSubCategory)
+
+    // Filter by subcategories (if any selected)
+    if (selectedSubCategories.length > 0) {
+      filtered = filtered.filter(m => selectedSubCategories.includes(m.subCategory))
     }
 
     return filtered
   }
 
-  const getLoomThumbnail = (loomUrl: string) => {
-    const videoId = extractLoomVideoId(loomUrl)
-    if (videoId) {
-      return `https://cdn.loom.com/sessions/thumbnails/${videoId}-00001.jpg`
-    }
-    return null
+  const getAvailableSubCategories = () => {
+    if (!selectedCategory) return []
+    const category = categories.find(c => c.name === selectedCategory)
+    return category?.subCategories || []
   }
 
   if (loading) {
@@ -356,8 +357,8 @@ export default function TrainingPage() {
       <header className="bg-white shadow-sm border-b border-gray-100 fixed top-0 left-0 right-0 z-40">
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <Link href="/dashboard" className="flex items-center group">
+            <div className="flex items-center flex-1">
+              <Link href="/dashboard" className="flex items-center group mr-8">
                 <svg className="w-6 h-6 mr-2 text-gray-600 group-hover:text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
@@ -370,10 +371,25 @@ export default function TrainingPage() {
                 />
                 <h1 className="text-xl font-semibold text-gray-900">Training & SOPs</h1>
               </Link>
+              
+              {/* Search Bar in Nav */}
+              <div className="relative max-w-md flex-1">
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search all modules..."
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
+                />
+                <svg className="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
             </div>
+            
             <button
               onClick={() => setShowCreateForm(true)}
-              className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2"
+              className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2 ml-4"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -385,89 +401,41 @@ export default function TrainingPage() {
       </header>
 
       <div className="flex pt-16">
-        {/* Sidebar */}
+        {/* Simplified Sidebar */}
         <aside className="w-64 bg-white border-r border-gray-200 h-screen fixed left-0 top-16 overflow-y-auto">
           <div className="p-4">
-            {/* Search */}
-            <div className="relative mb-6">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search modules..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm"
-              />
-              <svg className="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-
+            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Categories</h3>
+            
             {/* All Modules */}
             <button
               onClick={() => {
                 setSelectedCategory(null)
-                setSelectedSubCategory(null)
+                setSelectedSubCategories([])
               }}
-              className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors mb-4 ${
+              className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors mb-2 ${
                 !selectedCategory ? 'bg-purple-50 text-purple-700' : 'text-gray-700 hover:bg-gray-100'
               }`}
             >
               All Modules
             </button>
 
-            {/* Categories */}
+            {/* Category Buttons */}
             <div className="space-y-1">
               {categories.map((category) => (
-                <div key={category.id}>
-                  <button
-                    onClick={() => toggleCategory(category.name)}
-                    className="w-full flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
-                  >
-                    <span>{category.name}</span>
-                    <svg 
-                      className={`w-4 h-4 text-gray-400 transition-transform ${expandedCategories.includes(category.name) ? 'rotate-180' : ''}`} 
-                      fill="none" 
-                      stroke="currentColor" 
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  
-                  {expandedCategories.includes(category.name) && (
-                    <div className="ml-3 mt-1 space-y-1">
-                      <button
-                        onClick={() => {
-                          setSelectedCategory(category.name)
-                          setSelectedSubCategory(null)
-                        }}
-                        className={`w-full text-left px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                          selectedCategory === category.name && !selectedSubCategory 
-                            ? 'bg-purple-50 text-purple-700' 
-                            : 'text-gray-600 hover:bg-gray-100'
-                        }`}
-                      >
-                        All {category.name}
-                      </button>
-                      {(category.subCategories || []).map((subCategory) => (
-                        <button
-                          key={subCategory}
-                          onClick={() => {
-                            setSelectedCategory(category.name)
-                            setSelectedSubCategory(subCategory)
-                          }}
-                          className={`w-full text-left px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                            selectedCategory === category.name && selectedSubCategory === subCategory
-                              ? 'bg-purple-50 text-purple-700' 
-                              : 'text-gray-600 hover:bg-gray-100'
-                          }`}
-                        >
-                          {subCategory}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                <button
+                  key={category.id}
+                  onClick={() => {
+                    setSelectedCategory(category.name)
+                    setSelectedSubCategories([])
+                  }}
+                  className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    selectedCategory === category.name 
+                      ? 'bg-purple-50 text-purple-700' 
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  {category.name}
+                </button>
               ))}
             </div>
           </div>
@@ -816,20 +784,47 @@ export default function TrainingPage() {
               </div>
             </div>
           ) : (
-            /* Module Grid */
+            /* Module Grid with Subcategory Filters */
             <div>
-              <div className="mb-6">
-                <h2 className="text-2xl font-semibold text-gray-900">
-                  {selectedSubCategory 
-                    ? `${selectedCategory} - ${selectedSubCategory}`
-                    : selectedCategory 
-                    ? `All ${selectedCategory} Modules`
+              {/* Title and Subcategory Filters */}
+              <div className="mb-8">
+                <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+                  {selectedCategory 
+                    ? `${selectedCategory} Training`
                     : searchQuery
                     ? `Search Results for "${searchQuery}"`
                     : 'All Training Modules'
                   }
                 </h2>
-                <p className="text-gray-600 mt-1">
+                
+                {/* Subcategory Filter Tags */}
+                {selectedCategory && getAvailableSubCategories().length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {getAvailableSubCategories().map((subCategory) => (
+                      <button
+                        key={subCategory}
+                        onClick={() => toggleSubCategory(subCategory)}
+                        className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
+                          selectedSubCategories.includes(subCategory)
+                            ? 'bg-purple-600 text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        {subCategory}
+                      </button>
+                    ))}
+                    {selectedSubCategories.length > 0 && (
+                      <button
+                        onClick={() => setSelectedSubCategories([])}
+                        className="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700"
+                      >
+                        Clear filters
+                      </button>
+                    )}
+                  </div>
+                )}
+                
+                <p className="text-gray-600 mt-3">
                   {getFilteredModules().length} module{getFilteredModules().length !== 1 ? 's' : ''} found
                 </p>
               </div>
@@ -843,48 +838,71 @@ export default function TrainingPage() {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {getFilteredModules().map((module) => (
-                    <button
-                      key={module.id}
-                      onClick={() => setSelectedModule(module)}
-                      className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300 text-left group"
-                    >
-                      {/* Video Thumbnail */}
-                      <div className="aspect-video bg-gray-100 relative overflow-hidden">
-                        {getLoomThumbnail(module.loomUrl) ? (
-                          <img 
-                            src={getLoomThumbnail(module.loomUrl)} 
-                            alt={module.title}
-                            className="w-full h-full object-cover"
-                            onError={(e) => {
-                              e.currentTarget.style.display = 'none'
-                            }}
-                          />
-                        ) : null}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                          <div className="absolute bottom-4 left-4 text-white">
-                            <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M8 5v14l11-7z"/>
-                            </svg>
+                  {getFilteredModules().map((module) => {
+                    const videoId = extractLoomVideoId(module.loomUrl)
+                    const isPlaying = playingVideoId === module.id
+                    
+                    return (
+                      <div
+                        key={module.id}
+                        className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300"
+                      >
+                        {/* Embedded Video Player */}
+                        <div className="aspect-video bg-gray-100 relative">
+                          {isPlaying && videoId ? (
+                            <iframe
+                              src={`https://www.loom.com/embed/${videoId}?autoplay=1`}
+                              frameBorder="0"
+                              allowFullScreen
+                              className="w-full h-full"
+                            />
+                          ) : (
+                            <button
+                              onClick={() => setPlayingVideoId(module.id)}
+                              className="w-full h-full relative group"
+                            >
+                              {videoId && (
+                                <img 
+                                  src={`https://cdn.loom.com/sessions/thumbnails/${videoId}-00001.jpg`}
+                                  alt={module.title}
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    e.currentTarget.style.display = 'none'
+                                  }}
+                                />
+                              )}
+                              <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                                <div className="bg-white/90 rounded-full p-4 transform group-hover:scale-110 transition-transform">
+                                  <svg className="w-8 h-8 text-gray-800" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z"/>
+                                  </svg>
+                                </div>
+                              </div>
+                            </button>
+                          )}
+                        </div>
+                        
+                        {/* Content */}
+                        <div className="p-6">
+                          <h3 
+                            onClick={() => setSelectedModule(module)}
+                            className="font-semibold text-gray-900 mb-2 line-clamp-1 cursor-pointer hover:text-purple-600"
+                          >
+                            {module.title}
+                          </h3>
+                          <p className="text-sm text-gray-600 mb-4 line-clamp-2">{module.description}</p>
+                          <div className="flex gap-2">
+                            <span className="inline-block px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs">
+                              {module.mainCategory}
+                            </span>
+                            <span className="inline-block px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs">
+                              {module.subCategory}
+                            </span>
                           </div>
                         </div>
                       </div>
-                      
-                      {/* Content */}
-                      <div className="p-6">
-                        <h3 className="font-semibold text-gray-900 mb-2 line-clamp-1">{module.title}</h3>
-                        <p className="text-sm text-gray-600 mb-4 line-clamp-2">{module.description}</p>
-                        <div className="flex gap-2">
-                          <span className="inline-block px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs">
-                            {module.mainCategory}
-                          </span>
-                          <span className="inline-block px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs">
-                            {module.subCategory}
-                          </span>
-                        </div>
-                      </div>
-                    </button>
-                  ))}
+                    )
+                  })}
                 </div>
               )}
             </div>

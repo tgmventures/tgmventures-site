@@ -16,16 +16,25 @@ import {
   orderBy, 
   serverTimestamp,
   updateDoc,
-  arrayUnion
+  arrayUnion,
+  where
 } from 'firebase/firestore'
+
+interface ChecklistItem {
+  id: string
+  text: string
+  isChecked: boolean
+  order: number
+}
 
 interface TrainingModule {
   id: string
   title: string
   description: string
   loomUrl: string
-  category: string
-  checklist: string[]
+  mainCategory: string
+  subCategory: string
+  checklist: ChecklistItem[]
   comments: Comment[]
   createdBy: string
   createdByEmail: string
@@ -41,25 +50,40 @@ interface Comment {
   createdAt: any
 }
 
+interface Category {
+  id: string
+  name: string
+  subCategories: string[]
+}
+
 export default function TrainingPage() {
   const [user, loading] = useAuthState(auth)
   const router = useRouter()
   const [modules, setModules] = useState<TrainingModule[]>([])
-  const [categories, setCategories] = useState<string[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [selectedModule, setSelectedModule] = useState<TrainingModule | null>(null)
+  const [selectedMainCategory, setSelectedMainCategory] = useState<string | null>(null)
+  const [selectedSubCategory, setSelectedSubCategory] = useState<string | null>(null)
+  const [expandedCategories, setExpandedCategories] = useState<string[]>([])
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     loomUrl: '',
-    category: ''
+    mainCategory: '',
+    subCategory: ''
   })
-  const [checklistItem, setChecklistItem] = useState('')
-  const [checklistItems, setChecklistItems] = useState<string[]>([])
+  const [checklistItems, setChecklistItems] = useState<ChecklistItem[]>([])
+  const [addingChecklistItem, setAddingChecklistItem] = useState(false)
+  const [newChecklistText, setNewChecklistText] = useState('')
+  const [editingChecklistId, setEditingChecklistId] = useState<string | null>(null)
+  const [editChecklistText, setEditChecklistText] = useState('')
   const [commentText, setCommentText] = useState('')
   const [asanaTaskUrl, setAsanaTaskUrl] = useState('')
-  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false)
-  const [filteredCategories, setFilteredCategories] = useState<string[]>([])
+  const [showMainCategoryDropdown, setShowMainCategoryDropdown] = useState(false)
+  const [showSubCategoryDropdown, setShowSubCategoryDropdown] = useState(false)
+  const [filteredMainCategories, setFilteredMainCategories] = useState<Category[]>([])
+  const [filteredSubCategories, setFilteredSubCategories] = useState<string[]>([])
 
   const isAdmin = user?.email === 'antonio@tgmventures.com' // Admin check
 
@@ -93,11 +117,48 @@ export default function TrainingPage() {
   const loadCategories = async () => {
     try {
       const snapshot = await getDocs(collection(db, 'trainingCategories'))
-      const categoriesData = snapshot.docs.map(doc => doc.data().name)
+      const categoriesData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      } as Category))
       setCategories(categoriesData)
     } catch (error) {
       console.error('Error loading categories:', error)
     }
+  }
+
+  const handleAddChecklistItem = () => {
+    if (!newChecklistText.trim()) return
+    
+    const newItem: ChecklistItem = {
+      id: Date.now().toString(),
+      text: newChecklistText.trim(),
+      isChecked: false,
+      order: checklistItems.length
+    }
+    
+    setChecklistItems([...checklistItems, newItem])
+    setNewChecklistText('')
+    setAddingChecklistItem(false)
+  }
+
+  const handleEditChecklistItem = (itemId: string, newText: string) => {
+    if (!newText.trim()) return
+    
+    setChecklistItems(checklistItems.map(item => 
+      item.id === itemId ? { ...item, text: newText.trim() } : item
+    ))
+    setEditingChecklistId(null)
+    setEditChecklistText('')
+  }
+
+  const handleDeleteChecklistItem = (itemId: string) => {
+    setChecklistItems(checklistItems.filter(item => item.id !== itemId))
+  }
+
+  const startEditingChecklistItem = (itemId: string, currentText: string) => {
+    setEditingChecklistId(itemId)
+    setEditChecklistText(currentText)
   }
 
   const handleCreateModule = async (e: React.FormEvent) => {
@@ -105,11 +166,25 @@ export default function TrainingPage() {
     if (!user) return
 
     try {
-      // Add category if it's new
-      if (formData.category && !categories.includes(formData.category)) {
-        await addDoc(collection(db, 'trainingCategories'), {
-          name: formData.category,
+      // Add or update category
+      let categoryDoc = categories.find(cat => cat.name.toLowerCase() === formData.mainCategory.toLowerCase())
+      
+      if (!categoryDoc) {
+        // Create new category
+        const newCategoryRef = await addDoc(collection(db, 'trainingCategories'), {
+          name: formData.mainCategory,
+          subCategories: [formData.subCategory],
           createdAt: serverTimestamp()
+        })
+        categoryDoc = {
+          id: newCategoryRef.id,
+          name: formData.mainCategory,
+          subCategories: [formData.subCategory]
+        }
+      } else if (!categoryDoc.subCategories.includes(formData.subCategory)) {
+        // Add subcategory to existing category
+        await updateDoc(doc(db, 'trainingCategories', categoryDoc.id), {
+          subCategories: arrayUnion(formData.subCategory)
         })
       }
 
@@ -124,7 +199,7 @@ export default function TrainingPage() {
       })
 
       // Reset form
-      setFormData({ title: '', description: '', loomUrl: '', category: '' })
+      setFormData({ title: '', description: '', loomUrl: '', mainCategory: '', subCategory: '' })
       setChecklistItems([])
       setShowCreateForm(false)
       loadModules()
@@ -179,17 +254,49 @@ export default function TrainingPage() {
     return match ? match[1] : null
   }
 
-  const handleCategoryInput = (value: string) => {
-    setFormData({ ...formData, category: value })
+  const handleMainCategoryInput = (value: string) => {
+    setFormData({ ...formData, mainCategory: value, subCategory: '' })
     if (value) {
       const filtered = categories.filter(cat => 
-        cat.toLowerCase().includes(value.toLowerCase())
+        cat.name.toLowerCase().includes(value.toLowerCase())
       )
-      setFilteredCategories(filtered)
-      setShowCategoryDropdown(true)
+      setFilteredMainCategories(filtered)
+      setShowMainCategoryDropdown(true)
     } else {
-      setShowCategoryDropdown(false)
+      setShowMainCategoryDropdown(false)
     }
+  }
+
+  const handleSubCategoryInput = (value: string) => {
+    setFormData({ ...formData, subCategory: value })
+    if (value && formData.mainCategory) {
+      const category = categories.find(cat => 
+        cat.name.toLowerCase() === formData.mainCategory.toLowerCase()
+      )
+      if (category) {
+        const filtered = category.subCategories.filter(sub => 
+          sub.toLowerCase().includes(value.toLowerCase())
+        )
+        setFilteredSubCategories(filtered)
+        setShowSubCategoryDropdown(true)
+      }
+    } else {
+      setShowSubCategoryDropdown(false)
+    }
+  }
+
+  const toggleCategory = (categoryName: string) => {
+    setExpandedCategories(prev => 
+      prev.includes(categoryName) 
+        ? prev.filter(c => c !== categoryName)
+        : [...prev, categoryName]
+    )
+  }
+
+  const getModulesByCategory = (mainCat: string, subCat: string) => {
+    return modules.filter(m => 
+      m.mainCategory === mainCat && m.subCategory === subCat
+    )
   }
 
   if (loading) {
@@ -271,79 +378,160 @@ export default function TrainingPage() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                   />
                 </div>
-                <div className="relative">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.category}
-                    onChange={(e) => handleCategoryInput(e.target.value)}
-                    onFocus={() => setShowCategoryDropdown(true)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  />
-                  {showCategoryDropdown && filteredCategories.length > 0 && (
-                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
-                      {filteredCategories.map((cat) => (
-                        <button
-                          key={cat}
-                          type="button"
-                          onClick={() => {
-                            setFormData({ ...formData, category: cat })
-                            setShowCategoryDropdown(false)
-                          }}
-                          className="w-full text-left px-3 py-2 hover:bg-gray-100"
-                        >
-                          {cat}
-                        </button>
-                      ))}
-                    </div>
-                  )}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="relative">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Main Category</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.mainCategory}
+                      onChange={(e) => handleMainCategoryInput(e.target.value)}
+                      onFocus={() => setShowMainCategoryDropdown(true)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                    {showMainCategoryDropdown && filteredMainCategories.length > 0 && (
+                      <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
+                        {filteredMainCategories.map((cat) => (
+                          <button
+                            key={cat.id}
+                            type="button"
+                            onClick={() => {
+                              setFormData({ ...formData, mainCategory: cat.name, subCategory: '' })
+                              setShowMainCategoryDropdown(false)
+                            }}
+                            className="w-full text-left px-3 py-2 hover:bg-gray-100"
+                          >
+                            {cat.name}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Subcategory</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.subCategory}
+                      onChange={(e) => handleSubCategoryInput(e.target.value)}
+                      onFocus={() => formData.mainCategory && setShowSubCategoryDropdown(true)}
+                      disabled={!formData.mainCategory}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent disabled:bg-gray-100"
+                    />
+                    {showSubCategoryDropdown && filteredSubCategories.length > 0 && (
+                      <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
+                        {filteredSubCategories.map((sub) => (
+                          <button
+                            key={sub}
+                            type="button"
+                            onClick={() => {
+                              setFormData({ ...formData, subCategory: sub })
+                              setShowSubCategoryDropdown(false)
+                            }}
+                            className="w-full text-left px-3 py-2 hover:bg-gray-100"
+                          >
+                            {sub}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Checklist Items</label>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={checklistItem}
-                      onChange={(e) => setChecklistItem(e.target.value)}
-                      onKeyPress={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault()
-                          if (checklistItem.trim()) {
-                            setChecklistItems([...checklistItems, checklistItem])
-                            setChecklistItem('')
-                          }
-                        }
-                      }}
-                      placeholder="Add checklist item..."
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (checklistItem.trim()) {
-                          setChecklistItems([...checklistItems, checklistItem])
-                          setChecklistItem('')
-                        }
-                      }}
-                      className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
-                    >
-                      Add
-                    </button>
-                  </div>
-                  <div className="mt-2 space-y-1">
-                    {checklistItems.map((item, index) => (
-                      <div key={index} className="flex items-center gap-2">
-                        <span className="text-sm">• {item}</span>
+                  <div className="space-y-2">
+                    {checklistItems.map((item) => (
+                      <div key={item.id} className="flex items-center gap-2 group">
+                        <span className="text-gray-400">{item.order + 1}.</span>
+                        {editingChecklistId === item.id ? (
+                          <form 
+                            onSubmit={(e) => {
+                              e.preventDefault()
+                              handleEditChecklistItem(item.id, editChecklistText)
+                            }}
+                            className="flex-1 flex items-center gap-2"
+                          >
+                            <input
+                              type="text"
+                              value={editChecklistText}
+                              onChange={(e) => setEditChecklistText(e.target.value)}
+                              className="flex-1 text-sm px-2 py-1 border border-purple-300 rounded focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                              autoFocus
+                              onBlur={() => handleEditChecklistItem(item.id, editChecklistText)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Escape') {
+                                  setEditingChecklistId(null)
+                                  setEditChecklistText('')
+                                }
+                              }}
+                            />
+                          </form>
+                        ) : (
+                          <span 
+                            onClick={() => startEditingChecklistItem(item.id, item.text)}
+                            className="flex-1 text-sm cursor-pointer hover:text-purple-600"
+                          >
+                            {item.text}
+                          </span>
+                        )}
                         <button
                           type="button"
-                          onClick={() => setChecklistItems(checklistItems.filter((_, i) => i !== index))}
-                          className="text-red-500 hover:text-red-700"
+                          onClick={() => handleDeleteChecklistItem(item.id)}
+                          className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-all duration-200"
                         >
-                          ×
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
                         </button>
                       </div>
                     ))}
+                    
+                    {addingChecklistItem ? (
+                      <form 
+                        onSubmit={(e) => {
+                          e.preventDefault()
+                          handleAddChecklistItem()
+                        }}
+                        className="flex items-center gap-2 mt-2"
+                      >
+                        <input
+                          type="text"
+                          value={newChecklistText}
+                          onChange={(e) => setNewChecklistText(e.target.value)}
+                          placeholder="Add checklist item..."
+                          className="flex-1 text-sm px-3 py-1.5 border border-gray-200 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                          autoFocus
+                        />
+                        <button
+                          type="submit"
+                          className="text-green-600 hover:text-green-700"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setAddingChecklistItem(false)
+                            setNewChecklistText('')
+                          }}
+                          className="text-gray-400 hover:text-gray-600"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </form>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setAddingChecklistItem(true)}
+                        className="text-sm text-gray-400 hover:text-gray-600 transition-all duration-200 mt-2"
+                      >
+                        + Add checklist item
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -358,7 +546,7 @@ export default function TrainingPage() {
                   type="button"
                   onClick={() => {
                     setShowCreateForm(false)
-                    setFormData({ title: '', description: '', loomUrl: '', category: '' })
+                    setFormData({ title: '', description: '', loomUrl: '', mainCategory: '', subCategory: '' })
                     setChecklistItems([])
                   }}
                   className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 transition-colors"
@@ -375,9 +563,14 @@ export default function TrainingPage() {
               <div>
                 <h2 className="text-2xl font-semibold">{selectedModule.title}</h2>
                 <p className="text-gray-600 mt-1">{selectedModule.description}</p>
-                <span className="inline-block mt-2 px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">
-                  {selectedModule.category}
-                </span>
+                <div className="mt-2 flex gap-2">
+                  <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm">
+                    {selectedModule.mainCategory}
+                  </span>
+                  <span className="inline-block px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                    {selectedModule.subCategory}
+                  </span>
+                </div>
               </div>
               <div className="flex gap-2">
                 <button
@@ -426,9 +619,9 @@ export default function TrainingPage() {
                 <h3 className="text-lg font-semibold mb-3">Checklist</h3>
                 <div className="space-y-2">
                   {selectedModule.checklist.map((item, index) => (
-                    <label key={index} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded">
+                    <label key={item.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded">
                       <input type="checkbox" className="h-5 w-5 text-purple-600 rounded" />
-                      <span className="text-sm">{item}</span>
+                      <span className="text-sm">{item.text}</span>
                     </label>
                   ))}
                 </div>
@@ -486,24 +679,69 @@ export default function TrainingPage() {
             </div>
           </div>
         ) : (
-          /* Module Grid */
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {modules.map((module) => (
-              <button
-                key={module.id}
-                onClick={() => setSelectedModule(module)}
-                className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow text-left"
-              >
-                <h3 className="text-lg font-semibold mb-2">{module.title}</h3>
-                <p className="text-gray-600 text-sm mb-3 line-clamp-2">{module.description}</p>
-                <span className="inline-block px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs">
-                  {module.category}
-                </span>
-                <div className="mt-4 flex items-center text-xs text-gray-500">
-                  <span>By {module.createdByEmail}</span>
+          /* Category-based Module Organization */
+          <div className="space-y-6">
+            {categories.length === 0 ? (
+              <div className="text-center py-12 bg-white rounded-xl shadow-sm">
+                <p className="text-gray-500">No training modules yet. Create your first module to get started!</p>
+              </div>
+            ) : (
+              categories.map((category) => (
+                <div key={category.id} className="bg-white rounded-xl shadow-sm overflow-hidden">
+                  <button
+                    onClick={() => toggleCategory(category.name)}
+                    className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
+                  >
+                    <h3 className="text-lg font-semibold text-gray-900">{category.name}</h3>
+                    <svg 
+                      className={`w-5 h-5 text-gray-400 transition-transform ${expandedCategories.includes(category.name) ? 'rotate-180' : ''}`} 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                  
+                  {expandedCategories.includes(category.name) && (
+                    <div className="border-t border-gray-100">
+                      {category.subCategories.map((subCategory) => {
+                        const moduleCount = getModulesByCategory(category.name, subCategory).length
+                        return (
+                          <div key={subCategory} className="border-b border-gray-50 last:border-0">
+                            <button
+                              onClick={() => {
+                                setSelectedMainCategory(category.name)
+                                setSelectedSubCategory(subCategory)
+                              }}
+                              className="w-full px-8 py-3 flex items-center justify-between hover:bg-gray-50 transition-colors text-left"
+                            >
+                              <span className="text-sm text-gray-700">{subCategory}</span>
+                              <span className="text-xs text-gray-400">{moduleCount} module{moduleCount !== 1 ? 's' : ''}</span>
+                            </button>
+                            
+                            {selectedMainCategory === category.name && selectedSubCategory === subCategory && (
+                              <div className="px-8 pb-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {getModulesByCategory(category.name, subCategory).map((module) => (
+                                  <button
+                                    key={module.id}
+                                    onClick={() => setSelectedModule(module)}
+                                    className="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors text-left"
+                                  >
+                                    <h4 className="font-medium text-gray-900 mb-1">{module.title}</h4>
+                                    <p className="text-sm text-gray-600 line-clamp-2">{module.description}</p>
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )}
                 </div>
-              </button>
-            ))}
+              ))
+            )}
           </div>
         )}
       </main>

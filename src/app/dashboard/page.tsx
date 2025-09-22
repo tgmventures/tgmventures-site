@@ -542,7 +542,7 @@ export default function DashboardPage() {
                   alt="TGM"
                   className="h-8 w-8 mr-3 transition-transform group-hover:scale-110"
                 />
-                <h1 className="text-xl font-semibold text-gray-900">TGM Command Center</h1>
+                <h1 className="text-xl font-semibold text-gray-900">Dashboard</h1>
               </Link>
             </div>
             <div className="flex items-center space-x-6">
@@ -629,22 +629,34 @@ export default function DashboardPage() {
         <div className="text-center mb-12">
           <div className="">
             <p className="text-base font-bold text-gray-900 mb-4">Outstanding Objectives:</p>
-            <div className="flex justify-center gap-6 text-sm">
+            <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm">
               <div className="flex items-center gap-2">
                 <div className="h-2 w-2 rounded-full bg-indigo-500"></div>
-                <span className="text-gray-600">{taxReturns.filter(t => !t.isFiled).length + (propertyTaxH1Paid ? 0 : 1) + (propertyTaxH2Paid ? 0 : 1)}/{taxReturns.length + 2} Tax</span>
+                <div className="text-gray-600">
+                  <span className="whitespace-nowrap">{taxReturns.filter(t => !t.isFiled).length + (propertyTaxH1Paid ? 0 : 1) + (propertyTaxH2Paid ? 0 : 1)}/{taxReturns.length + 2}</span>{' '}
+                  <span>Tax</span>
+                </div>
               </div>
               <div className="flex items-center gap-2">
                 <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                <span className="text-gray-600">{7 - assetChecklistComplete}/7 Asset Management</span>
+                <div className="text-gray-600">
+                  <span className="whitespace-nowrap">{7 - assetChecklistComplete}/7</span>{' '}
+                  <span className="whitespace-nowrap">Asset Management</span>
+                </div>
               </div>
               <div className="flex items-center gap-2">
                 <div className="h-2 w-2 rounded-full bg-blue-500"></div>
-                <span className="text-gray-600">{realEstateTasks.filter(t => !t.isChecked).length}/{realEstateTasks.length} Real Estate</span>
+                <div className="text-gray-600">
+                  <span className="whitespace-nowrap">{realEstateTasks.filter(t => !t.isChecked).length}/{realEstateTasks.length}</span>{' '}
+                  <span className="whitespace-nowrap">Real Estate</span>
+                </div>
               </div>
               <div className="flex items-center gap-2">
                 <div className="h-2 w-2 rounded-full bg-purple-500"></div>
-                <span className="text-gray-600">{venturesTasks.filter(t => !t.isChecked).length}/{venturesTasks.length} Venture</span>
+                <div className="text-gray-600">
+                  <span className="whitespace-nowrap">{venturesTasks.filter(t => !t.isChecked).length}/{venturesTasks.length}</span>{' '}
+                  <span>Venture</span>
+                </div>
               </div>
             </div>
           </div>

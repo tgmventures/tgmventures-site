@@ -115,6 +115,7 @@
 - [x] **Enhanced Navigation UX**: TESTED - ESC key closes module, clicking title/categories closes module
 - [x] **Double-Click Checklist Editing**: TESTED - Checklist items editable via double-click in module view
 - [x] **Fixed React Key Warnings**: TESTED - Proper unique keys for all mapped elements
+- [x] **Larger Video Display**: TESTED - Training video 30% larger in module view for better visibility
 
 ## 📱 Phase 7: Future Enhancements
 - [ ] **Mobile App**: Consider native mobile applications

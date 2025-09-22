@@ -44,7 +44,7 @@ export async function initializeAssetManagementTasks(): Promise<void> {
     
     // If no tasks exist for this month, create them
     if (snapshot.empty) {
-      console.log(`Creating Asset Management tasks for ${monthYear}`);
+      // Creating Asset Management tasks for this month
       
       // Update the first task with the prior month name
       const tasksToCreate = [...STANDARD_ASSET_TASKS];
@@ -69,7 +69,7 @@ export async function initializeAssetManagementTasks(): Promise<void> {
         });
       }
       
-      console.log(`Created ${tasksToCreate.length} Asset Management tasks for ${monthYear}`);
+      // Asset Management tasks created successfully
     }
   } catch (error) {
     console.error('Error initializing Asset Management tasks:', error);

@@ -11,7 +11,7 @@ import {
   updateObjectiveStatus,
   deleteObjective,
   addDivisionObjective
-} from '@/lib/firebase-dashboard'
+} from '@/lib/firebase/dashboard'
 
 export default function GoalsPage() {
   const [user] = useAuthState(auth)

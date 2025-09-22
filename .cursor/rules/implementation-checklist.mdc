@@ -74,7 +74,5 @@ alwaysApply: true
 **Key Project Files:**
 - `README.md` - Core project rules
 - `planning/IMPLEMENTATION-CHECKLIST.md` - Master task list
-- `planning/phase-3-dashboard.md` - Dashboard implementation plan
-- `planning/technical-specifications.md` - Technical details
 
 **Remember**: This checklist is the single source of truth for project status and next steps. Always keep it updated!

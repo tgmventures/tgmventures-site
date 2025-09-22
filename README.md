@@ -2,42 +2,6 @@
 
 A modern Next.js application for TGM Ventures, Inc., a Washington state corporation specializing in building, buying, and managing businesses and real estate.
 
-## 🚀 Quick Start
-
-```bash
-# Install dependencies
-npm install
-
-# Start development server with secure secrets
-./scripts/start-local.sh
-
-# Or manually with Firebase emulators
-firebase emulators:start --only firestore,auth,functions
-NEXT_PUBLIC_FIREBASE_API_KEY=$(gcloud secrets versions access latest --secret="FIREBASE_API_KEY") npm run dev
-```
-
-## 🔐 Security & Credentials
-
-This project uses **Google Secret Manager** for all sensitive credentials:
-- No API keys are stored in the codebase
-- All secrets are fetched at runtime
-- See [SECURITY.md](SECURITY.md) for detailed security practices
-
-## 📦 Deployment
-
-The site is deployed on Firebase Hosting at https://tgmventures.com
-
-```bash
-# Build and deploy everything (fetches API key from Secret Manager)
-NEXT_PUBLIC_FIREBASE_API_KEY=$(gcloud secrets versions access latest --secret="FIREBASE_API_KEY") firebase deploy
-
-# Deploy only hosting
-NEXT_PUBLIC_FIREBASE_API_KEY=$(gcloud secrets versions access latest --secret="FIREBASE_API_KEY") firebase deploy --only hosting
-
-# Deploy only functions (no API key needed)
-firebase deploy --only functions
-```
-
 ## 🚨 CRITICAL PRESERVATION RULES
 
 ### Core Pages - DO NOT MODIFY WITHOUT EXPLICIT PERMISSION
@@ -49,113 +13,170 @@ The following pages must maintain their simple, elegant design and content:
 
 **⚠️ IMPORTANT**: These pages are intentionally minimal and professional. Any changes to their design, content, or functionality require explicit user approval before implementation.
 
-## Project Structure
+## 🚀 Quick Start
 
-```
-/
-├── src/                    # Next.js source code
-│   ├── app/               # App router pages
-│   │   ├── api/          # API routes
-│   │   │   └── contact/  # Contact form API endpoint
-│   │   ├── contact/      # Contact form page
-│   │   ├── dashboard/    # Internal team dashboard
-│   │   ├── goals/        # Goals tracking page
-│   │   ├── login/        # Authentication page
-│   │   ├── page.tsx      # Homepage
-│   │   ├── privacy-policy/
-│   │   ├── terms-of-service/
-│   │   └── (icons)       # App icons (favicon, apple-icon)
-│   ├── components/        # React components
-│   │   └── ui/           # UI components
-│   ├── lib/              # Utilities and services
-│   │   ├── firebase/     # Firebase service layer
-│   │   │   ├── asset-management-init.ts
-│   │   │   ├── compat-service.ts
-│   │   │   ├── division-service.ts
-│   │   │   └── structure.ts
-│   │   └── firebase*.ts  # Firebase utilities
-│   └── types/            # TypeScript types
-├── public/                # Static assets
-│   └── images/           # Images and logos
-├── functions/            # Firebase Cloud Functions
-│   └── index.js          # Contact form handler
-├── planning/             # Project planning documents
-│   └── IMPLEMENTATION-CHECKLIST.md
-├── scripts/              # Helper scripts
-│   └── start-local.sh    # Local dev startup script
-├── firebase.json         # Firebase configuration
-├── firestore.rules       # Security rules
-├── firestore.indexes.json # Database indexes
-├── next.config.js        # Next.js configuration
-└── package.json          # Dependencies and scripts
+### Prerequisites
+- Node.js 18+ and npm
+- Firebase CLI: `npm install -g firebase-tools`
+- Google Cloud CLI: `brew install google-cloud-sdk`
+- Access to `tgm-ventures-site` Firebase project
+
+### Local Development
+
+```bash
+# 1. Install dependencies
+npm install
+cd functions && npm install && cd ..
+
+# 2. Setup Google Cloud authentication
+gcloud auth login
+gcloud config set project tgm-ventures-site
+gcloud auth application-default login
+
+# 3. Start Firebase emulators (in one terminal)
+firebase emulators:start --only firestore,auth,functions
+
+# 4. Start development server (in another terminal)
+./scripts/start-local.sh
+
+# Access points:
+# - Main site: http://localhost:3000
+# - Firebase Emulator UI: http://localhost:4000
 ```
 
-## Features
+### Testing Checklist
+- [ ] Homepage loads with correct design
+- [ ] Contact form submits and shows success message
+- [ ] Login with @tgmventures.com Google account works
+- [ ] Dashboard displays all three divisions
+- [ ] Tasks can be added, edited, deleted, and reordered
+- [ ] Monthly/annual task resets work correctly
 
-### ✅ Implemented
+## 📦 Production Deployment
 
-#### Public Features
-- Professional homepage with elegant black design
-- Contact form with multiple inquiry types
-- reCAPTCHA v2 spam protection  
-- SendGrid email integration (no direct email exposure)
-- Responsive design across all devices
-- Legal pages (Privacy Policy, Terms of Service)
+```bash
+# Full deployment (hosting + functions)
+NEXT_PUBLIC_FIREBASE_API_KEY=$(gcloud secrets versions access latest --secret="FIREBASE_API_KEY") firebase deploy
 
-#### Internal Team Dashboard
-- Google OAuth authentication with @tgmventures.com domain restriction
-- Three business divisions:
-  - **Asset Management**: Monthly task tracking with automatic reset
-  - **Real Estate**: Dynamic task management
-  - **Ventures**: Dynamic task management
-- **Tax Filings**: Annual tax return tracking with property tax management
-- Task features:
-  - Click to edit task text inline
-  - Drag and drop to reorder tasks
-  - Persistent state across sessions
-  - Progress tracking and visual indicators
-  - Automatic monthly/annual resets
-- User profile dropdown with Google account integration
-- **Goals Page**: Separate goal tracking interface with monthly view and filtering
+# Deploy only hosting (for UI changes)
+NEXT_PUBLIC_FIREBASE_API_KEY=$(gcloud secrets versions access latest --secret="FIREBASE_API_KEY") firebase deploy --only hosting
 
-## Technology Stack
+# Deploy only functions (for backend changes)
+firebase deploy --only functions
+```
+
+### Post-Deployment Verification
+1. Check https://tgmventures.com loads correctly
+2. Test contact form submission
+3. Verify dashboard authentication and features
+4. Monitor Firebase Console for errors
+
+### Rollback if Needed
+```bash
+firebase hosting:releases:list
+firebase hosting:rollback
+```
+
+## 🏗️ Project Structure
+
+```
+src/
+├── app/                   # Next.js App Router pages
+│   ├── api/              # API endpoints
+│   ├── dashboard/        # Internal team dashboard
+│   ├── contact/          # Contact form
+│   └── login/            # Authentication
+├── components/           # React components
+├── lib/                  # Services and utilities
+│   └── firebase/         # Firebase service layer
+└── types/                # TypeScript definitions
+
+functions/                # Cloud Functions
+planning/                 # Project documentation
+public/images/           # Static assets
+scripts/                 # Helper scripts
+```
+
+## 🔐 Security
+
+This project uses **Google Secret Manager** for all sensitive credentials:
+- No API keys in codebase
+- Secrets fetched at runtime
+- Domain-restricted authentication (@tgmventures.com only)
+- See [SECURITY.md](SECURITY.md) for detailed practices
+
+## ✨ Features
+
+### Public Features
+- Professional homepage with minimal design
+- Contact form with reCAPTCHA protection
+- SendGrid email integration
+- Responsive design
+- Legal pages
+
+### Internal Dashboard
+- Google OAuth authentication
+- Three business divisions with task management
+- Drag-and-drop task reordering
+- Click-to-edit task names
+- Automatic monthly/annual resets
+- Tax filing tracker
+- Real-time Firestore sync
+
+## 🛠️ Technology Stack
 
 - **Framework**: Next.js 15 with App Router
-- **Styling**: Tailwind CSS with Poppins font
+- **Styling**: Tailwind CSS + Poppins font
 - **Database**: Firebase Firestore
-- **Authentication**: Firebase Auth (Google OAuth)
+- **Auth**: Firebase Auth (Google OAuth)
 - **Functions**: Firebase Cloud Functions
-- **Email**: SendGrid integration
+- **Email**: SendGrid
 - **Hosting**: Firebase Hosting
 - **Security**: reCAPTCHA v2, Google Secret Manager
-- **State Management**: React hooks with real-time Firestore sync
 
-## Development Guidelines
+## 📋 Development Guidelines
 
-### What CAN be modified:
-- Adding new features to the dashboard
-- Creating new internal tools
-- Improving build processes and tooling
-- Adding new API endpoints
-- Enhancing security measures
+### ✅ Allowed Changes
+- New dashboard features
+- API endpoints
+- Internal tools
+- Performance optimizations
+- Security enhancements
 
-### What CANNOT be modified without permission:
-- Visual design of core pages (homepage, privacy, terms)
-- Content of legal documents
-- User experience of existing public pages
-- Authentication domain restrictions
+### ❌ Prohibited Without Permission
+- Core page design/content
+- Legal document content
+- Public page UX changes
+- Authentication restrictions
 
-## 🔗 Important Links
+## 🔧 Troubleshooting
 
-- **Production Site**: https://tgmventures.com
+### Port Already in Use
+```bash
+lsof -ti:3000 | xargs kill -9  # Next.js
+lsof -ti:4000,5001,8080,9099 | xargs kill -9  # Firebase
+```
+
+### Secret Manager Issues
+```bash
+gcloud auth login
+gcloud auth application-default login
+gcloud secrets versions access latest --secret="FIREBASE_API_KEY"
+```
+
+### Build Errors
+```bash
+rm -rf .next node_modules
+npm install
+npm run dev
+```
+
+## 📞 Important Links
+
+- **Production**: https://tgmventures.com
 - **Firebase Console**: https://console.firebase.google.com/project/tgm-ventures-site
-- **GitHub Repository**: https://github.com/tgmventures/tgmventures-site
-
-## 📝 Documentation
-
-- [LOCAL-DEVELOPMENT.md](LOCAL-DEVELOPMENT.md) - Local development setup guide
-- [DEPLOYMENT.md](DEPLOYMENT.md) - Production deployment instructions
-- [SECURITY.md](SECURITY.md) - Security best practices and guidelines
+- **Implementation Tasks**: [planning/IMPLEMENTATION-CHECKLIST.md](planning/IMPLEMENTATION-CHECKLIST.md)
+- **Security Guidelines**: [SECURITY.md](SECURITY.md)
 
 ---
 

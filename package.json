@@ -10,20 +10,11 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@headlessui/react": "^2.2.0",
-    "@heroicons/react": "^2.2.0",
-    "@supabase/supabase-js": "^2.46.1",
     "firebase": "^12.3.0",
-    "framer-motion": "^11.11.17",
     "next": "^15.5.3",
-    "next-auth": "^4.24.10",
-    "openai": "^4.73.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-dropzone": "^14.3.5",
-    "react-firebase-hooks": "^5.1.1",
-    "react-hook-form": "^7.54.0",
-    "zod": "^3.23.8"
+    "react-firebase-hooks": "^5.1.1"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

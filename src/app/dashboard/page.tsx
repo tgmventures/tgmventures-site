@@ -6,6 +6,7 @@ import { signOut } from 'firebase/auth'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { AssetManagementStatus, DivisionTask, TaxReturn } from '@/types/goal'
 import {
   getDivisionTasksCompat,
@@ -19,7 +20,7 @@ import {
   subscribeToAssetStatusCompat,
   subscribeToDivisionTasksCompat
 } from '@/lib/firebase/compat-service'
-import { getTaxFilingsData, updateTaxReturnStatus, updatePropertyTaxStatus, getPriorTaxYear } from '@/lib/firebase-taxes'
+import { getTaxFilingsData, updateTaxReturnStatus, updatePropertyTaxStatus, getPriorTaxYear } from '@/lib/firebase/taxes'
 import { initializeAssetManagementTasks } from '@/lib/firebase/asset-management-init'
 
 interface Project {
@@ -537,10 +538,13 @@ export default function DashboardPage() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <Link href="/" className="flex items-center group">
-                <img
-                src="/images/tgm-logo-icon.png"
+                <Image
+                  src="/images/tgm-logo-icon.png"
                   alt="TGM"
-                  className="h-8 w-8 mr-3 transition-transform group-hover:scale-110"
+                  width={32}
+                  height={32}
+                  className="mr-3 transition-transform group-hover:scale-110"
+                  priority
                 />
                 <h1 className="text-xl font-semibold text-gray-900">Dashboard</h1>
               </Link>

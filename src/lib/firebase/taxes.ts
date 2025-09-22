@@ -1,4 +1,4 @@
-import { db } from './firebase';
+import { db } from '../firebase';
 import { collection, doc, getDoc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { TaxReturn } from '@/types/goal';
 

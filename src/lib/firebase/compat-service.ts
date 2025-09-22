@@ -46,14 +46,14 @@ export async function checkDatabaseStructure(): Promise<boolean> {
     try {
       const orgDoc = await getDoc(doc(db, 'organizations/tgm-ventures'));
       useNewStructure = orgDoc.exists();
-      console.log(`Using ${useNewStructure ? 'NEW' : 'OLD'} database structure`);
+      // Using appropriate database structure
       return useNewStructure;
     } catch (error: any) {
       // If it's a permission error, we'll default to old structure
       if (error?.code === 'permission-denied') {
-        console.log('Permission check deferred - defaulting to OLD structure');
+        // Permission check deferred - defaulting to OLD structure
       } else {
-        console.log('Using OLD database structure (fallback):', error?.message);
+        // Using OLD database structure (fallback)
       }
       useNewStructure = false;
       return false;
@@ -102,7 +102,7 @@ export async function getDivisionTasksCompat(divisionId: string): Promise<Divisi
   } catch (error: any) {
     // If it's an index error, return empty array while index is building
     if (error?.code === 'failed-precondition' && error?.message?.includes('index')) {
-      console.log(`Index is building for division_tasks. Returning empty array for ${divisionId}`);
+      // Index is building for division_tasks
       return [];
     }
     console.error('Error getting division tasks:', error);
@@ -385,7 +385,7 @@ export function subscribeToDivisionTasksCompat(
 ): () => void {
   // Check structure on subscription
   checkDatabaseStructure().then(() => {
-    console.log(`Subscribing to ${divisionId} tasks in ${useNewStructure ? 'NEW' : 'OLD'} structure`);
+    // Subscribing to division tasks
   });
   
   let q: any;
@@ -408,7 +408,7 @@ export function subscribeToDivisionTasksCompat(
     (error) => {
       // Handle index building errors gracefully
       if (error.code === 'failed-precondition' && error.message?.includes('index')) {
-        console.log(`Index is building for ${divisionId} tasks. Waiting...`);
+        // Index is building, waiting...
         callback([]); // Return empty array while index builds
       } else {
         console.error(`Error subscribing to ${divisionId} tasks:`, error);

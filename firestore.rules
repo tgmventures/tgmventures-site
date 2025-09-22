@@ -44,6 +44,14 @@ service cloud.firestore {
       allow write: if request.auth != null && request.auth.token.email.matches('.*@tgmventures[.]com$');
     }
     
+    // Weekly progress tracking - users can read/write their own progress
+    match /weekly_progress/{progressId} {
+      allow read: if request.auth != null && 
+        (progressId.split('_')[0] == request.auth.uid || request.auth.token.email.matches('.*@tgmventures[.]com$'));
+      allow write: if request.auth != null && 
+        (progressId.split('_')[0] == request.auth.uid || request.auth.token.email.matches('.*@tgmventures[.]com$'));
+    }
+    
     // For the new structure (when we migrate)
     match /organizations/{orgId}/{document=**} {
       allow read: if request.auth != null;

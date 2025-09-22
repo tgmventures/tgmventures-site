@@ -32,6 +32,7 @@ const TaxFilingsCard = lazy(() => import('@/components/dashboard/TaxFilingsCard'
 
 // Import loading skeleton
 import { CardSkeleton } from '@/components/dashboard/CardSkeleton'
+import { VentureCardSystem } from '@/components/dashboard/VentureCardSystem'
 
 interface Project {
   id: string;
@@ -426,42 +427,21 @@ export default function DashboardPage() {
   const assetManagementApps = [
     {
       name: 'Gemini',
-      icon: (
-        <svg className="w-12 h-12" viewBox="0 0 48 48" fill="none">
-          <path d="M24 4C20.24 4 16.62 5.38 13.86 7.86L7.86 13.86C5.38 16.62 4 20.24 4 24C4 27.76 5.38 31.38 7.86 34.14L13.86 40.14C16.62 42.62 20.24 44 24 44C31.72 44 38.26 38.98 40.44 31.98" stroke="#1A73E8" strokeWidth="3" strokeLinecap="round" fill="none"/>
-          <path d="M24 4C27.76 4 31.38 5.38 34.14 7.86L40.14 13.86C42.62 16.62 44 20.24 44 24C44 27.76 42.62 31.38 40.14 34.14L34.14 40.14C31.38 42.62 27.76 44 24 44C16.28 44 9.74 38.98 7.56 31.98" stroke="#EA4335" strokeWidth="3" strokeLinecap="round" fill="none"/>
-        </svg>
-      ),
+      icon: '/images/gemini-icon.svg',
       href: 'https://gemini.google.com/app',
       external: true,
       color: 'hover:bg-blue-50 border-blue-200'
     },
     {
       name: 'Gmail',
-      icon: (
-        <svg className="w-12 h-12" viewBox="0 0 48 48" fill="none">
-          <path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/>
-          <path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/>
-          <path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z"/>
-          <path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"/>
-        </svg>
-      ),
+      icon: '/images/gmail-icon.svg',
       href: 'https://mail.google.com',
       external: true,
       color: 'hover:bg-red-50 border-red-200'
     },
     {
       name: 'Google Drive',
-      icon: (
-        <svg className="w-12 h-12" viewBox="0 0 48 48" fill="none">
-          <path d="M19.35 4L30.65 4L44 28L38.35 38L24.65 38L11.35 14L19.35 4Z" fill="#1EA362"/>
-          <path d="M11.35 38L17 48L30.35 48L36 38L11.35 38Z" fill="#4688F1"/>
-          <path d="M4 28L11.35 38L24.65 38L17.35 28L4 28Z" fill="#4688F1"/>
-          <path d="M19.35 4L11.35 14L24.65 38L17.35 28L30.65 4L19.35 4Z" fill="#1EA362"/>
-          <path d="M30.65 4L44 28L30.65 28L17.35 4L30.65 4Z" fill="#FFD04A"/>
-          <path d="M24.65 38L30.65 28L44 28L38.35 38L24.65 38Z" fill="#FFD04A"/>
-        </svg>
-      ),
+      icon: '/images/google-drive-icon.svg',
       href: 'https://drive.google.com',
       external: true,
       color: 'hover:bg-blue-50 border-blue-200'
@@ -484,15 +464,7 @@ export default function DashboardPage() {
     },
     {
       name: 'Asana',
-      icon: (
-        <svg className="w-12 h-12" viewBox="0 0 48 48" fill="none">
-          <circle cx="24" cy="24" r="10" fill="#F06A6A"/>
-          <circle cx="14" cy="14" r="6" fill="#F06A6A"/>
-          <circle cx="34" cy="14" r="6" fill="#F06A6A"/>
-          <circle cx="14" cy="34" r="6" fill="#F06A6A"/>
-          <circle cx="34" cy="34" r="6" fill="#F06A6A"/>
-        </svg>
-      ),
+      icon: '/images/asana-icon.svg',
       href: 'https://app.asana.com',
       external: true,
       color: 'hover:bg-pink-50 border-pink-200'
@@ -952,7 +924,7 @@ export default function DashboardPage() {
       ) : (
         /* Ventures View - Dynamic Cards */
         <div className="mb-8">
-          <p className="text-center text-gray-500 py-8">Dynamic venture cards will be implemented here</p>
+          {user && <VentureCardSystem userId={user.uid} />}
         </div>
       )}
 

@@ -1,108 +1,111 @@
 # 📋 TGM Ventures Implementation Checklist
 
-## 🎉 Latest Achievement: Phase 6 Complete!
-**Training & SOPs Module Successfully Implemented** 
-- ✅ World-class training module with Loom video integration
-- ✅ Category and subcategory organization
-- ✅ Dashboard-style checklist items with inline editing
-- ✅ Module-level Asana integration
-- ✅ Professional UI/UX with embedded video players
-- ✅ All critical bugs fixed and deployed
+## 📱 Phase 7: Mobile Training UX (Current Sprint)
+- [ ] **Collapsible Sidebar**: Training module sidebar takes too much space on mobile
+  - [ ] Hamburger menu for mobile (<768px)
+  - [ ] Auto-collapse on mobile load
+  - [ ] Slide-out animation with backdrop
+  - [ ] Swipe left to open, swipe right to close
+  - [ ] Persist state in localStorage
+- [ ] **Responsive Video Layout**: 
+  - [ ] Stack video above checklist on mobile
+  - [ ] Full-width Loom player
+  - [ ] Maintain 16:12 aspect ratio
+- [ ] **Touch-Optimized Controls**:
+  - [ ] 44px minimum touch targets
+  - [ ] Proper spacing between interactive elements
+  - [ ] Test on iPhone and Android devices
 
----
+## 🌙 Phase 8: Daily Task Reset System
+- [ ] **Midnight Vanishing**: Completed tasks disappear at midnight same day (UI only)
+  - [ ] Add `completedAt: Timestamp` to all task interfaces
+  - [ ] Create `shouldShowTask(task)` filter: hide if completed before today
+  - [ ] Keep all data in Firestore (no deletion)
+  - [ ] Apply to Asset Management monthly recurring tasks
+  - [ ] Apply to Tax Filing annual tasks
+  - [ ] Apply to Real Estate persistent tasks  
+  - [ ] Apply to Venture objective cards
+- [ ] **User Experience**: Help users feel accomplished with clean dashboard
+  - [ ] Fade-out animation on task completion (2s)
+  - [ ] Success toast: "Great job! This will clear at midnight"
+  - [ ] Show completion count in header: "3 tasks completed today"
+- [ ] **History Tracking**: Enable viewing past completions
+  - [ ] "View History" link for admins
+  - [ ] Calendar view of completed tasks
+  - [ ] Export completion data for payroll/reviews
 
-## ✅ Phase 1: Project Cleanup & Organization (Completed)
-- [x] **Project Structure Audit**: COMPLETED - Removed 76 unused packages, organized file structure
-- [x] **Documentation Update**: COMPLETED - Consolidated docs into README, updated cursor rules
-- [x] **Dependency Audit**: COMPLETED - 0 vulnerabilities, removed unused dependencies
-- [x] **Code Quality Check**: COMPLETED - Fixed linting, TypeScript types, removed console.logs
+## 📊 Phase 9: Weekly Reporting Module
+- [ ] **Architecture**: Standalone module at `/reports` with plugin system
+  - [ ] Reports app tile on dashboard (position 7)
+  - [ ] Plugin interface: `IReportPlugin { getDataForRange(start, end), getMetrics(), renderSection() }`
+  - [ ] Core engine handles date ranges, aggregation, formatting
+- [ ] **User Attribution**: Track WHO completes WHAT
+  - [ ] Add `completedBy: { uid, email, name }` to all completable entities
+  - [ ] Retrofit existing completed items with system user
+  - [ ] Real-time tracking going forward
+- [ ] **Weekly Summary Contents**:
+  - [ ] Objectives by person: newly added vs completed
+  - [ ] Task completion rates by division
+  - [ ] Training modules: created, completed, comments
+  - [ ] Team activity heatmap
+- [ ] **External Integrations** (via plugins):
+  - [ ] Asana: Pull completed tasks via API (filter by @tgmventures.com assignees)
+  - [ ] Rent Manager: Financial metrics via API (rent collected, expenses, NOI)
+  - [ ] Future: QuickBooks, Google Analytics, etc.
+- [ ] **Report Distribution**:
+  - [ ] Interactive web dashboard with charts (Chart.js)
+  - [ ] PDF generation with company branding
+  - [ ] Weekly email to leadership (Mondays 8am)
+  - [ ] Slack integration for key metrics
 
-## ✅ Phase 2: Core Features (Completed)
-- [x] **Homepage**: TESTED - Simple black design with warehouse background
-- [x] **Contact Form**: TESTED - reCAPTCHA, SendGrid integration working
-- [x] **Authentication**: TESTED - Google OAuth with @tgmventures.com restriction
-- [x] **Legal Pages**: TESTED - Privacy Policy and Terms of Service
-- [x] **SSL Security**: TESTED - Custom domain with proper certificates
-
-## ✅ Phase 3: Dashboard Features (Completed)
-- [x] **Dashboard Layout**: TESTED - 3-column responsive design
-- [x] **Asset Management Tasks**: TESTED - Monthly auto-reset on 1st
-- [x] **Real Estate & Ventures Tasks**: TESTED - Dynamic task management
-- [x] **Tax Filings Section**: TESTED - Annual returns with property tax
-- [x] **Task Editing**: TESTED - Inline editing functionality
-- [x] **Drag & Drop**: TESTED - Persistent reordering
-- [x] **Profile Dropdown**: TESTED - Google profile integration
-- [x] **Data Persistence**: TESTED - Firestore real-time sync
-
-## ✅ Phase 4: Security & Performance (Completed)
-- [x] **Secret Management**: TESTED - Google Secret Manager integration
-- [x] **Firestore Rules**: TESTED - Proper security rules deployed
-- [x] **Domain Restrictions**: TESTED - @tgmventures.com only access
-- [x] **Performance Optimization**: TESTED - Lazy loading, optimized images
-
-## ✅ Phase 5: Business Unit Separation (Completed)
-- [x] **User Preference Storage**: TESTED - businessUnit field in Firestore
-- [x] **Profile Dropdown Toggle**: TESTED - View switcher implementation
-- [x] **Asset Management View**: TESTED - Relevant content filtering
-- [x] **Ventures View**: TESTED - Dynamic card system with drag-and-drop
-- [x] **UI/UX Improvements**: TESTED - Professional polish throughout
-
-## ✅ Phase 6: Training & SOPs Module (Completed)
-- [x] **Training App Tile**: TESTED - Routes to /training from dashboard
-- [x] **Module Creation**: TESTED - Full CRUD functionality
-- [x] **Category System**: TESTED - Main and subcategory structure
-- [x] **Video Integration**: TESTED - Loom embed with preview
-- [x] **Checklist System**: TESTED - Dashboard-style inline editing
-- [x] **Design Excellence**: TESTED - World-class UI/UX
-- [x] **Navigation**: TESTED - Intuitive flow and shortcuts
-- [x] **Data Sharing Fix**: TESTED - Organization-wide venture cards
-- [x] **Objective Counting**: TESTED - Accurate venture objectives
-
----
-
-## 📱 Phase 7: Mobile UX Enhancement
-- [ ] **Training Sidebar**: Collapsible sidebar with hamburger menu (<768px auto-collapse)
-- [ ] **Responsive Layout**: Stack video above checklist on mobile, full-width player
-- [ ] **Touch Optimization**: Swipe gestures, touch-friendly targets, persistent state
-
-## 🌙 Phase 8: Daily Task Reset
-- [ ] **Midnight Clear**: Completed tasks vanish at midnight (UI only, data preserved)
-  - [ ] Add completedAt timestamp to all task models
-  - [ ] Create universal date filter: `isVisibleToday(task)`
-  - [ ] Apply to: Asset Management, Tax, Real Estate, Ventures
-- [ ] **User Feedback**: Fade animation on complete, success toast, completion history
-
-## 📊 Phase 9: Reporting Engine (Plugin Architecture)
-- [ ] **Core System**: Extensible report generator at `/reports`
-  - [ ] Plugin interface: `IReportDataSource { getData(), getMetrics(), getSchema() }`
-  - [ ] Date range selector with presets (week/month/quarter/year)
-  - [ ] User attribution: Add `completedBy` to all completable entities
-- [ ] **Data Plugins**:
-  - [ ] Internal: Tasks, Objectives, Training (built-in)
-  - [ ] External: Asana tasks, Rent Manager financials (via APIs)
-  - [ ] Extensible: Easy to add new data sources
-- [ ] **Output**: Interactive dashboard, PDF export, scheduled emails
-
-## 💼 Phase 10: Careers Module (Video-First Hiring)
-- [ ] **Public Portal**: `/careers` with job listings, SEO-optimized
-- [ ] **Video Applications**: WebRTC one-take recordings → Cloud Storage
-  - [ ] Configurable questions per role
-  - [ ] Time limits, no retries
-  - [ ] Mobile-optimized recording
-- [ ] **Smart Forms**: Drag-drop question builder (Yes/No, MCQ, Text, Conditional Logic)
-- [ ] **Review Pipeline**: Three-pile system (Reject/Maybe/Accept)
-  - [ ] Bulk actions, team notes, scoring
-  - [ ] Export to Asana for next steps
+## 💼 Phase 10: Video-First Careers Platform
+- [ ] **Public Jobs Portal** `/careers`:
+  - [ ] Modern job board with category filters
+  - [ ] Individual job pages with Loom video + description
+  - [ ] "Apply Now" prominent CTA
+  - [ ] SEO: meta tags, structured data, sitemap
+- [ ] **Application Builder** (Admin):
+  - [ ] Drag-drop questionnaire designer
+  - [ ] Question types: Yes/No, Multiple Choice, Checkboxes, Short Text (255 char), Long Text, Rating Scale
+  - [ ] Conditional logic: show/hide based on answers
+  - [ ] Required/optional flags
+  - [ ] Preview mode for testing
+  - [ ] Save as templates for reuse
+- [ ] **Video Interview System**: Core differentiator
+  - [ ] WebRTC in-browser recording (no downloads)
+  - [ ] Configurable prompts: "Tell us about yourself" (2 min limit)
+  - [ ] Single take only - no retries (builds authenticity)
+  - [ ] Auto-upload to Firebase Storage/Google Cloud
+  - [ ] Fallback for older browsers
+  - [ ] Mobile-first design
+- [ ] **Candidate Experience**:
+  - [ ] Step indicator: Job Info → Questions → Video → Submit
+  - [ ] Auto-save progress (can return later)
+  - [ ] Email confirmation with application ID
+  - [ ] Status page to check progress
+- [ ] **Review Pipeline** (Admin):
+  - [ ] Kanban board: New → Shortlist → Interview → Offer → Rejected
+  - [ ] Quick video preview on hover
+  - [ ] Full video player with speed controls
+  - [ ] Scoring: 1-5 stars + notes
+  - [ ] Team comments thread per candidate
+  - [ ] Bulk actions: reject multiple, export to CSV
+  - [ ] Email templates for each stage
+- [ ] **Integrations**:
+  - [ ] Export candidate to Asana as task
+  - [ ] Calendar links for interview scheduling
+  - [ ] Analytics: funnel conversion, time-to-hire
+  - [ ] EEOC compliance reporting
 
 ## 🔧 Maintenance Tasks
-- [ ] **Weekly Security Scan**: Check for vulnerabilities
-- [ ] **Monthly Dependency Updates**: Keep packages current
-- [ ] **Quarterly Code Review**: Ensure code quality standards
-- [ ] **Annual Security Audit**: Comprehensive security review
+- [ ] **Weekly**: Security scan, backup verification
+- [ ] **Monthly**: Update dependencies, review error logs
+- [ ] **Quarterly**: Code quality audit, performance review
+- [ ] **Annually**: Penetration testing, compliance audit
 
 ---
 
 **Last Updated**: December 22, 2024
-**Next Review**: Weekly
+**Next Review**: Start of each phase
 
-**Note**: Always test thoroughly before checking off any item. Each checked item should include a brief description of what was tested and verified.
+**Note**: Each item must be tested on staging before marking complete. Include test results in commit message.

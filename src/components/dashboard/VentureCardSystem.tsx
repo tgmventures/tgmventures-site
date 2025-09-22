@@ -15,11 +15,7 @@ import {
   subscribeToVentureCards
 } from '@/lib/firebase/ventures-cards'
 
-interface VentureCardSystemProps {
-  userId: string
-}
-
-export function VentureCardSystem({ userId }: VentureCardSystemProps) {
+export function VentureCardSystem() {
   const [cards, setCards] = useState<VentureCard[]>([])
   const [addingCard, setAddingCard] = useState(false)
   const [newCardTitle, setNewCardTitle] = useState('')
@@ -36,17 +32,17 @@ export function VentureCardSystem({ userId }: VentureCardSystemProps) {
   // Load cards and subscribe to changes
   useEffect(() => {
     const loadCards = async () => {
-      const ventureCards = await getVentureCards(userId)
+      const ventureCards = await getVentureCards()
       setCards(ventureCards)
     }
     
     loadCards()
     
     // Subscribe to real-time updates
-    const unsubscribe = subscribeToVentureCards(userId, setCards)
+    const unsubscribe = subscribeToVentureCards(setCards)
     
     return () => unsubscribe()
-  }, [userId])
+  }, [])
 
   // Clear celebration animation after delay
   useEffect(() => {
@@ -60,7 +56,7 @@ export function VentureCardSystem({ userId }: VentureCardSystemProps) {
     if (!newCardTitle.trim()) return
     
     try {
-      await createVentureCard(userId, newCardTitle.trim())
+      await createVentureCard(newCardTitle.trim())
       setNewCardTitle('')
       setAddingCard(false)
     } catch (error) {
@@ -179,11 +175,11 @@ export function VentureCardSystem({ userId }: VentureCardSystemProps) {
     
     // Update in Firestore
     try {
-      await reorderVentureCards(userId, cardIds, newOrders)
+      await reorderVentureCards(cardIds, newOrders)
     } catch (error) {
       console.error('Error reordering cards:', error)
       // Reload cards on error
-      const freshCards = await getVentureCards(userId)
+      const freshCards = await getVentureCards()
       setCards(freshCards)
     }
     

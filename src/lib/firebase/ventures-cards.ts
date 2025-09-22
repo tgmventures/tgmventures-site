@@ -24,7 +24,6 @@ export interface VentureObjective {
 
 export interface VentureCard {
   id: string
-  userId: string
   title: string
   createdAt: Timestamp
   updatedAt: Timestamp
@@ -32,12 +31,12 @@ export interface VentureCard {
   objectives: VentureObjective[]
 }
 
-const VENTURES_CARDS_COLLECTION = 'ventures-objective-cards'
+const VENTURES_CARDS_COLLECTION = 'organizations/tgm-ventures/ventures-objective-cards'
 
 /**
- * Get all venture cards for a user
+ * Get all venture cards for the organization
  */
-export async function getVentureCards(userId: string): Promise<VentureCard[]> {
+export async function getVentureCards(): Promise<VentureCard[]> {
   try {
     const cardsRef = collection(db, VENTURES_CARDS_COLLECTION)
     const q = query(cardsRef, orderBy('order'))
@@ -64,16 +63,15 @@ export async function getVentureCards(userId: string): Promise<VentureCard[]> {
 /**
  * Create a new venture card
  */
-export async function createVentureCard(userId: string, title: string): Promise<string> {
+export async function createVentureCard(title: string): Promise<string> {
   try {
     const cardsRef = collection(db, VENTURES_CARDS_COLLECTION)
     
     // Get current cards to determine order
-    const currentCards = await getVentureCards(userId)
+    const currentCards = await getVentureCards()
     const maxOrder = currentCards.reduce((max, card) => Math.max(max, card.order), -1)
     
     const newCard = {
-      userId,
       title,
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
@@ -252,7 +250,6 @@ export async function deleteObjectiveFromCard(
  * Reorder venture cards
  */
 export async function reorderVentureCards(
-  userId: string,
   cardIds: string[], 
   newOrders: number[]
 ): Promise<void> {
@@ -278,7 +275,6 @@ export async function reorderVentureCards(
  * Subscribe to venture cards changes
  */
 export function subscribeToVentureCards(
-  userId: string,
   callback: (cards: VentureCard[]) => void
 ): () => void {
   const cardsRef = collection(db, VENTURES_CARDS_COLLECTION)

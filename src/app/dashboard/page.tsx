@@ -452,14 +452,14 @@ export default function DashboardPage() {
     {
       name: 'Rent Manager',
       icon: '🏠',
-      href: 'https://rentmanager.com',
+      href: 'https://tgm.rmx.rentmanager.com/#/welcome/myworkspace',
       external: true,
       color: 'hover:bg-gray-50 border-gray-200'
     },
     {
       name: 'Asana',
       icon: '/images/asana-icon.png',
-      href: 'https://app.asana.com',
+      href: 'https://app.asana.com/0/1200134672573905/1200139775097871',
       external: true,
       color: 'hover:bg-gray-50 border-gray-200'
     },
@@ -916,7 +916,7 @@ export default function DashboardPage() {
       ) : (
         /* Ventures View - Dynamic Cards */
         <div className="mb-8">
-          {user && <VentureCardSystem userId={user.uid} />}
+          {user && <VentureCardSystem />}
         </div>
       )}
 

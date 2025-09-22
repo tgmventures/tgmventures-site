@@ -556,7 +556,7 @@ export default function DashboardPage() {
     {
       name: 'Weekly Progress',
       icon: '📊',
-      href: '/reports',
+      href: '/weekly-progress',
       external: false,
       color: 'hover:bg-gray-50 border-gray-200'
     }
@@ -615,7 +615,7 @@ export default function DashboardPage() {
     {
       name: 'Weekly Progress',
       icon: '📊',
-      href: '/reports',
+      href: '/weekly-progress',
       external: false,
       color: 'hover:bg-gray-50 border-gray-200'
     }
@@ -957,7 +957,7 @@ export default function DashboardPage() {
                     app.icon
                   )}
                 </div>
-                <span className="text-sm font-medium text-gray-900">{app.name}</span>
+                <span className="text-sm font-medium text-gray-900 text-center">{app.name}</span>
               </a>
             ) : (
               <Link
@@ -989,7 +989,7 @@ export default function DashboardPage() {
                     app.icon
                   )}
                 </div>
-                <span className="text-sm font-medium text-gray-900">{app.name}</span>
+                <span className="text-sm font-medium text-gray-900 text-center">{app.name}</span>
               </Link>
             )
           ))}
@@ -1041,7 +1041,7 @@ export default function DashboardPage() {
                         app.icon
                       )}
                     </div>
-                    <span className="text-sm font-medium text-gray-900">{app.name}</span>
+                    <span className="text-sm font-medium text-gray-900 text-center">{app.name}</span>
                   </a>
                 ) : (
                   <Link
@@ -1066,7 +1066,7 @@ export default function DashboardPage() {
                         app.icon
                       )}
                     </div>
-                    <span className="text-sm font-medium text-gray-900">{app.name}</span>
+                    <span className="text-sm font-medium text-gray-900 text-center">{app.name}</span>
                   </Link>
                 )
               ))}

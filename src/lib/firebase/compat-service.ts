@@ -476,10 +476,17 @@ export function subscribeToDivisionTasksCompat(
   
   const unsubscribe = onSnapshot(q, 
     (snapshot: any) => {
-      const tasks = snapshot.docs.map((doc: any) => ({
-        id: doc.id,
-        ...doc.data()
-      }));
+      const tasks = snapshot.docs.map((doc: any) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          // Convert Firestore Timestamps to Dates for proper comparison
+          completedAt: data.completedAt?.toDate?.() || data.completedAt,
+          createdAt: data.createdAt?.toDate?.() || data.createdAt,
+          updatedAt: data.updatedAt?.toDate?.() || data.updatedAt
+        };
+      });
       callback(tasks);
     },
     (error) => {
@@ -509,7 +516,18 @@ export function subscribeToAssetStatusCompat(
   
   const unsubscribe = onSnapshot(docRef, async (snapshot) => {
     if (snapshot.exists()) {
-      callback(snapshot.data());
+      const data = snapshot.data();
+      // Convert Firestore Timestamps to Dates for completedDates
+      if (data.completedDates) {
+        const convertedDates: any = {};
+        for (const [key, value] of Object.entries(data.completedDates)) {
+          convertedDates[key] = value && typeof value === 'object' && 'toDate' in value 
+            ? value.toDate() 
+            : value;
+        }
+        data.completedDates = convertedDates;
+      }
+      callback(data);
     } else {
       // Initialize if doesn't exist
       const defaultStatus = {

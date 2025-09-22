@@ -114,7 +114,8 @@ function generateEmailHTML(completedObjectives, addedObjectives, dateRange) {
   const completedByCategory = {
     'asset-management': 0,
     'real-estate-development': 0,
-    'ventures': 0
+    'ventures': 0,
+    'taxes': 0
   };
   
   // Group completed objectives by user
@@ -135,72 +136,356 @@ function generateEmailHTML(completedObjectives, addedObjectives, dateRange) {
       completedByCategory[objective.division] = (completedByCategory[objective.division] || 0) + 1;
     } else if (objective.type === 'Venture Objective') {
       completedByCategory['ventures'] = (completedByCategory['ventures'] || 0) + 1;
+    } else if (objective.type === 'Tax Return') {
+      completedByCategory['taxes'] = (completedByCategory['taxes'] || 0) + 1;
     }
   });
+  
+  // Sort users by completion count
+  const sortedUsers = Object.entries(completedByUser).sort((a, b) => b[1].count - a[1].count);
   
   const html = `
     <!DOCTYPE html>
     <html>
     <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background-color: #1a1a1a; color: white; padding: 20px; text-align: center; }
-        .summary { background-color: #f5f5f5; padding: 15px; margin: 20px 0; border-radius: 8px; }
-        .summary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
-        .stat { text-align: center; }
-        .stat-number { font-size: 32px; font-weight: bold; color: #4CAF50; }
-        .user-section { margin: 20px 0; }
-        .user-header { background-color: #e0e0e0; padding: 10px; font-weight: bold; }
-        .objective-list { margin: 10px 0; padding-left: 20px; }
-        .objective-item { margin: 5px 0; }
-        .footer { text-align: center; margin-top: 40px; color: #666; font-size: 12px; }
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+          background-color: #f5f5f7;
+          color: #1d1d1f;
+          margin: 0;
+          padding: 0;
+          line-height: 1.6;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+        .container {
+          max-width: 600px;
+          margin: 0 auto;
+          background-color: #ffffff;
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+        .header {
+          background: linear-gradient(135deg, #9333ea 0%, #3b82f6 100%);
+          color: white;
+          padding: 48px 32px;
+          text-align: center;
+          position: relative;
+        }
+        .header::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTAgMGg0MHY0MEgweiIvPjwvZz48L2c+PC9zdmc+');
+          opacity: 0.3;
+        }
+        .logo {
+          width: 60px;
+          height: 60px;
+          margin-bottom: 20px;
+          position: relative;
+          z-index: 1;
+        }
+        .header h1 {
+          margin: 0 0 8px 0;
+          font-size: 32px;
+          font-weight: 600;
+          letter-spacing: -0.5px;
+          position: relative;
+          z-index: 1;
+        }
+        .header p {
+          margin: 0;
+          font-size: 16px;
+          opacity: 0.9;
+          position: relative;
+          z-index: 1;
+        }
+        .content {
+          padding: 40px 32px;
+        }
+        .stats-grid {
+          display: table;
+          width: 100%;
+          margin-bottom: 40px;
+          border-collapse: separate;
+          border-spacing: 12px;
+        }
+        .stat-card {
+          display: table-cell;
+          width: 33.33%;
+          background: #f5f5f7;
+          padding: 24px 16px;
+          border-radius: 12px;
+          text-align: center;
+          transition: all 0.3s ease;
+        }
+        .stat-card .number {
+          font-size: 40px;
+          font-weight: 700;
+          letter-spacing: -1px;
+          margin-bottom: 4px;
+          background: linear-gradient(135deg, #9333ea 0%, #3b82f6 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        .stat-card .label {
+          font-size: 14px;
+          color: #86868b;
+          font-weight: 500;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+        .section-title {
+          font-size: 20px;
+          font-weight: 600;
+          color: #1d1d1f;
+          margin: 32px 0 20px 0;
+          letter-spacing: -0.3px;
+        }
+        .team-member {
+          background: #f5f5f7;
+          border-radius: 12px;
+          padding: 20px;
+          margin-bottom: 16px;
+        }
+        .team-member-header {
+          display: table;
+          width: 100%;
+          margin-bottom: 16px;
+        }
+        .team-member-info {
+          display: table-cell;
+          vertical-align: middle;
+        }
+        .team-member-stats {
+          display: table-cell;
+          vertical-align: middle;
+          text-align: right;
+        }
+        .member-name {
+          font-size: 16px;
+          font-weight: 600;
+          color: #1d1d1f;
+          margin-bottom: 2px;
+        }
+        .member-email {
+          font-size: 14px;
+          color: #86868b;
+        }
+        .achievement-count {
+          font-size: 32px;
+          font-weight: 700;
+          color: #9333ea;
+          letter-spacing: -0.5px;
+        }
+        .achievement-label {
+          font-size: 12px;
+          color: #86868b;
+          text-transform: uppercase;
+          letter-spacing: 0.3px;
+        }
+        .objective-list {
+          margin: 0;
+          padding: 0;
+          list-style: none;
+        }
+        .objective-item {
+          color: #515154;
+          font-size: 14px;
+          padding: 8px 0;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        }
+        .objective-item:last-child {
+          border-bottom: none;
+        }
+        .objective-type {
+          font-size: 12px;
+          color: #86868b;
+          font-style: normal;
+        }
+        .category-grid {
+          display: table;
+          width: 100%;
+          margin: 24px 0;
+          border-collapse: separate;
+          border-spacing: 8px;
+        }
+        .category-item {
+          display: table-cell;
+          width: 25%;
+          background: white;
+          border: 2px solid #f5f5f7;
+          padding: 16px 12px;
+          border-radius: 8px;
+          text-align: center;
+        }
+        .category-count {
+          font-size: 24px;
+          font-weight: 600;
+          color: #1d1d1f;
+          margin-bottom: 4px;
+        }
+        .category-name {
+          font-size: 12px;
+          color: #86868b;
+        }
+        .footer {
+          text-align: center;
+          padding: 32px;
+          background-color: #f5f5f7;
+          color: #86868b;
+          font-size: 12px;
+          line-height: 1.8;
+        }
+        .footer a {
+          color: #0066cc;
+          text-decoration: none;
+        }
+        .motivational {
+          background: linear-gradient(135deg, #9333ea10 0%, #3b82f610 100%);
+          border-radius: 12px;
+          padding: 24px;
+          margin: 32px 0;
+          text-align: center;
+        }
+        .motivational p {
+          margin: 0;
+          font-size: 16px;
+          font-style: italic;
+          color: #515154;
+        }
+        .button {
+          display: inline-block;
+          padding: 12px 24px;
+          background: linear-gradient(135deg, #9333ea 0%, #3b82f6 100%);
+          color: white;
+          text-decoration: none;
+          border-radius: 8px;
+          font-weight: 500;
+          margin-top: 16px;
+        }
+        @media only screen and (max-width: 600px) {
+          .stat-card {
+            display: block;
+            width: 100%;
+            margin-bottom: 12px;
+          }
+          .category-item {
+            display: block;
+            width: 100%;
+            margin-bottom: 8px;
+          }
+        }
       </style>
     </head>
     <body>
       <div class="container">
         <div class="header">
-          <h1>TGM Ventures Weekly Report</h1>
-          <p>${dateRange.start.toDateString()} - ${dateRange.end.toDateString()}</p>
+          <img src="https://tgmventures.com/images/tgm-logo-icon.png" alt="TGM Ventures" class="logo">
+          <h1>Your Week at TGM Ventures</h1>
+          <p>${dateRange}</p>
         </div>
         
-        <div class="summary">
-          <h2>Weekly Summary</h2>
-          <div class="summary-grid">
-            <div class="stat">
-              <div class="stat-number">${completedObjectives.length}</div>
-              <div>Objectives Completed</div>
+        <div class="content">
+          <table class="stats-grid">
+            <tr>
+              <td class="stat-card">
+                <div class="number">${completedObjectives.length}</div>
+                <div class="label">Completed</div>
+              </td>
+              <td class="stat-card">
+                <div class="number">${addedObjectives.length}</div>
+                <div class="label">Added</div>
+              </td>
+              <td class="stat-card">
+                <div class="number">${Object.keys(completedByUser).length}</div>
+                <div class="label">Active Team</div>
+              </td>
+            </tr>
+          </table>
+          
+          ${sortedUsers.length > 0 ? `
+            <h2 class="section-title">Team Achievements</h2>
+            ${sortedUsers.slice(0, 5).map(([email, data]) => `
+              <div class="team-member">
+                <table class="team-member-header">
+                  <tr>
+                    <td class="team-member-info">
+                      <div class="member-name">${data.name}</div>
+                      <div class="member-email">${email}</div>
+                    </td>
+                    <td class="team-member-stats">
+                      <div class="achievement-count">${data.count}</div>
+                      <div class="achievement-label">Objectives</div>
+                    </td>
+                  </tr>
+                </table>
+                ${data.objectives.length > 0 ? `
+                  <ul class="objective-list">
+                    ${data.objectives.slice(0, 3).map(objective => `
+                      <li class="objective-item">
+                        ${objective.title} 
+                        <span class="objective-type">${objective.type}</span>
+                      </li>
+                    `).join('')}
+                    ${data.objectives.length > 3 ? `
+                      <li class="objective-item">
+                        <em>...and ${data.objectives.length - 3} more achievements</em>
+                      </li>
+                    ` : ''}
+                  </ul>
+                ` : ''}
+              </div>
+            `).join('')}
+          ` : ''}
+          
+          <h2 class="section-title">Progress by Category</h2>
+          <table class="category-grid">
+            <tr>
+              <td class="category-item">
+                <div class="category-count">${completedByCategory['asset-management']}</div>
+                <div class="category-name">Asset Mgmt</div>
+              </td>
+              <td class="category-item">
+                <div class="category-count">${completedByCategory['real-estate-development']}</div>
+                <div class="category-name">Real Estate</div>
+              </td>
+              <td class="category-item">
+                <div class="category-count">${completedByCategory['ventures']}</div>
+                <div class="category-name">Ventures</div>
+              </td>
+              <td class="category-item">
+                <div class="category-count">${completedByCategory['taxes']}</div>
+                <div class="category-name">Taxes</div>
+              </td>
+            </tr>
+          </table>
+          
+          ${completedObjectives.length > 10 ? `
+            <div class="motivational">
+              <p>"Great things in business are never done by one person. They're done by a team of people."</p>
+              <p style="margin-top: 8px; font-size: 14px; font-style: normal;">— Steve Jobs</p>
             </div>
-            <div class="stat">
-              <div class="stat-number">${addedObjectives.length}</div>
-              <div>Objectives Added</div>
-            </div>
+          ` : ''}
+          
+          <div style="text-align: center; margin-top: 32px;">
+            <a href="https://tgmventures.com/weekly-progress" class="button">View Full Progress Report</a>
           </div>
         </div>
-        
-        <h2>Completed by Team Member</h2>
-        ${Object.entries(completedByUser).map(([email, data]) => `
-          <div class="user-section">
-            <div class="user-header">${data.name} (${data.count} objectives)</div>
-            <ul class="objective-list">
-              ${data.objectives.slice(0, 5).map(objective => `
-                <li class="objective-item">${objective.title} <em>(${objective.type})</em></li>
-              `).join('')}
-              ${data.objectives.length > 5 ? `<li><em>...and ${data.objectives.length - 5} more</em></li>` : ''}
-            </ul>
-          </div>
-        `).join('')}
-        
-        <h2>Activity by Category</h2>
-        <ul>
-          <li>Asset Management: ${completedByCategory['asset-management']} completed</li>
-          <li>Real Estate: ${completedByCategory['real-estate-development']} completed</li>
-          <li>Ventures: ${completedByCategory['ventures']} completed</li>
-        </ul>
         
         <div class="footer">
-          <p>This is an automated weekly report from TGM Ventures Dashboard</p>
-          <p>To unsubscribe or modify report settings, please contact your administrator</p>
+          <p>This weekly progress report is sent every Saturday to keep our team aligned and motivated.</p>
+          <p>© ${new Date().getFullYear()} TGM Ventures. All rights reserved.</p>
+          <p><a href="https://tgmventures.com/dashboard">Dashboard</a> | <a href="mailto:management@tgmventures.com">Contact Support</a></p>
         </div>
       </div>
     </body>
@@ -324,12 +609,10 @@ async function getWeeklyTrainingModules(start, end) {
   return modules;
 }
 
-// Scheduled function to run every Saturday at 9 AM EST
-// TODO: Fix pubsub schedule function
-/*
+// Scheduled function to run every Saturday at 11 AM PST
 exports.weeklyReportEmail = functions.pubsub
-  .schedule('0 9 * * 6')
-  .timeZone('America/New_York')
+  .schedule('0 11 * * 6')
+  .timeZone('America/Los_Angeles')
   .onRun(async (context) => {
     try {
       // Get SendGrid API key
@@ -345,26 +628,43 @@ exports.weeklyReportEmail = functions.pubsub
         getWeeklyAddedObjectives(dateRange.start, dateRange.end)
       ]);
       
-      // Generate email HTML
-      const html = generateEmailHTML(completedObjectives, addedObjectives, dateRange);
+      // Generate email HTML  
+      const dateRangeStr = `${dateRange.start.toLocaleDateString()} - ${dateRange.end.toLocaleDateString()}`;
+      const html = generateEmailHTML(completedObjectives, addedObjectives, dateRangeStr);
       
-      // Send email to management
+      // Get all @tgmventures.com users
+      const db = admin.firestore();
+      const usersSnapshot = await db.collection('users').get();
+      const recipients = [];
+      
+      usersSnapshot.forEach(doc => {
+        const userData = doc.data();
+        if (userData.email && userData.email.endsWith('@tgmventures.com')) {
+          recipients.push(userData.email);
+        }
+      });
+      
+      // If no users found, send to management
+      if (recipients.length === 0) {
+        recipients.push('management@tgmventures.com');
+      }
+      
+      // Send email to all recipients
       const msg = {
-        to: 'management@tgmventures.com',
+        to: recipients,
         from: 'noreply@tgmventures.com',
-        subject: `Weekly Report - ${dateRange.end.toDateString()}`,
+        subject: `Weekly Progress Report - ${dateRange.end.toLocaleDateString()}`,
         html: html
       };
       
       await sgMail.send(msg);
-      console.log('Weekly report email sent successfully');
+      console.log(`Weekly report email sent successfully to ${recipients.length} recipients`);
       
     } catch (error) {
       console.error('Error sending weekly report:', error);
       throw error;
     }
   });
-*/
 
 // Manual trigger function for testing  
 exports.sendWeeklyReportNow = functions.https.onCall(async (data, context) => {

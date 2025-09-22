@@ -90,6 +90,15 @@ export interface AssetManagementStatus {
   insurancePoliciesActive: boolean;
   entitiesRenewed: boolean;
   lastUpdated: Date;
+  completedDates?: {
+    booksClosedOut?: Date;
+    rentsCollected?: Date;
+    loansPaymentsMade?: Date;
+    vendorsPaymentsMade?: Date;
+    propertyTaxesPaid?: Date;
+    insurancePoliciesActive?: Date;
+    entitiesRenewed?: Date;
+  };
 }
 
 export interface DivisionTask {
@@ -100,6 +109,7 @@ export interface DivisionTask {
   order: number;
   createdAt: Date;
   updatedAt: Date;
+  completedAt?: Date;
 }
 
 export interface TaxReturn {
@@ -109,4 +119,5 @@ export interface TaxReturn {
   year: number;
   isFiled: boolean;
   lastUpdated: Date;
+  completedAt?: Date;
 }

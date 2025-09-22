@@ -20,6 +20,7 @@ export interface VentureObjective {
   text: string
   isChecked: boolean
   order: number
+  completedAt?: Date
 }
 
 export interface VentureCard {
@@ -197,9 +198,18 @@ export async function updateObjectiveStatus(
     const cardData = cardDoc.data()
     const currentObjectives = cardData?.objectives || []
     
-    const updatedObjectives = currentObjectives.map((obj: VentureObjective) => 
-      obj.id === objectiveId ? { ...obj, isChecked } : obj
-    )
+    const updatedObjectives = currentObjectives.map((obj: VentureObjective) => {
+      if (obj.id === objectiveId) {
+        const updated: any = { ...obj, isChecked };
+        if (isChecked) {
+          updated.completedAt = new Date();
+        } else {
+          updated.completedAt = null;
+        }
+        return updated;
+      }
+      return obj;
+    })
     
     await updateDoc(cardRef, {
       objectives: updatedObjectives,

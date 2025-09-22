@@ -105,11 +105,18 @@ export async function updateTaxReturnStatus(taxReturnId: string, isFiled: boolea
   if (docSnap.exists()) {
     const data = docSnap.data();
     const returns = data.returns || [];
-    const updatedReturns = returns.map((tr: TaxReturn) => 
-      tr.id === taxReturnId 
-        ? { ...tr, isFiled, lastUpdated: new Date() }
-        : tr
-    );
+    const updatedReturns = returns.map((tr: TaxReturn) => {
+      if (tr.id === taxReturnId) {
+        const updated: any = { ...tr, isFiled, lastUpdated: new Date() };
+        if (isFiled) {
+          updated.completedAt = new Date();
+        } else {
+          updated.completedAt = null;
+        }
+        return updated;
+      }
+      return tr;
+    });
     
     await updateDoc(docRef, {
       returns: updatedReturns,
@@ -126,9 +133,18 @@ export async function updatePropertyTaxStatus(period: 'H1' | 'H2', isPaid: boole
   const docRef = doc(db, TAX_COLLECTION, docId);
   
   const field = period === 'H1' ? 'propertyTaxH1Paid' : 'propertyTaxH2Paid';
+  const completedField = period === 'H1' ? 'propertyTaxH1CompletedAt' : 'propertyTaxH2CompletedAt';
   
-  await updateDoc(docRef, {
+  const updates: any = {
     [field]: isPaid,
     lastUpdated: serverTimestamp()
-  });
+  };
+  
+  if (isPaid) {
+    updates[completedField] = serverTimestamp();
+  } else {
+    updates[completedField] = null;
+  }
+  
+  await updateDoc(docRef, updates);
 }

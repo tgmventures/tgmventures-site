@@ -1,6 +1,7 @@
 'use client'
 
 import { DivisionTask } from '@/types/goal'
+import { shouldShowTask } from '@/lib/utils/task-visibility'
 
 interface RealEstateCardProps {
   realEstateTasks: DivisionTask[]
@@ -55,19 +56,33 @@ export function RealEstateCard({
     <div className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow duration-300 flex flex-col min-h-[500px]">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-gray-900">Real Estate</h3>
-        <div className="text-xs text-gray-500">{realEstateTasksComplete}/{realEstateTasks.length}</div>
+        <div className="text-xs text-gray-500">
+          {(() => {
+            const visibleTasks = realEstateTasks.filter(task => shouldShowTask(task.completedAt, task.isChecked));
+            const completedVisible = visibleTasks.filter(t => t.isChecked).length;
+            return `${completedVisible}/${visibleTasks.length}`;
+          })()}
+        </div>
       </div>
       
       {/* Progress Bar */}
       <div className="h-1 bg-gray-100 rounded-full mb-4 overflow-hidden">
         <div 
           className="h-full bg-blue-500 rounded-full transition-all duration-500 ease-out"
-          style={{ width: realEstateTasks.length > 0 ? `${(realEstateTasksComplete / realEstateTasks.length) * 100}%` : '0%' }}
+          style={{ 
+            width: (() => {
+              const visibleTasks = realEstateTasks.filter(task => shouldShowTask(task.completedAt, task.isChecked));
+              const completedVisible = visibleTasks.filter(t => t.isChecked).length;
+              return visibleTasks.length > 0 ? `${(completedVisible / visibleTasks.length) * 100}%` : '0%';
+            })()
+          }}
         />
       </div>
 
       <div className="space-y-3 flex-1 overflow-y-auto">
-        {realEstateTasks.map((task, index) => (
+        {realEstateTasks
+          .filter(task => shouldShowTask(task.completedAt, task.isChecked))
+          .map((task, index) => (
           <div 
             key={task.id} 
             className={`flex items-center gap-3 hover:bg-gray-50 p-2 -mx-2 rounded-lg transition-colors duration-200 group cursor-move ${

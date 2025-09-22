@@ -35,6 +35,7 @@ import { CardSkeleton } from '@/components/dashboard/CardSkeleton'
 import { VentureCardSystem } from '@/components/dashboard/VentureCardSystem'
 import { getVentureCards, subscribeToVentureCards } from '@/lib/firebase/ventures-cards'
 import type { VentureCard } from '@/lib/firebase/ventures-cards'
+import { shouldShowTask, shouldShowAssetTask, getVisibleTaskCounts } from '@/lib/utils/task-visibility'
 
 interface Project {
   id: string;
@@ -80,6 +81,8 @@ export default function DashboardPage() {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false)
   const [businessUnit, setBusinessUnit] = useState<BusinessUnit>('asset-management')
   const [loadingBusinessUnit, setLoadingBusinessUnit] = useState(true)
+  const [showSuccessToast, setShowSuccessToast] = useState(false)
+  const [todayCompletedCount, setTodayCompletedCount] = useState(0)
 
   useEffect(() => {
     if (!loading && !user) {
@@ -209,6 +212,11 @@ export default function DashboardPage() {
       await updateAssetManagementStatusCompat(field, !assetStatus[field])
       if (!assetStatus[field]) {
         setJustCompletedTask(`asset-${field}`)
+        setShowSuccessToast(true)
+        setTodayCompletedCount(prev => prev + 1)
+        
+        // Hide toast after 3 seconds
+        setTimeout(() => setShowSuccessToast(false), 3000)
       }
     } catch (error) {
       console.error('Error updating status:', error)
@@ -222,6 +230,11 @@ export default function DashboardPage() {
       setTaxReturns(updatedData.returns)
       if (!currentStatus) {
         setJustCompletedTask(`tax-${taxReturnId}`)
+        setShowSuccessToast(true)
+        setTodayCompletedCount(prev => prev + 1)
+        
+        // Hide toast after 3 seconds
+        setTimeout(() => setShowSuccessToast(false), 3000)
       }
     } catch (error) {
       console.error('Error updating tax return status:', error)
@@ -242,6 +255,11 @@ export default function DashboardPage() {
       // Show completion animation
       if (newValue) {
         setJustCompletedTask(`property-tax-${period.toLowerCase()}`)
+        setShowSuccessToast(true)
+        setTodayCompletedCount(prev => prev + 1)
+        
+        // Hide toast after 3 seconds
+        setTimeout(() => setShowSuccessToast(false), 3000)
       }
       
       // Update in Firestore
@@ -290,6 +308,11 @@ export default function DashboardPage() {
       await updateTaskStatusCompat(divisionId, taskId, !isChecked)
       if (!isChecked) {
         setJustCompletedTask(taskId)
+        setShowSuccessToast(true)
+        setTodayCompletedCount(prev => prev + 1)
+        
+        // Hide toast after 3 seconds
+        setTimeout(() => setShowSuccessToast(false), 3000)
       }
     } catch (error) {
       console.error('Error updating task:', error)
@@ -431,13 +454,15 @@ export default function DashboardPage() {
     assetStatus.entitiesRenewed
   ].filter(Boolean).length
   
-  const realEstateTasksComplete = realEstateTasks.filter(t => t.isChecked).length
-  const venturesTasksComplete = venturesTasks.filter(t => t.isChecked).length
+  // Calculate visible task counts
+  const realEstateVisibleCounts = getVisibleTaskCounts(realEstateTasks)
+  const venturesVisibleCounts = getVisibleTaskCounts(venturesTasks)
   
   // Calculate venture objectives from venture cards
   const allVentureObjectives = ventureCards.flatMap(card => card.objectives || [])
-  const completedVentureObjectives = allVentureObjectives.filter(obj => obj.isChecked).length
-  const totalVentureObjectives = allVentureObjectives.length
+  const visibleVentureObjectives = allVentureObjectives.filter(obj => shouldShowTask(obj.completedAt, obj.isChecked))
+  const completedVentureObjectives = visibleVentureObjectives.filter(obj => obj.isChecked).length
+  const totalVentureObjectives = visibleVentureObjectives.length
 
   // Define apps for each business unit
   const assetManagementApps = [
@@ -599,13 +624,43 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Success Toast */}
+      {showSuccessToast && (
+        <div className="fixed top-20 right-4 z-50 animate-fadeIn">
+          <div className="bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg flex items-center gap-3">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            <div>
+              <p className="font-medium">Great job! Task completed</p>
+              <p className="text-sm text-green-100">This will clear at midnight</p>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Daily completion count header */}
+      {todayCompletedCount > 0 && (
+        <div className="bg-green-50 border-b border-green-200 px-4 py-2">
+          <p className="text-sm text-green-800 text-center">
+            🎉 You've completed {todayCompletedCount} task{todayCompletedCount !== 1 ? 's' : ''} today!
+          </p>
+        </div>
+      )}
       <style jsx global>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(-10px); }
           to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes fadeOut {
+          from { opacity: 1; transform: translateX(0); }
+          to { opacity: 0; transform: translateX(20px); }
+        }
         .animate-fadeIn {
           animation: fadeIn 0.3s ease-out;
+        }
+        .animate-fadeOut {
+          animation: fadeOut 0.3s ease-out forwards;
         }
         .dragging {
           opacity: 0.5;
@@ -778,7 +833,7 @@ export default function DashboardPage() {
                   <div className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full bg-blue-500"></div>
                     <div className="text-gray-600">
-                      <span className="whitespace-nowrap">{realEstateTasks.filter(t => !t.isChecked).length}/{realEstateTasks.length}</span>{' '}
+                      <span className="whitespace-nowrap">{realEstateVisibleCounts.total - realEstateVisibleCounts.completed}/{realEstateVisibleCounts.total}</span>{' '}
                       <span className="whitespace-nowrap">Real Estate</span>
                     </div>
                   </div>

@@ -146,10 +146,17 @@ export async function addDivisionTaskCompat(divisionId: string, title: string) {
 export async function updateTaskStatusCompat(divisionId: string, taskId: string, isChecked: boolean) {
   await checkDatabaseStructure();
   
-  const updates = {
+  const updates: any = {
     isChecked,
     updatedAt: serverTimestamp(),
   };
+  
+  // Add completedAt timestamp when checking, remove when unchecking
+  if (isChecked) {
+    updates.completedAt = serverTimestamp();
+  } else {
+    updates.completedAt = null;
+  }
   
   if (useNewStructure) {
     const taskRef = doc(db, DB_PATHS.divisionTask(divisionId, taskId));
@@ -343,10 +350,19 @@ export async function updateAssetManagementStatusCompat(
       if (field === 'entitiesRenewed' && data.title.includes('entities renewed')) shouldUpdate = true;
       
       if (shouldUpdate) {
-        await updateDoc(taskDoc.ref, {
+        const updates: any = {
           isChecked: value,
           updatedAt: serverTimestamp()
-        });
+        };
+        
+        // Add completedAt timestamp when checking, remove when unchecking
+        if (value) {
+          updates.completedAt = serverTimestamp();
+        } else {
+          updates.completedAt = null;
+        }
+        
+        await updateDoc(taskDoc.ref, updates);
         break;
       }
     }
@@ -370,10 +386,19 @@ export async function updateAssetManagementStatusCompat(
         lastUpdated: serverTimestamp()
       });
     } else {
-      await updateDoc(docRef, {
+      const updates: any = {
         [field]: value,
         lastUpdated: serverTimestamp()
-      });
+      };
+      
+      // Update completedDates
+      if (value) {
+        updates[`completedDates.${field}`] = serverTimestamp();
+      } else {
+        updates[`completedDates.${field}`] = null;
+      }
+      
+      await updateDoc(docRef, updates);
     }
   }
 }

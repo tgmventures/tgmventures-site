@@ -565,9 +565,11 @@ export default function DashboardPage() {
                   }`}
                 >
                   {user.photoURL ? (
-                    <img
+                    <Image
                       src={user.photoURL}
                       alt={user.displayName || 'Profile'}
+                      width={40}
+                      height={40}
                       className="w-full h-full object-cover"
                     />
                   ) : (
@@ -583,9 +585,11 @@ export default function DashboardPage() {
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
                           {user.photoURL ? (
-                            <img
+                            <Image
                               src={user.photoURL}
                               alt={user.displayName || 'Profile'}
+                              width={48}
+                              height={48}
                               className="w-full h-full object-cover"
                             />
                           ) : (

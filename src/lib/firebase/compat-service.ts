@@ -73,7 +73,7 @@ export async function getDivisionTasksCompat(divisionId: string): Promise<Divisi
     if (useNewStructure) {
       const tasksRef = collection(db, DB_PATHS.divisionTasks(divisionId));
       const snapshot = await getDocs(tasksRef);
-      const tasks = snapshot.docs.map(doc => ({
+      const tasks = snapshot.docs.map((doc: any) => ({
         id: doc.id,
         order: doc.data().order ?? 999,
         ...doc.data()
@@ -398,8 +398,8 @@ export function subscribeToDivisionTasksCompat(
   }
   
   const unsubscribe = onSnapshot(q, 
-    (snapshot) => {
-      const tasks = snapshot.docs.map(doc => ({
+    (snapshot: any) => {
+      const tasks = snapshot.docs.map((doc: any) => ({
         id: doc.id,
         ...doc.data()
       }));

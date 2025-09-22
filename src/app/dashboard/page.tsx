@@ -489,12 +489,7 @@ export default function DashboardPage() {
   const venturesApps = [
     {
       name: 'Gemini',
-      icon: (
-        <svg className="w-12 h-12" viewBox="0 0 48 48" fill="none">
-          <path d="M24 4C20.24 4 16.62 5.38 13.86 7.86L7.86 13.86C5.38 16.62 4 20.24 4 24C4 27.76 5.38 31.38 7.86 34.14L13.86 40.14C16.62 42.62 20.24 44 24 44C31.72 44 38.26 38.98 40.44 31.98" stroke="#1A73E8" strokeWidth="3" strokeLinecap="round" fill="none"/>
-          <path d="M24 4C27.76 4 31.38 5.38 34.14 7.86L40.14 13.86C42.62 16.62 44 20.24 44 24C44 27.76 42.62 31.38 40.14 34.14L34.14 40.14C31.38 42.62 27.76 44 24 44C16.28 44 9.74 38.98 7.56 31.98" stroke="#EA4335" strokeWidth="3" strokeLinecap="round" fill="none"/>
-        </svg>
-      ),
+      icon: '/images/gemini-icon.svg',
       href: 'https://gemini.google.com/app',
       external: true,
       color: 'hover:bg-blue-50 border-blue-200'
@@ -539,14 +534,7 @@ export default function DashboardPage() {
     },
     {
       name: 'Gmail',
-      icon: (
-        <svg className="w-12 h-12" viewBox="0 0 48 48" fill="none">
-          <path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/>
-          <path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/>
-          <path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z"/>
-          <path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"/>
-        </svg>
-      ),
+      icon: '/images/gmail-icon.svg',
       href: 'https://mail.google.com',
       external: true,
       color: 'hover:bg-red-50 border-red-200'
@@ -834,7 +822,19 @@ export default function DashboardPage() {
                 rel="noopener noreferrer"
                 className={`bg-white rounded-xl shadow-sm border-2 p-6 flex flex-col items-center justify-center hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 ${app.color}`}
               >
-                <div className="mb-3 transition-transform duration-300 hover:scale-110">{app.icon}</div>
+                <div className="mb-3 transition-transform duration-300 hover:scale-110">
+                  {typeof app.icon === 'string' ? (
+                    <Image
+                      src={app.icon}
+                      alt={`${app.name} icon`}
+                      width={48}
+                      height={48}
+                      className="w-12 h-12"
+                    />
+                  ) : (
+                    app.icon
+                  )}
+                </div>
                 <span className="text-sm font-medium text-gray-900">{app.name}</span>
               </a>
             ) : (
@@ -843,7 +843,19 @@ export default function DashboardPage() {
                 href={app.href}
                 className={`bg-white rounded-xl shadow-sm border-2 p-6 flex flex-col items-center justify-center hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 ${app.color}`}
               >
-                <div className="mb-3 transition-transform duration-300 hover:scale-110">{app.icon}</div>
+                <div className="mb-3 transition-transform duration-300 hover:scale-110">
+                  {typeof app.icon === 'string' ? (
+                    <Image
+                      src={app.icon}
+                      alt={`${app.name} icon`}
+                      width={48}
+                      height={48}
+                      className="w-12 h-12"
+                    />
+                  ) : (
+                    app.icon
+                  )}
+                </div>
                 <span className="text-sm font-medium text-gray-900">{app.name}</span>
               </Link>
             )

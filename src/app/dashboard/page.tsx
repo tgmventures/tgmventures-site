@@ -156,8 +156,8 @@ export default function DashboardPage() {
   const handleTaxReturnChange = async (taxReturnId: string, currentStatus: boolean) => {
     try {
       await updateTaxReturnStatus(taxReturnId, !currentStatus)
-      const updatedReturns = await getTaxReturns()
-      setTaxReturns(updatedReturns)
+      const updatedData = await getTaxFilingsData()
+      setTaxReturns(updatedData.returns)
       if (!currentStatus) {
         setJustCompletedTask(`tax-${taxReturnId}`)
       }

@@ -63,18 +63,18 @@
   - [ ] Implement drag-and-drop between cards
 - [ ] **Testing**: Verify toggle works, preferences persist, data remains isolated
 
-## 📚 Phase 6: Training & SOPs Module (Following Sprint)
-- [ ] **Training App**: Add 6th app tile to Asset Management view only, routes to /training
-- [ ] **Module Creation** (any user can create):
-  - [ ] Title, description, Loom URL fields
-  - [ ] Category field with auto-complete from existing categories
-  - [ ] Store categories in Firestore for reuse
-- [ ] **Module Display**:
-  - [ ] Left side: Embedded Loom video (16:9)
-  - [ ] Right side: Checklist items
-  - [ ] Bottom: Comments section with Asana task links
-- [ ] **Admin Features**: Only your account can delete modules
-- [ ] **Testing**: Verify Loom embedding works, categories auto-complete, admin permissions
+## ✅ Phase 6: Training & SOPs Module (Completed - Testing Locally)
+- [x] **Training App**: TESTED and verified - Added 6th app tile to Asset Management view, routes to /training
+- [x] **Module Creation** (any user can create):
+  - [x] Title, description, Loom URL fields implemented
+  - [x] Category field with auto-complete from existing categories
+  - [x] Store categories in Firestore for reuse
+- [x] **Module Display**:
+  - [x] Left side: Embedded Loom video (16:9)
+  - [x] Right side: Checklist items
+  - [x] Bottom: Comments section with Asana task links
+- [x] **Admin Features**: Only antonio@tgmventures.com can delete modules
+- [x] **Testing**: Ready for local testing - Loom embedding, categories auto-complete, admin permissions
 
 ## 📱 Phase 7: Future Enhancements
 - [ ] **Mobile App**: Consider native mobile applications

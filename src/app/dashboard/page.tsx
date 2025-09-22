@@ -22,6 +22,7 @@ import {
 } from '@/lib/firebase/compat-service'
 import { getTaxFilingsData, updateTaxReturnStatus, updatePropertyTaxStatus, getPriorTaxYear } from '@/lib/firebase/taxes'
 import { initializeAssetManagementTasks } from '@/lib/firebase/asset-management-init'
+import { getUserPreferences, updateBusinessUnit, initializeUserData, BusinessUnit } from '@/lib/firebase/user-preferences'
 
 // Lazy load dashboard components for better performance
 const AssetManagementCard = lazy(() => import('@/components/dashboard/BusinessDivisionCards').then(mod => ({ default: mod.AssetManagementCard })))
@@ -73,12 +74,38 @@ export default function DashboardPage() {
   const [draggedTask, setDraggedTask] = useState<DivisionTask | null>(null)
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
   const [showProfileDropdown, setShowProfileDropdown] = useState(false)
+  const [businessUnit, setBusinessUnit] = useState<BusinessUnit>('asset-management')
+  const [loadingBusinessUnit, setLoadingBusinessUnit] = useState(true)
 
   useEffect(() => {
     if (!loading && !user) {
       router.push('/login')
     }
   }, [user, loading, router])
+
+  // Load user preferences and business unit
+  useEffect(() => {
+    const loadUserPreferences = async () => {
+      if (user) {
+        try {
+          // Initialize user data if needed
+          await initializeUserData(user.uid, user.email || '', user.displayName || '')
+          
+          // Get user preferences
+          const preferences = await getUserPreferences(user.uid)
+          if (preferences?.businessUnit) {
+            setBusinessUnit(preferences.businessUnit)
+          }
+        } catch (error) {
+          console.error('Error loading user preferences:', error)
+        } finally {
+          setLoadingBusinessUnit(false)
+        }
+      }
+    }
+    
+    loadUserPreferences()
+  }, [user])
 
   // Close dropdown when clicking outside
   useEffect(() => {

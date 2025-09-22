@@ -138,6 +138,8 @@ export interface User {
   email: string;
   name: string;
   role: 'ceo' | 'admin' | 'member';
+  businessUnit?: 'asset-management' | 'ventures'; // User's selected view
   createdAt: Date;
   lastLogin?: Date;
+  lastViewedUnit?: Date; // When they last switched views
 }

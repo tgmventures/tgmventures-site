@@ -179,6 +179,19 @@ export default function DashboardPage() {
     }
   }
 
+  const handleBusinessUnitChange = async (newUnit: BusinessUnit) => {
+    if (user && newUnit !== businessUnit) {
+      try {
+        setBusinessUnit(newUnit)
+        await updateBusinessUnit(user.uid, newUnit)
+      } catch (error) {
+        console.error('Error updating business unit:', error)
+        // Revert on error
+        setBusinessUnit(businessUnit)
+      }
+    }
+  }
+
   const handleAssetStatusChange = async (field: keyof Omit<AssetManagementStatus, 'lastUpdated'>) => {
     try {
       await updateAssetManagementStatusCompat(field, !assetStatus[field])
@@ -409,7 +422,8 @@ export default function DashboardPage() {
   const realEstateTasksComplete = realEstateTasks.filter(t => t.isChecked).length
   const venturesTasksComplete = venturesTasks.filter(t => t.isChecked).length
 
-  const apps = [
+  // Define apps for each business unit
+  const assetManagementApps = [
     {
       name: 'Gemini',
       icon: (
@@ -499,6 +513,76 @@ export default function DashboardPage() {
       color: 'hover:bg-purple-50 border-purple-200'
     }
   ]
+
+  const venturesApps = [
+    {
+      name: 'Gemini',
+      icon: (
+        <svg className="w-12 h-12" viewBox="0 0 48 48" fill="none">
+          <path d="M24 4C20.24 4 16.62 5.38 13.86 7.86L7.86 13.86C5.38 16.62 4 20.24 4 24C4 27.76 5.38 31.38 7.86 34.14L13.86 40.14C16.62 42.62 20.24 44 24 44C31.72 44 38.26 38.98 40.44 31.98" stroke="#1A73E8" strokeWidth="3" strokeLinecap="round" fill="none"/>
+          <path d="M24 4C27.76 4 31.38 5.38 34.14 7.86L40.14 13.86C42.62 16.62 44 20.24 44 24C44 27.76 42.62 31.38 40.14 34.14L34.14 40.14C31.38 42.62 27.76 44 24 44C16.28 44 9.74 38.98 7.56 31.98" stroke="#EA4335" strokeWidth="3" strokeLinecap="round" fill="none"/>
+        </svg>
+      ),
+      href: 'https://gemini.google.com/app',
+      external: true,
+      color: 'hover:bg-blue-50 border-blue-200'
+    },
+    {
+      name: 'Firebase',
+      icon: (
+        <svg className="w-12 h-12" viewBox="0 0 48 48" fill="none">
+          <path d="M8 37L24 4L26.5 9.5L24 15L29 4L40 37L24 44L8 37Z" fill="#FFA000"/>
+          <path d="M14 21L8 37L24 44V15L14 21Z" fill="#F57C00"/>
+          <path d="M24 15L29 4L40 37L24 44V15Z" fill="#FFCA28"/>
+        </svg>
+      ),
+      href: 'https://console.firebase.google.com',
+      external: true,
+      color: 'hover:bg-orange-50 border-orange-200'
+    },
+    {
+      name: 'GitHub',
+      icon: (
+        <svg className="w-12 h-12" viewBox="0 0 48 48" fill="currentColor">
+          <path d="M24 4C12.954 4 4 12.954 4 24c0 8.837 5.731 16.335 13.68 18.978.999.184 1.368-.433 1.368-.962 0-.475-.018-2.055-.027-3.725-5.562 1.209-6.735-2.36-6.735-2.36-.909-2.31-2.219-2.924-2.219-2.924-1.815-1.24.137-1.215.137-1.215 2.007.141 3.065 2.061 3.065 2.061 1.783 3.054 4.676 2.172 5.815 1.661.18-1.291.698-2.173 1.27-2.671-4.44-.505-9.11-2.22-9.11-9.881 0-2.182.779-3.966 2.058-5.365-.207-.504-.892-2.538.194-5.292 0 0 1.677-.537 5.495 2.049A19.164 19.164 0 0124 13.524c1.7.008 3.413.23 5.01.674 3.815-2.586 5.49-2.049 5.49-2.049 1.088 2.754.403 4.788.197 5.292 1.281 1.399 2.055 3.183 2.055 5.365 0 7.68-4.678 9.372-9.13 9.864.718.62 1.355 1.838 1.355 3.704 0 2.672-.024 4.826-.024 5.484 0 .533.361 1.156 1.374.96C38.271 40.33 44 32.835 44 24c0-11.046-8.954-20-20-20z"/>
+        </svg>
+      ),
+      href: 'https://github.com',
+      external: true,
+      color: 'hover:bg-gray-100 border-gray-300'
+    },
+    {
+      name: 'Google Cloud',
+      icon: (
+        <svg className="w-12 h-12" viewBox="0 0 48 48" fill="none">
+          <path d="M30.4 19.2h1.6l4.6-4.6.2-2c-3.4-3-7.8-4.6-12.8-4.6-8.4 0-15.6 5.2-18.6 12.6.4-.2 1-.2 1.4 0l8-1.4s.4-.6.6-.6c2.2-3.6 6.2-6 10.8-6 2.4 0 4.6.8 6.4 2l-2.2 2.6z" fill="#EA4335"/>
+          <path d="M39.8 20.6c-.6-2.2-1.8-4.2-3.4-5.8L32 19.2c2 1.6 3.2 4 3.2 6.8 0 2-0.8 3.8-2 5.2v.2l5 5c.2-.2.6-.2.8-.4 2.6-3 4-7 4-11.4 0-2-0.4-4-1.2-6z" fill="#4285F4"/>
+          <path d="M24 32c-4.4 0-8-3.6-8-8s3.6-8 8-8c2.8 0 5.2 1.4 6.6 3.6l4.4-4.4C31.8 11.4 27.4 8 24 8 15.2 8 8 15.2 8 24s7.2 16 16 16c4.2 0 8-1.6 11-4.2l-5-5C28.2 31.6 26.2 32 24 32z" fill="#34A853"/>
+          <path d="M14 28.8L8.6 33.6C11.6 37.8 17.4 40 24 40c5.2 0 9.8-2 13.4-5.2l-5.6-4.6C29.8 31.4 27 32 24 32c-4.8 0-8.8-3-10.4-7.2z" fill="#FBBC05"/>
+        </svg>
+      ),
+      href: 'https://console.cloud.google.com',
+      external: true,
+      color: 'hover:bg-blue-50 border-blue-200'
+    },
+    {
+      name: 'Gmail',
+      icon: (
+        <svg className="w-12 h-12" viewBox="0 0 48 48" fill="none">
+          <path fill="#4285F4" d="M45.12 24.5c0-1.56-.14-3.06-.4-4.5H24v8.51h11.84c-.51 2.75-2.06 5.08-4.39 6.64v5.52h7.11c4.16-3.83 6.56-9.47 6.56-16.17z"/>
+          <path fill="#34A853" d="M24 46c5.94 0 10.92-1.97 14.56-5.33l-7.11-5.52c-1.97 1.32-4.49 2.1-7.45 2.1-5.73 0-10.58-3.87-12.31-9.07H4.34v5.7C7.96 41.07 15.4 46 24 46z"/>
+          <path fill="#FBBC05" d="M11.69 28.18C11.25 26.86 11 25.45 11 24s.25-2.86.69-4.18v-5.7H4.34C2.85 17.09 2 20.45 2 24c0 3.55.85 6.91 2.34 9.88l7.35-5.7z"/>
+          <path fill="#EA4335" d="M24 10.75c3.23 0 6.13 1.11 8.41 3.29l6.31-6.31C34.91 4.18 29.93 2 24 2 15.4 2 7.96 6.93 4.34 14.12l7.35 5.7c1.73-5.2 6.58-9.07 12.31-9.07z"/>
+        </svg>
+      ),
+      href: 'https://mail.google.com',
+      external: true,
+      color: 'hover:bg-red-50 border-red-200'
+    }
+  ]
+
+  // Select apps based on business unit
+  const apps = businessUnit === 'asset-management' ? assetManagementApps : venturesApps
 
 
   const renderProjects = (
@@ -677,6 +761,34 @@ export default function DashboardPage() {
                         </div>
                       </div>
                     </div>
+                    
+                    {/* Business Unit Toggle */}
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <p className="text-xs text-gray-500 uppercase tracking-wider mb-2">Dashboard View</p>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleBusinessUnitChange('asset-management')}
+                          className={`flex-1 px-3 py-2 text-xs font-medium rounded-md transition-colors ${
+                            businessUnit === 'asset-management'
+                              ? 'bg-gray-900 text-white'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          }`}
+                        >
+                          Asset Management
+                        </button>
+                        <button
+                          onClick={() => handleBusinessUnitChange('ventures')}
+                          className={`flex-1 px-3 py-2 text-xs font-medium rounded-md transition-colors ${
+                            businessUnit === 'ventures'
+                              ? 'bg-gray-900 text-white'
+                              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          }`}
+                        >
+                          Ventures
+                        </button>
+                      </div>
+                    </div>
+                    
                     <button
                       onClick={handleSignOut}
                       className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors flex items-center gap-2"
@@ -701,40 +813,46 @@ export default function DashboardPage() {
           <div className="">
             <p className="text-base font-bold text-gray-900 mb-4">Outstanding Objectives:</p>
             <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm">
-              <div className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-indigo-500"></div>
-                <div className="text-gray-600">
-                  <span className="whitespace-nowrap">{taxReturns.filter(t => !t.isFiled).length + (propertyTaxH1Paid ? 0 : 1) + (propertyTaxH2Paid ? 0 : 1)}/{taxReturns.length + 2}</span>{' '}
-                  <span>Tax</span>
+              {businessUnit === 'asset-management' && (
+                <>
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-indigo-500"></div>
+                    <div className="text-gray-600">
+                      <span className="whitespace-nowrap">{taxReturns.filter(t => !t.isFiled).length + (propertyTaxH1Paid ? 0 : 1) + (propertyTaxH2Paid ? 0 : 1)}/{taxReturns.length + 2}</span>{' '}
+                      <span>Tax</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                    <div className="text-gray-600">
+                      <span className="whitespace-nowrap">{7 - assetChecklistComplete}/7</span>{' '}
+                      <span className="whitespace-nowrap">Asset Management</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="h-2 w-2 rounded-full bg-blue-500"></div>
+                    <div className="text-gray-600">
+                      <span className="whitespace-nowrap">{realEstateTasks.filter(t => !t.isChecked).length}/{realEstateTasks.length}</span>{' '}
+                      <span className="whitespace-nowrap">Real Estate</span>
+                    </div>
+                  </div>
+                </>
+              )}
+              {businessUnit === 'ventures' && (
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-purple-500"></div>
+                  <div className="text-gray-600">
+                    <span className="whitespace-nowrap">{venturesTasks.filter(t => !t.isChecked).length}/{venturesTasks.length}</span>{' '}
+                    <span>Venture Objectives</span>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                <div className="text-gray-600">
-                  <span className="whitespace-nowrap">{7 - assetChecklistComplete}/7</span>{' '}
-                  <span className="whitespace-nowrap">Asset Management</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-blue-500"></div>
-                <div className="text-gray-600">
-                  <span className="whitespace-nowrap">{realEstateTasks.filter(t => !t.isChecked).length}/{realEstateTasks.length}</span>{' '}
-                  <span className="whitespace-nowrap">Real Estate</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-purple-500"></div>
-                <div className="text-gray-600">
-                  <span className="whitespace-nowrap">{venturesTasks.filter(t => !t.isChecked).length}/{venturesTasks.length}</span>{' '}
-                  <span>Venture</span>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
 
         {/* App Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-12 max-w-3xl mx-auto">
+        <div className={`grid grid-cols-2 ${businessUnit === 'asset-management' ? 'md:grid-cols-3' : 'md:grid-cols-3'} gap-6 mb-12 max-w-3xl mx-auto`}>
           {apps.map((app) => (
             app.external ? (
               <a
@@ -761,7 +879,8 @@ export default function DashboardPage() {
                   </div>
 
         {/* Business Division Status - First Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        {businessUnit === 'asset-management' ? (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {/* Asset Management */}
           <Suspense fallback={<CardSkeleton />}>
             <AssetManagementCard
@@ -830,9 +949,16 @@ export default function DashboardPage() {
             />
           </Suspense>
         </div>
+      ) : (
+        /* Ventures View - Dynamic Cards */
+        <div className="mb-8">
+          <p className="text-center text-gray-500 py-8">Dynamic venture cards will be implemented here</p>
+        </div>
+      )}
 
         {/* Business Division Status - Second Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        {businessUnit === 'asset-management' && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
           {/* Tax Filings */}
           <Suspense fallback={<CardSkeleton />}>
             <TaxFilingsCard
@@ -846,6 +972,7 @@ export default function DashboardPage() {
             />
           </Suspense>
         </div>
+      )}
       </main>
     </div>
   )

@@ -44,13 +44,10 @@ export async function getVentureCards(): Promise<VentureCard[]> {
     
     const cards: VentureCard[] = []
     snapshot.forEach((doc) => {
-      const data = doc.data()
-      if (data.userId === userId) {
-        cards.push({
-          id: doc.id,
-          ...data
-        } as VentureCard)
-      }
+      cards.push({
+        id: doc.id,
+        ...doc.data()
+      } as VentureCard)
     })
     
     return cards
@@ -283,13 +280,10 @@ export function subscribeToVentureCards(
   const unsubscribe = onSnapshot(q, (snapshot) => {
     const cards: VentureCard[] = []
     snapshot.forEach((doc) => {
-      const data = doc.data()
-      if (data.userId === userId) {
-        cards.push({
-          id: doc.id,
-          ...data
-        } as VentureCard)
-      }
+      cards.push({
+        id: doc.id,
+        ...doc.data()
+      } as VentureCard)
     })
     callback(cards)
   })

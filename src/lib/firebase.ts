@@ -9,7 +9,7 @@ if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: "tgm-ventures-site.firebaseapp.com",
+  authDomain: "tgmventures.com",
   projectId: "tgm-ventures-site",
   storageBucket: "tgm-ventures-site.appspot.com",
   messagingSenderId: "411860917330",

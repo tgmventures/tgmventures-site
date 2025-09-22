@@ -45,7 +45,7 @@
   - [x] Optimized images with Next.js Image component
   - [x] Reviewed bundle size and kept under 250KB per page
 
-## ✅ Phase 5: Business Unit Separation (Completed)
+## ✅ Phase 5: Business Unit Separation (Completed) ✨
 - [x] **User Preference Storage**: TESTED and verified - Added businessUnit field to Firestore user document
 - [x] **Profile Dropdown Toggle**: TESTED and verified - Toggle switch below profile info switches between views
 - [x] **Asset Management View**: TESTED and verified - Shows only relevant content

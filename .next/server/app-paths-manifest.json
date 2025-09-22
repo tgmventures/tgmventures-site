@@ -1,4 +1,14 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/contact/route": "app/api/contact/route.js",
+  "/apple-icon.png/route": "app/apple-icon.png/route.js",
+  "/favicon.ico/route": "app/favicon.ico/route.js",
+  "/icon.png/route": "app/icon.png/route.js",
   "/contact/page": "app/contact/page.js",
-  "/page": "app/page.js"
+  "/login/page": "app/login/page.js",
+  "/goals/page": "app/goals/page.js",
+  "/terms-of-service/page": "app/terms-of-service/page.js",
+  "/page": "app/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/privacy-policy/page": "app/privacy-policy/page.js"
 }

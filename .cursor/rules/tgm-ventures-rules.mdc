@@ -10,41 +10,33 @@ alwaysApply: true
 ## 🚨 CRITICAL - READ README FIRST
 - ALWAYS read and follow the README.md file before making any changes
 - The README contains essential preservation rules and project guidelines
+- Check planning/IMPLEMENTATION-CHECKLIST.md for current tasks and status
 
 ## PROTECTED FILES - DO NOT MODIFY
 
 ### Core Pages (Require Explicit Permission)
-- `index.html` - Homepage (simple black design with warehouse background)
-- `privacy-policy.html` - Legal document 
-- `terms-of-service.html` - Legal document
-- `style.css` - Core homepage styling
+- `/src/app/page.tsx` - Homepage (simple black design with warehouse background)
+- `/src/app/privacy-policy/page.tsx` - Legal document 
+- `/src/app/terms-of-service/page.tsx` - Legal document
+- `/src/app/globals.css` - Core styling (when modifying homepage styles)
 
 **Rule**: These files maintain the simple, professional aesthetic. Changes require user approval.
-
-### Legacy Projects (Completely Protected)
-- `/refihub/` directory and all contents
-- `refihub-deal-analyzer.html` 
-- `refihub-game.html`
-- `refihub-loan-request.html`
-- `stock-game.html`
-
-**Rule**: These are grandfathered legacy projects. Never modify, move, or delete.
 
 ## DEVELOPMENT GUIDELINES
 
 ### ✅ Allowed Actions:
-- Create new web app structure and framework
-- Add dynamic functionality (contact forms, etc.)
-- Reorganize file structure (moving legacy to `/projects/`)
-- Add modern tooling and build processes
-- Create new pages that don't conflict with existing ones
-- Improve scalability and maintainability
+- Add new features to the dashboard or internal tools
+- Create new API endpoints and integrations
+- Improve build processes and tooling
+- Enhance security measures
+- Add new pages that don't conflict with core pages
+- Optimize performance and scalability
 
 ### ❌ Prohibited Actions:
 - Modifying visual design of core pages without permission
 - Changing content of legal documents
-- Altering user experience of existing pages  
-- Touching any legacy project files
+- Altering user experience of existing public pages
+- Breaking existing functionality
 - Adding complexity to the intentionally simple homepage
 
 ## DESIGN PRINCIPLES
@@ -54,18 +46,31 @@ alwaysApply: true
 - Ensure mobile responsiveness
 - Prioritize simplicity and elegance
 
+## TECH STACK
+- **Framework**: Next.js 15 with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Database**: Firebase Firestore
+- **Authentication**: Firebase Auth (Google OAuth)
+- **Hosting**: Firebase Hosting
+- **Functions**: Firebase Cloud Functions
+- **Email**: SendGrid via Cloud Functions
+
 ## WORKFLOW REQUIREMENTS
 1. Check README.md for current project rules
-2. Verify which files are protected before editing
-3. Test all changes thoroughly
-4. Maintain visual consistency with existing brand
-5. Document any new functionality added
+2. Review planning/IMPLEMENTATION-CHECKLIST.md for tasks
+3. Verify which files are protected before editing
+4. Test all changes thoroughly (locally and deployed)
+5. Maintain visual consistency with existing brand
+6. Update implementation checklist when completing tasks
+7. Use Google Secret Manager for all API keys
 
-## CONTACT FORM SPECIFICATIONS
-- Multiple contact reason dropdown options
-- CAPTCHA integration for spam protection
-- Email backend (no direct email exposure)
-- Professional styling matching site aesthetic
-- Full mobile responsiveness
+## KEY FEATURES TO MAINTAIN
+- Contact form with reCAPTCHA v2 and SendGrid integration
+- Google OAuth restricted to @tgmventures.com domain
+- Dashboard with drag-and-drop task management
+- Automatic monthly/annual task resets
+- Real-time Firestore synchronization
+- Mobile-responsive design throughout
 
 Remember: This represents TGM Ventures' professional digital presence. Maintain the established simple, elegant brand identity.

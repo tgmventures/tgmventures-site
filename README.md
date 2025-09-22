@@ -41,11 +41,11 @@ firebase deploy --only functions
 ## 🚨 CRITICAL PRESERVATION RULES
 
 ### Core Pages - DO NOT MODIFY WITHOUT EXPLICIT PERMISSION
-The following pages must remain **EXACTLY** as they are and maintain their simple, elegant design:
+The following pages must maintain their simple, elegant design and content:
 
-- **Homepage** - Simple black background with warehouse image, TGM logo, and tagline
-- **Privacy Policy** - Comprehensive legal document 
-- **Terms of Service** - Comprehensive legal document
+- **Homepage** (`/src/app/page.tsx`) - Simple black background with warehouse image, TGM logo, and tagline
+- **Privacy Policy** (`/src/app/privacy-policy/page.tsx`) - Comprehensive legal document 
+- **Terms of Service** (`/src/app/terms-of-service/page.tsx`) - Comprehensive legal document
 
 **⚠️ IMPORTANT**: These pages are intentionally minimal and professional. Any changes to their design, content, or functionality require explicit user approval before implementation.
 
@@ -56,25 +56,36 @@ The following pages must remain **EXACTLY** as they are and maintain their simpl
 ├── src/                    # Next.js source code
 │   ├── app/               # App router pages
 │   │   ├── api/          # API routes
+│   │   │   └── contact/  # Contact form API endpoint
 │   │   ├── contact/      # Contact form page
 │   │   ├── dashboard/    # Internal team dashboard
+│   │   ├── goals/        # Goals tracking page
 │   │   ├── login/        # Authentication page
 │   │   ├── page.tsx      # Homepage
 │   │   ├── privacy-policy/
-│   │   └── terms-of-service/
+│   │   ├── terms-of-service/
+│   │   └── (icons)       # App icons (favicon, apple-icon)
 │   ├── components/        # React components
 │   │   └── ui/           # UI components
 │   ├── lib/              # Utilities and services
-│   │   ├── firebase/     # Firebase services
+│   │   ├── firebase/     # Firebase service layer
+│   │   │   ├── asset-management-init.ts
+│   │   │   ├── compat-service.ts
+│   │   │   ├── division-service.ts
+│   │   │   └── structure.ts
 │   │   └── firebase*.ts  # Firebase utilities
 │   └── types/            # TypeScript types
 ├── public/                # Static assets
 │   └── images/           # Images and logos
 ├── functions/            # Firebase Cloud Functions
+│   └── index.js          # Contact form handler
+├── planning/             # Project planning documents
+│   └── IMPLEMENTATION-CHECKLIST.md
 ├── scripts/              # Helper scripts
 │   └── start-local.sh    # Local dev startup script
 ├── firebase.json         # Firebase configuration
 ├── firestore.rules       # Security rules
+├── firestore.indexes.json # Database indexes
 ├── next.config.js        # Next.js configuration
 └── package.json          # Dependencies and scripts
 ```
@@ -105,6 +116,7 @@ The following pages must remain **EXACTLY** as they are and maintain their simpl
   - Progress tracking and visual indicators
   - Automatic monthly/annual resets
 - User profile dropdown with Google account integration
+- **Goals Page**: Separate goal tracking interface with monthly view and filtering
 
 ## Technology Stack
 

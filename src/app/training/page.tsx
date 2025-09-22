@@ -66,6 +66,7 @@ export default function TrainingPage() {
   const [selectedSubCategories, setSelectedSubCategories] = useState<string[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [playingVideoId, setPlayingVideoId] = useState<string | null>(null)
+  const [editingModule, setEditingModule] = useState<TrainingModule | null>(null)
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -204,25 +205,48 @@ export default function TrainingPage() {
         })
       }
 
-      // Create the module
-      await addDoc(collection(db, 'trainingModules'), {
+      // Create or update the module
+      const moduleData = {
         ...formData,
         checklist: checklistItems,
-        comments: [],
-        createdBy: user.uid,
-        createdByEmail: user.email,
-        createdAt: serverTimestamp()
-      })
+        comments: editingModule ? editingModule.comments : [],
+        createdBy: editingModule ? editingModule.createdBy : user.uid,
+        createdByEmail: editingModule ? editingModule.createdByEmail : user.email,
+        createdAt: editingModule ? editingModule.createdAt : serverTimestamp(),
+        updatedAt: serverTimestamp()
+      }
+
+      if (editingModule) {
+        // Update existing module
+        await updateDoc(doc(db, 'trainingModules', editingModule.id), moduleData)
+      } else {
+        // Create new module
+        await addDoc(collection(db, 'trainingModules'), moduleData)
+      }
 
       // Reset form
       setFormData({ title: '', description: '', loomUrl: '', mainCategory: '', subCategory: '' })
       setChecklistItems([])
       setShowCreateForm(false)
+      setEditingModule(null)
       loadModules()
       loadCategories()
     } catch (error) {
-      console.error('Error creating module:', error)
+      console.error('Error saving module:', error)
     }
+  }
+
+  const handleEditModule = (module: TrainingModule) => {
+    setEditingModule(module)
+    setFormData({
+      title: module.title,
+      description: module.description,
+      loomUrl: module.loomUrl,
+      mainCategory: module.mainCategory,
+      subCategory: module.subCategory
+    })
+    setChecklistItems(module.checklist)
+    setShowCreateForm(true)
   }
 
   const handleDeleteModule = async (moduleId: string) => {
@@ -358,27 +382,21 @@ export default function TrainingPage() {
         <div className="px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center flex-1">
-              <div className="flex items-center mr-8">
-                <Link href="/dashboard" className="flex items-center group">
-                  <svg className="w-6 h-6 mr-2 text-gray-600 group-hover:text-gray-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                  <span className="text-sm text-gray-600 group-hover:text-gray-900">Back</span>
-                </Link>
-                <div className="flex items-center ml-4">
-                  <Image
-                    src="/images/tgm-logo-icon.png"
-                    alt="TGM"
-                    width={32}
-                    height={32}
-                    className="mr-3"
-                  />
-                  <h1 className="text-xl font-semibold text-gray-900">Training & SOPs</h1>
-                </div>
-              </div>
+              <Link href="/dashboard" className="mr-4">
+                <Image
+                  src="/images/tgm-logo-icon.png"
+                  alt="TGM"
+                  width={32}
+                  height={32}
+                  className="hover:opacity-80 transition-opacity cursor-pointer"
+                />
+              </Link>
+              <Link href="/training" className="text-xl font-semibold text-gray-900 hover:text-gray-700 transition-colors">
+                Training & SOPs
+              </Link>
               
               {/* Search Bar in Nav */}
-              <div className="relative max-w-md flex-1">
+              <div className="relative max-w-md flex-1 ml-8">
                 <input
                   type="text"
                   value={searchQuery}
@@ -393,7 +411,12 @@ export default function TrainingPage() {
             </div>
             
             <button
-              onClick={() => setShowCreateForm(true)}
+              onClick={() => {
+                setShowCreateForm(true)
+                setEditingModule(null)
+                setFormData({ title: '', description: '', loomUrl: '', mainCategory: '', subCategory: '' })
+                setChecklistItems([])
+              }}
               className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors flex items-center gap-2 ml-4"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -451,7 +474,9 @@ export default function TrainingPage() {
           {showCreateForm ? (
             <div className="max-w-4xl mx-auto">
               <div className="bg-white rounded-xl shadow-sm p-6">
-                <h2 className="text-xl font-semibold mb-6">Create Training Module</h2>
+                <h2 className="text-xl font-semibold mb-6">
+                  {editingModule ? 'Edit Training Module' : 'Create Training Module'}
+                </h2>
                 <form onSubmit={handleCreateModule}>
                   <div className="space-y-4">
                     <div>
@@ -527,9 +552,9 @@ export default function TrainingPage() {
                         />
                         {showSubCategoryDropdown && filteredSubCategories.length > 0 && (
                           <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg">
-                            {filteredSubCategories.map((sub) => (
+                            {filteredSubCategories.map((sub, index) => (
                               <button
-                                key={sub}
+                                key={`${sub}-${index}`}
                                 type="button"
                                 onClick={() => {
                                   setFormData({ ...formData, subCategory: sub })
@@ -647,12 +672,13 @@ export default function TrainingPage() {
                       type="submit"
                       className="bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-700 transition-colors"
                     >
-                      Create Module
+                      {editingModule ? 'Update Module' : 'Create Module'}
                     </button>
                     <button
                       type="button"
                       onClick={() => {
                         setShowCreateForm(false)
+                        setEditingModule(null)
                         setFormData({ title: '', description: '', loomUrl: '', mainCategory: '', subCategory: '' })
                         setChecklistItems([])
                       }}
@@ -682,6 +708,16 @@ export default function TrainingPage() {
                     </div>
                   </div>
                   <div className="flex gap-2">
+                    {(isAdmin || selectedModule.createdBy === user?.uid) && (
+                      <button
+                        onClick={() => handleEditModule(selectedModule)}
+                        className="text-blue-500 hover:text-blue-700"
+                      >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                      </button>
+                    )}
                     <button
                       onClick={() => setSelectedModule(null)}
                       className="text-gray-500 hover:text-gray-700"
@@ -727,7 +763,7 @@ export default function TrainingPage() {
                   <div>
                     <h3 className="text-lg font-semibold mb-3">Checklist</h3>
                     <div className="space-y-2">
-                      {selectedModule.checklist.map((item, index) => (
+                      {selectedModule.checklist.map((item) => (
                         <label key={item.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded">
                           <input type="checkbox" className="h-5 w-5 text-purple-600 rounded" />
                           <span className="text-sm">{item.text}</span>
@@ -805,9 +841,9 @@ export default function TrainingPage() {
                 {/* Subcategory Filter Tags */}
                 {selectedCategory && getAvailableSubCategories().length > 0 && (
                   <div className="flex flex-wrap gap-2">
-                    {getAvailableSubCategories().map((subCategory) => (
+                    {getAvailableSubCategories().map((subCategory, index) => (
                       <button
-                        key={subCategory}
+                        key={`${selectedCategory}-${subCategory}-${index}`}
                         onClick={() => toggleSubCategory(subCategory)}
                         className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
                           selectedSubCategories.includes(subCategory)
@@ -864,33 +900,23 @@ export default function TrainingPage() {
                                 allow="autoplay"
                               />
                             ) : (
-                              <button
+                              <div
                                 onClick={() => setPlayingVideoId(module.id)}
-                                className="w-full h-full relative group overflow-hidden"
+                                className="relative w-full h-full cursor-pointer group"
                               >
-                                <img 
-                                  src={`https://cdn.loom.com/sessions/thumbnails/${videoId}-00001.jpg`}
-                                  alt={module.title}
-                                  className="w-full h-full object-cover"
-                                  onError={(e) => {
-                                    // If thumbnail fails, try alternative format
-                                    const target = e.currentTarget as HTMLImageElement
-                                    if (!target.dataset.retried) {
-                                      target.dataset.retried = 'true'
-                                      target.src = `https://cdn.loom.com/sessions/thumbnails/${videoId}-with-play.jpg`
-                                    }
-                                  }}
+                                <iframe
+                                  src={`https://www.loom.com/embed/${videoId}`}
+                                  frameBorder="0"
+                                  className="w-full h-full pointer-events-none"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                                  <div className="absolute inset-0 flex items-center justify-center">
-                                    <div className="bg-white rounded-full p-3 shadow-lg transform group-hover:scale-110 transition-transform">
-                                      <svg className="w-10 h-10 text-gray-900 ml-1" fill="currentColor" viewBox="0 0 24 24">
-                                        <path d="M8 5v14l11-7z"/>
-                                      </svg>
-                                    </div>
+                                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                                  <div className="bg-white/90 rounded-full p-3 shadow-lg transform group-hover:scale-110 transition-transform">
+                                    <svg className="w-10 h-10 text-gray-900 ml-1" fill="currentColor" viewBox="0 0 24 24">
+                                      <path d="M8 5v14l11-7z"/>
+                                    </svg>
                                   </div>
                                 </div>
-                              </button>
+                              </div>
                             )
                           ) : (
                             <div className="w-full h-full flex items-center justify-center bg-gray-200">
@@ -910,13 +936,28 @@ export default function TrainingPage() {
                             {module.title}
                           </h3>
                           <p className="text-sm text-gray-600 mb-4 line-clamp-2">{module.description}</p>
-                          <div className="flex gap-2">
-                            <span className="inline-block px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs">
-                              {module.mainCategory}
-                            </span>
-                            <span className="inline-block px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs">
-                              {module.subCategory}
-                            </span>
+                          <div className="flex items-center justify-between">
+                            <div className="flex gap-2">
+                              <span className="inline-block px-2 py-1 bg-purple-100 text-purple-700 rounded-full text-xs">
+                                {module.mainCategory}
+                              </span>
+                              <span className="inline-block px-2 py-1 bg-gray-100 text-gray-700 rounded-full text-xs">
+                                {module.subCategory}
+                              </span>
+                            </div>
+                            {(isAdmin || module.createdBy === user?.uid) && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  handleEditModule(module)
+                                }}
+                                className="text-gray-400 hover:text-blue-600 transition-colors"
+                              >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                              </button>
+                            )}
                           </div>
                         </div>
                       </div>

@@ -951,7 +951,7 @@ export default function DashboardPage() {
           <Suspense fallback={<CardSkeleton />}>
             <RealEstateCard
               realEstateTasks={realEstateTasks}
-              realEstateTasksComplete={realEstateTasksComplete}
+              realEstateTasksComplete={realEstateVisibleCounts.completed}
               handleTaskCheck={handleTaskCheck}
               handleDeleteTask={handleDeleteTask}
               handleAddTask={handleAddTask}

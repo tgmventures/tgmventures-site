@@ -372,8 +372,23 @@ export async function updateAssetManagementStatusCompat(
     // In new structure, find and update the specific task
     const monthYear = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`;
     const tasksRef = collection(db, DB_PATHS.divisionTasks(DIVISIONS.ASSET_MANAGEMENT));
-    const q = query(tasksRef, where('monthYear', '==', monthYear));
-    const snapshot = await getDocs(q);
+    
+    let snapshot;
+    try {
+      // Try the indexed query first
+      const q = query(tasksRef, where('monthYear', '==', monthYear));
+      snapshot = await getDocs(q);
+    } catch (error: any) {
+      // If index is still building, fallback to fetching all and filtering
+      if (error.code === 'failed-precondition' && error.message?.includes('index')) {
+        console.log('Index is building, using fallback query for asset status update...');
+        const allSnapshot = await getDocs(tasksRef);
+        const filteredDocs = allSnapshot.docs.filter(doc => doc.data().monthYear === monthYear);
+        snapshot = { docs: filteredDocs, empty: filteredDocs.length === 0 };
+      } else {
+        throw error;
+      }
+    }
     
     // Find the task that matches this field
     for (const taskDoc of snapshot.docs) {

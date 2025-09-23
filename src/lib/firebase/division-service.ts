@@ -49,29 +49,66 @@ function getPreviousMonthYear(): string {
 export async function getAssetManagementTasks(): Promise<DivisionTask[]> {
   const monthYear = getCurrentMonthYear();
   const tasksRef = collection(db, DB_PATHS.divisionTasks(DIVISIONS.ASSET_MANAGEMENT));
-  const q = query(tasksRef, where('monthYear', '==', monthYear), orderBy('order'));
   
-  const snapshot = await getDocs(q);
-  
-  // If no tasks exist for this month, create them
-  if (snapshot.empty) {
-    await createMonthlyAssetTasks(monthYear);
-    // Fetch again after creation
-    const newSnapshot = await getDocs(q);
-    return newSnapshot.docs.map(doc => ({
+  try {
+    // Try the indexed query first
+    const q = query(tasksRef, where('monthYear', '==', monthYear), orderBy('order'));
+    const snapshot = await getDocs(q);
+    
+    // If no tasks exist for this month, create them
+    if (snapshot.empty) {
+      await createMonthlyAssetTasks(monthYear);
+      // Fetch again after creation
+      const newSnapshot = await getDocs(q);
+      return newSnapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id,
+        createdAt: timestampToDate(doc.data().createdAt),
+        updatedAt: timestampToDate(doc.data().updatedAt),
+      } as DivisionTask));
+    }
+    
+    return snapshot.docs.map(doc => ({
       ...doc.data(),
       id: doc.id,
       createdAt: timestampToDate(doc.data().createdAt),
       updatedAt: timestampToDate(doc.data().updatedAt),
     } as DivisionTask));
+  } catch (error: any) {
+    // If index is still building, fallback to fetching all and filtering
+    if (error.code === 'failed-precondition' && error.message?.includes('index')) {
+      console.log('Index is building, using fallback query...');
+      const allSnapshot = await getDocs(tasksRef);
+      const tasks = allSnapshot.docs
+        .map(doc => ({
+          ...doc.data(),
+          id: doc.id,
+          createdAt: timestampToDate(doc.data().createdAt),
+          updatedAt: timestampToDate(doc.data().updatedAt),
+        } as DivisionTask))
+        .filter(task => task.monthYear === monthYear)
+        .sort((a, b) => a.order - b.order);
+      
+      // If no tasks exist for this month, create them
+      if (tasks.length === 0) {
+        await createMonthlyAssetTasks(monthYear);
+        // Fetch again after creation
+        const newSnapshot = await getDocs(tasksRef);
+        return newSnapshot.docs
+          .map(doc => ({
+            ...doc.data(),
+            id: doc.id,
+            createdAt: timestampToDate(doc.data().createdAt),
+            updatedAt: timestampToDate(doc.data().updatedAt),
+          } as DivisionTask))
+          .filter(task => task.monthYear === monthYear)
+          .sort((a, b) => a.order - b.order);
+      }
+      
+      return tasks;
+    }
+    throw error;
   }
-  
-  return snapshot.docs.map(doc => ({
-    ...doc.data(),
-    id: doc.id,
-    createdAt: timestampToDate(doc.data().createdAt),
-    updatedAt: timestampToDate(doc.data().updatedAt),
-  } as DivisionTask));
 }
 
 // Create monthly tasks for Asset Management
@@ -193,26 +230,63 @@ export function subscribeToAssetTasks(
 ): () => void {
   const monthYear = getCurrentMonthYear();
   const tasksRef = collection(db, DB_PATHS.divisionTasks(DIVISIONS.ASSET_MANAGEMENT));
-  const q = query(tasksRef, where('monthYear', '==', monthYear), orderBy('order'));
   
-  const unsubscribe = onSnapshot(q, async (snapshot) => {
-    if (snapshot.empty) {
-      // Create tasks if they don't exist
-      await createMonthlyAssetTasks(monthYear);
-      return;
-    }
+  try {
+    // Try the indexed query first
+    const q = query(tasksRef, where('monthYear', '==', monthYear), orderBy('order'));
     
-    const tasks = snapshot.docs.map(doc => ({
-      ...doc.data(),
-      id: doc.id,
-      createdAt: timestampToDate(doc.data().createdAt),
-      updatedAt: timestampToDate(doc.data().updatedAt),
-    } as DivisionTask));
+    const unsubscribe = onSnapshot(q, async (snapshot) => {
+      if (snapshot.empty) {
+        // Create tasks if they don't exist
+        await createMonthlyAssetTasks(monthYear);
+        return;
+      }
+      
+      const tasks = snapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id,
+        createdAt: timestampToDate(doc.data().createdAt),
+        updatedAt: timestampToDate(doc.data().updatedAt),
+      } as DivisionTask));
+      
+      callback(tasks);
+    }, (error) => {
+      // If index is still building, fallback to fetching all and filtering
+      if (error.code === 'failed-precondition' && error.message?.includes('index')) {
+        console.log('Index is building, using fallback subscription...');
+        
+        // Subscribe to all tasks and filter client-side
+        const unsubscribeFallback = onSnapshot(tasksRef, async (snapshot) => {
+          const tasks = snapshot.docs
+            .map(doc => ({
+              ...doc.data(),
+              id: doc.id,
+              createdAt: timestampToDate(doc.data().createdAt),
+              updatedAt: timestampToDate(doc.data().updatedAt),
+            } as DivisionTask))
+            .filter(task => task.monthYear === monthYear)
+            .sort((a, b) => a.order - b.order);
+          
+          if (tasks.length === 0) {
+            // Create tasks if they don't exist
+            await createMonthlyAssetTasks(monthYear);
+            return;
+          }
+          
+          callback(tasks);
+        });
+        
+        return unsubscribeFallback;
+      }
+      console.error('Error in asset tasks subscription:', error);
+    });
     
-    callback(tasks);
-  });
-  
-  return unsubscribe;
+    return unsubscribe;
+  } catch (error) {
+    console.error('Error setting up asset tasks subscription:', error);
+    // Return a no-op unsubscribe function
+    return () => {};
+  }
 }
 
 // Subscribe to division tasks (Real Estate or Ventures)

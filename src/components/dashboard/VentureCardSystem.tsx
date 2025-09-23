@@ -441,7 +441,7 @@ export function VentureCardSystem({ userEmail, userName, setShowSuccessToast, se
         <div className="flex justify-center mt-8">
           <button
             onClick={() => setAddingCard(true)}
-            className="px-6 py-3 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg"
+            className="px-6 py-3 bg-gray-600 text-white font-medium rounded-lg hover:bg-gray-700 transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg"
           >
             Create New Card
           </button>

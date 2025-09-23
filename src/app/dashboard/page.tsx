@@ -888,41 +888,6 @@ export default function DashboardPage() {
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Outstanding Objectives Section */}
-        <div className="text-center mb-12">
-          <div className="">
-            <p className="text-base font-bold text-gray-900 mb-4">Outstanding Objectives:</p>
-            <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm">
-              {businessUnit === 'asset-management' && (
-                <>
-              <div className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-indigo-500"></div>
-                <div className="text-gray-600">
-                  <span className="whitespace-nowrap">{taxReturns.filter(t => !t.isFiled).length + (propertyTaxH1Paid ? 0 : 1) + (propertyTaxH2Paid ? 0 : 1)}/{taxReturns.length + 2}</span>{' '}
-                  <span>Tax</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                <div className="text-gray-600">
-                  <span className="whitespace-nowrap">{7 - assetChecklistComplete}/7</span>{' '}
-                  <span className="whitespace-nowrap">Asset Management</span>
-                </div>
-              </div>
-                </>
-              )}
-              {businessUnit === 'ventures' && (
-              <div className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-purple-500"></div>
-                <div className="text-gray-600">
-                    <span className="whitespace-nowrap">{totalVentureObjectives - completedVentureObjectives}/{totalVentureObjectives}</span>{' '}
-                    <span>Venture Objectives</span>
-                </div>
-              </div>
-              )}
-            </div>
-          </div>
-        </div>
 
         {/* Main Apps Grid */}
         <div className="flex flex-wrap justify-center gap-6 mb-8 max-w-6xl mx-auto">

@@ -393,17 +393,8 @@ export function AssetManagementIntegratedView({
 
   return (
     <>
-      <div className="flex items-center gap-3 mb-6">
-        <h2 className="text-xl font-semibold text-gray-900">Business Division Status</h2>
-        <button
-          onClick={() => setAddingCard(true)}
-          className="w-7 h-7 bg-green-600 text-white rounded-full hover:bg-green-700 transition-all duration-200 flex items-center justify-center hover:scale-110"
-          title="Add new card"
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
-        </button>
+      <div className="text-center mb-6">
+        <h2 className="text-xl font-semibold text-gray-900">Key Objectives & Deliverables</h2>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
@@ -502,6 +493,18 @@ export function AssetManagementIntegratedView({
           </div>
         )}
       </div>
+
+      {/* Create New Card Button */}
+      {!addingCard && (
+        <div className="flex justify-center mt-8">
+          <button
+            onClick={() => setAddingCard(true)}
+            className="px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg"
+          >
+            Create New Card
+          </button>
+        </div>
+      )}
     </>
   )
 }

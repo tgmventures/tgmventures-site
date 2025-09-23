@@ -161,6 +161,7 @@
   - [x] New order: Asset Management -> Custom Cards -> Tax Filings (always last)
   - [x] Fixed default card auto-recreation issue after deletion
   - [x] Updated Outstanding Objectives section to match
+  - [x] **Removed Outstanding Objectives Display**: TESTED and verified - Removed Outstanding Objectives section from both Asset Management and Ventures views per user request
 - [x] **Button Styling Updates**: TESTED - Consistent gray buttons
   - [x] Changed "Create New Card" buttons from colored to gray
   - [x] Both Asset Management and Ventures use same button style

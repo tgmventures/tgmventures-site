@@ -14,6 +14,7 @@ import {
   reorderVentureCards,
   subscribeToVentureCards
 } from '@/lib/firebase/ventures-cards'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 
 interface VentureCardSystemProps {
   userEmail?: string;
@@ -37,6 +38,7 @@ export function VentureCardSystem({ userEmail, userName, setShowSuccessToast, se
   const [draggedCard, setDraggedCard] = useState<VentureCard | null>(null)
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
   const [justCompletedObjective, setJustCompletedObjective] = useState<string | null>(null)
+  const [deleteConfirm, setDeleteConfirm] = useState<{ isOpen: boolean; cardId: string | null }>({ isOpen: false, cardId: null })
 
   // Load cards and subscribe to changes
   useEffect(() => {
@@ -86,10 +88,9 @@ export function VentureCardSystem({ userEmail, userName, setShowSuccessToast, se
   }
 
   const handleDeleteCard = async (cardId: string) => {
-    if (!confirm('Are you sure you want to delete this card and all its objectives?')) return
-    
     try {
       await deleteVentureCard(cardId)
+      setDeleteConfirm({ isOpen: false, cardId: null })
     } catch (error) {
       console.error('Error deleting card:', error)
     }
@@ -257,17 +258,17 @@ export function VentureCardSystem({ userEmail, userName, setShowSuccessToast, se
                 >
                   {card.title}
                 </h3>
-              )}
-              {editingCardId === card.id && (
-                <button
-                  onClick={() => handleDeleteCard(card.id)}
-                  className="text-red-400 hover:text-red-600 transition-colors ml-2"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                  </svg>
-                </button>
-              )}
+            )}
+            {editingCardId === card.id && (
+              <button
+                onClick={() => setDeleteConfirm({ isOpen: true, cardId: card.id })}
+                className="text-red-400 hover:text-red-600 transition-colors ml-2"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+              </button>
+            )}
             </div>
 
             {/* Progress */}
@@ -447,6 +448,15 @@ export function VentureCardSystem({ userEmail, userName, setShowSuccessToast, se
           </button>
         </div>
       )}
+
+      {/* Confirm Dialog */}
+      <ConfirmDialog
+        isOpen={deleteConfirm.isOpen}
+        onClose={() => setDeleteConfirm({ isOpen: false, cardId: null })}
+        onConfirm={() => deleteConfirm.cardId && handleDeleteCard(deleteConfirm.cardId)}
+        title="Delete Card"
+        message="Are you sure you want to delete this card and all its objectives? This action cannot be undone."
+      />
     </div>
   )
 }

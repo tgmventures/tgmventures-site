@@ -165,9 +165,6 @@ export default function DashboardPage() {
         // Initialize Asset Management tasks for current month if needed
         await initializeAssetManagementTasks()
         
-        // Initialize Asset Management custom cards if needed
-        await initializeAssetManagementCards()
-        
         const status = await getAssetManagementStatusCompat()
         setAssetStatus(status)
         
@@ -912,13 +909,6 @@ export default function DashboardPage() {
                   <span className="whitespace-nowrap">Asset Management</span>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="h-2 w-2 rounded-full bg-blue-500"></div>
-                <div className="text-gray-600">
-                      <span className="whitespace-nowrap">{realEstateVisibleCounts.total - realEstateVisibleCounts.completed}/{realEstateVisibleCounts.total}</span>{' '}
-                  <span className="whitespace-nowrap">Real Estate</span>
-                </div>
-              </div>
                 </>
               )}
               {businessUnit === 'ventures' && (
@@ -1092,17 +1082,6 @@ export default function DashboardPage() {
           <AssetManagementIntegratedView
             assetStatus={assetStatus}
             handleAssetStatusChange={handleAssetStatusChange}
-            realEstateTasks={realEstateTasks}
-            realEstateTasksComplete={realEstateVisibleCounts.completed}
-            handleTaskCheck={handleTaskCheck}
-            handleDeleteTask={handleDeleteTask}
-            handleAddTask={handleAddTask}
-            handleEditTask={handleEditTask}
-            startEditingTask={startEditingTask}
-            handleDragStart={handleDragStart}
-            handleDragOver={handleDragOver}
-            handleDragEnd={handleDragEnd}
-            handleDrop={handleDrop}
             taxReturns={taxReturns}
             propertyTaxH1Paid={propertyTaxH1Paid}
             propertyTaxH2Paid={propertyTaxH2Paid}
@@ -1112,16 +1091,6 @@ export default function DashboardPage() {
             assetChecklistComplete={assetChecklistComplete}
             priorMonth={priorMonth}
             currentMonth={currentMonth}
-            editingTaskId={editingTaskId}
-            editText={editText}
-            setEditText={setEditText}
-            setEditingTaskId={setEditingTaskId}
-            draggedTask={draggedTask}
-            dragOverIndex={dragOverIndex}
-            addingTask={addingTask}
-            setAddingTask={setAddingTask}
-            newText={newText}
-            setNewText={setNewText}
             currentDate={currentDate}
             assetCards={assetCards}
             userEmail={user.email || undefined}

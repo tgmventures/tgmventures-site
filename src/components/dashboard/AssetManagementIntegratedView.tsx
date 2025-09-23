@@ -13,26 +13,15 @@ import {
 } from '@/lib/firebase/asset-management-cards'
 import { CardSkeleton } from './CardSkeleton'
 import { AssetManagementStatus, DivisionTask, TaxReturn } from '@/types/goal'
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
 
 const AssetManagementCard = lazy(() => import('./BusinessDivisionCards').then(mod => ({ default: mod.AssetManagementCard })))
-const RealEstateCard = lazy(() => import('./RealEstateCard').then(mod => ({ default: mod.RealEstateCard })))
 const TaxFilingsCard = lazy(() => import('./TaxFilingsCard').then(mod => ({ default: mod.TaxFilingsCard })))
 
 interface AssetManagementIntegratedViewProps {
   // Fixed cards props
   assetStatus: AssetManagementStatus
   handleAssetStatusChange: (field: string, value: boolean) => void
-  realEstateTasks: DivisionTask[]
-  realEstateTasksComplete: number
-  handleTaskCheck: (divisionId: string, taskId: string, isChecked: boolean) => void
-  handleDeleteTask: (divisionId: string, taskId: string) => void
-  handleAddTask: (divisionId: string) => void
-  handleEditTask: (divisionId: string, taskId: string, newTitle: string) => void
-  startEditingTask: (taskId: string, currentTitle: string) => void
-  handleDragStart: (e: React.DragEvent, task: DivisionTask) => void
-  handleDragOver: (e: React.DragEvent, index: number) => void
-  handleDragEnd: () => void
-  handleDrop: (e: React.DragEvent, divisionId: string, dropIndex: number) => void
   taxReturns: TaxReturn[]
   propertyTaxH1Paid: boolean
   propertyTaxH2Paid: boolean
@@ -42,16 +31,6 @@ interface AssetManagementIntegratedViewProps {
   assetChecklistComplete: number
   priorMonth: string
   currentMonth: string
-  editingTaskId: string | null
-  editText: string
-  setEditText: (text: string) => void
-  setEditingTaskId: (id: string | null) => void
-  draggedTask: DivisionTask | null
-  dragOverIndex: number | null
-  addingTask: string | null
-  setAddingTask: (id: string | null) => void
-  newText: string
-  setNewText: (text: string) => void
   currentDate: Date
   // Custom cards props
   assetCards: AssetCard[]
@@ -66,17 +45,6 @@ interface AssetManagementIntegratedViewProps {
 export function AssetManagementIntegratedView({
   assetStatus,
   handleAssetStatusChange,
-  realEstateTasks,
-  realEstateTasksComplete,
-  handleTaskCheck,
-  handleDeleteTask,
-  handleAddTask,
-  handleEditTask,
-  startEditingTask,
-  handleDragStart,
-  handleDragOver,
-  handleDragEnd,
-  handleDrop,
   taxReturns,
   propertyTaxH1Paid,
   propertyTaxH2Paid,
@@ -86,16 +54,6 @@ export function AssetManagementIntegratedView({
   assetChecklistComplete,
   priorMonth,
   currentMonth,
-  editingTaskId,
-  editText,
-  setEditText,
-  setEditingTaskId,
-  draggedTask,
-  dragOverIndex,
-  addingTask,
-  setAddingTask,
-  newText,
-  setNewText,
   currentDate,
   assetCards,
   userEmail,
@@ -114,6 +72,7 @@ export function AssetManagementIntegratedView({
   const [editingObjective, setEditingObjective] = useState<{ cardId: string; objectiveId: string } | null>(null)
   const [editingObjectiveText, setEditingObjectiveText] = useState('')
   const [justCompletedObjective, setJustCompletedObjective] = useState<string | null>(null)
+  const [deleteConfirm, setDeleteConfirm] = useState<{ isOpen: boolean; cardId: string | null }>({ isOpen: false, cardId: null })
 
   // Clear celebration animation after delay
   useEffect(() => {
@@ -148,13 +107,13 @@ export function AssetManagementIntegratedView({
   }
 
   const handleDeleteCard = async (cardId: string) => {
-    if (!confirm('Are you sure you want to delete this card and all its objectives?')) return
-    
     try {
       await deleteAssetManagementCard(cardId)
-    } catch (error) {
+      setDeleteConfirm({ isOpen: false, cardId: null })
+    } catch (error: any) {
       console.error('Error deleting card:', error)
-      alert(error.message || 'Failed to delete card')
+      // Show error in console instead of alert
+      console.error('Failed to delete card:', error.message || 'Unknown error')
     }
   }
 
@@ -255,7 +214,7 @@ export function AssetManagementIntegratedView({
         )}
         {editingCardId === card.id && card.isCustom && (
           <button
-            onClick={() => handleDeleteCard(card.id)}
+            onClick={() => setDeleteConfirm({ isOpen: true, cardId: card.id })}
             className="text-red-400 hover:text-red-600 transition-colors ml-2"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -410,35 +369,10 @@ export function AssetManagementIntegratedView({
           />
         </Suspense>
 
-        {/* Fixed Card 2: Real Estate */}
-        <Suspense fallback={<CardSkeleton />}>
-          <RealEstateCard
-            realEstateTasks={realEstateTasks}
-            realEstateTasksComplete={realEstateTasksComplete}
-            handleTaskCheck={handleTaskCheck}
-            handleDeleteTask={handleDeleteTask}
-            handleAddTask={handleAddTask}
-            handleEditTask={handleEditTask}
-            startEditingTask={startEditingTask}
-            handleDragStart={handleDragStart}
-            handleDragOver={handleDragOver}
-            handleDragEnd={handleDragEnd}
-            handleDrop={handleDrop}
-            justCompletedTask={justCompletedTask}
-            editingTaskId={editingTaskId}
-            editText={editText}
-            setEditText={setEditText}
-            setEditingTaskId={setEditingTaskId}
-            draggedTask={draggedTask}
-            dragOverIndex={dragOverIndex}
-            addingTask={addingTask}
-            setAddingTask={setAddingTask}
-            newText={newText}
-            setNewText={setNewText}
-          />
-        </Suspense>
+        {/* Custom Cards - placed between Asset Management and Tax Filings */}
+        {assetCards.map((card) => renderCustomCard(card))}
 
-        {/* Fixed Card 3: Tax Filings */}
+        {/* Fixed Card Last: Tax Filings */}
         <Suspense fallback={<CardSkeleton />}>
           <TaxFilingsCard
             taxReturns={taxReturns}
@@ -450,9 +384,6 @@ export function AssetManagementIntegratedView({
             currentDate={currentDate}
           />
         </Suspense>
-
-        {/* Custom Cards */}
-        {assetCards.map((card) => renderCustomCard(card))}
 
         {/* New Card Form */}
         {addingCard && (
@@ -505,6 +436,15 @@ export function AssetManagementIntegratedView({
           </button>
         </div>
       )}
+
+      {/* Confirm Dialog */}
+      <ConfirmDialog
+        isOpen={deleteConfirm.isOpen}
+        onClose={() => setDeleteConfirm({ isOpen: false, cardId: null })}
+        onConfirm={() => deleteConfirm.cardId && handleDeleteCard(deleteConfirm.cardId)}
+        title="Delete Card"
+        message="Are you sure you want to delete this card and all its objectives? This action cannot be undone."
+      />
     </>
   )
 }

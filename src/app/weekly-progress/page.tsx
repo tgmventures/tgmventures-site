@@ -7,30 +7,6 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Line } from 'react-chartjs-2'
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler
-} from 'chart.js'
-
-// Register Chart.js components
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler
-)
 
 interface WeeklyData {
   weekStart: string
@@ -38,26 +14,47 @@ interface WeeklyData {
   added: number
 }
 
-interface TeamMember {
+interface CompletedObjective {
+  type: string
+  division?: string
+  card?: string
+  title: string
+  completedBy: string
+  completedByEmail: string
+  completedAt: any
+}
+
+interface AddedObjective {
+  type: string
+  division?: string
+  title: string
+  createdAt: any
+  createdBy?: string
+}
+
+interface TeamMemberSummary {
   email: string
   name: string
-  completedThisWeek: number
-  addedThisWeek: number
-  completedLastWeek: number
-  topAchievements: string[]
+  completedCount: number
+  objectives: CompletedObjective[]
 }
 
 export default function WeeklyProgressPage() {
   const [user, loading] = useAuthState(auth)
   const router = useRouter()
-  const [currentWeekData, setCurrentWeekData] = useState<any>(null)
+  const [completedObjectives, setCompletedObjectives] = useState<CompletedObjective[]>([])
+  const [addedObjectives, setAddedObjectives] = useState<AddedObjective[]>([])
+  const [teamMembers, setTeamMembers] = useState<TeamMemberSummary[]>([])
+  const [totalStats, setTotalStats] = useState({ completed: 0, added: 0, activeMembers: 0 })
   const [previousWeeksExpanded, setPreviousWeeksExpanded] = useState(false)
   const [loading_, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showEmailPreview, setShowEmailPreview] = useState(false)
   const [emailPreview, setEmailPreview] = useState<string>('')
   const [weeklyHistory, setWeeklyHistory] = useState<WeeklyData[]>([])
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([])
+
+  // Check if we're in development mode
+  const isDevelopment = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || process.env.NODE_ENV === 'development')
 
   useEffect(() => {
     if (!loading && !user) {
@@ -67,8 +64,15 @@ export default function WeeklyProgressPage() {
 
   useEffect(() => {
     if (user) {
+      console.log('User authenticated:', user.email)
+      console.log('Loading weekly progress data...')
+      console.log('Is development mode?', isDevelopment)
+      
+      // Clear any previous errors when user changes
+      setError(null)
+      
       loadCurrentWeekData()
-      loadWeeklyHistory()
+      // loadWeeklyHistory() // Removed for now, focusing on current week
     }
   }, [user])
 
@@ -89,39 +93,69 @@ export default function WeeklyProgressPage() {
   }
 
   const loadCurrentWeekData = async () => {
+    console.log('=== loadCurrentWeekData called ===')
+    
     setLoading(true)
     setError(null)
     try {
       const { start, end } = getWeekDateRange()
-      const reportFunction = httpsCallable(functions, 'getWeeklyReport')
-      const result = await reportFunction({ 
-        startDate: start.toISOString(), 
-        endDate: end.toISOString() 
-      })
       
-      const data = result.data as any
-      
-      // Process team member data
-      const members: TeamMember[] = (data.completedByUser || []).map((user: any) => ({
-        email: user.email,
-        name: user.name,
-        completedThisWeek: user.completed || user.count || 0,
-        addedThisWeek: user.added || 0,
-        completedLastWeek: 0, // Will be populated from last week's data
-        topAchievements: [] // Could be populated with actual objective titles
-      }))
-      
-      setTeamMembers(members)
-      setCurrentWeekData({
-        period: `${start.toLocaleDateString()} - ${end.toLocaleDateString()}`,
-        totalCompleted: data.totalCompleted || 0,
-        totalAdded: data.totalAdded || 0,
-        activeUsers: data.activeUsers || 0,
-        weeklyGrowth: 0 // Will calculate after loading last week
-      })
-      
-      // Load last week's data for comparison
-      loadLastWeekComparison(members)
+      // Always try to get real data first
+      const reportFunction = httpsCallable(functions, 'getWeeklyReportData')
+      try {
+        const result = await reportFunction({ 
+          startDate: start.toISOString(), 
+          endDate: end.toISOString() 
+        })
+        const data = result.data as any
+        
+        console.log('Received data:', data)
+        
+        // Set completed objectives
+        setCompletedObjectives(data.completedObjectives || [])
+        
+        // Set added objectives
+        setAddedObjectives(data.addedObjectives || [])
+        
+        // Process team member summaries
+        const memberMap = new Map<string, TeamMemberSummary>()
+        
+        // Group completed objectives by team member
+        (data.completedObjectives || []).forEach((obj: CompletedObjective) => {
+          const email = obj.completedByEmail
+          if (!memberMap.has(email)) {
+            memberMap.set(email, {
+              email,
+              name: obj.completedBy,
+              completedCount: 0,
+              objectives: []
+            })
+          }
+          const member = memberMap.get(email)!
+          member.completedCount++
+          member.objectives.push(obj)
+        })
+        
+        const membersList = Array.from(memberMap.values()).sort((a, b) => b.completedCount - a.completedCount)
+        setTeamMembers(membersList)
+        
+        // Set total stats
+        setTotalStats({
+          completed: data.completedObjectives?.length || 0,
+          added: data.addedObjectives?.length || 0,
+          activeMembers: membersList.length
+        })
+        
+      } catch (funcError: any) {
+        console.error('Firebase function error:', funcError)
+        
+        // If auth error, show a helpful message
+        if (funcError.message?.includes('@tgmventures.com')) {
+          setError('Access restricted to @tgmventures.com email addresses')
+        } else {
+          throw funcError
+        }
+      }
     } catch (error: any) {
       console.error('Error loading current week data:', error)
       setError(error.message || 'Failed to load weekly progress')
@@ -130,16 +164,33 @@ export default function WeeklyProgressPage() {
     }
   }
 
+  // Remove last week comparison - we're focusing on this week's achievements only
+  /*
   const loadLastWeekComparison = async (currentMembers: TeamMember[]) => {
     try {
       const { start, end } = getWeekDateRange(1) // 1 week ago
-      const reportFunction = httpsCallable(functions, 'getWeeklyReport')
-      const result = await reportFunction({ 
-        startDate: start.toISOString(), 
-        endDate: end.toISOString() 
-      })
       
-      const data = result.data as any
+      let data: any
+      
+      // In development, always use mock data
+      if (window.location.hostname === 'localhost' || process.env.NODE_ENV === 'development') {
+        data = {
+          totalCompleted: 10,
+          completedByUser: [
+            { email: 'john@example.com', count: 4, completed: 4 },
+            { email: 'jane@example.com', count: 3, completed: 3 },
+            { email: 'bob@example.com', count: 3, completed: 3 }
+          ]
+        }
+      } else {
+        // In production, call the actual Firebase function
+        const reportFunction = httpsCallable(functions, 'getWeeklyReport')
+        const result = await reportFunction({ 
+          startDate: start.toISOString(), 
+          endDate: end.toISOString() 
+        })
+        data = result.data as any
+      }
       
       // Update team members with last week's data
       const updatedMembers = currentMembers.map(member => {
@@ -163,6 +214,7 @@ export default function WeeklyProgressPage() {
       console.error('Error loading last week comparison:', error)
     }
   }
+  */
 
   const loadWeeklyHistory = async () => {
     const history: WeeklyData[] = []
@@ -171,18 +223,29 @@ export default function WeeklyProgressPage() {
     for (let i = 11; i >= 0; i--) {
       try {
         const { start, end } = getWeekDateRange(i)
-        const reportFunction = httpsCallable(functions, 'getWeeklyReport')
-        const result = await reportFunction({ 
-          startDate: start.toISOString(), 
-          endDate: end.toISOString() 
-        })
         
-        const data = result.data as any
-        history.push({
-          weekStart: start.toLocaleDateString(),
-          completed: data.totalCompleted || 0,
-          added: data.totalAdded || 0
-        })
+        // In development, always use mock data
+        if (window.location.hostname === 'localhost' || process.env.NODE_ENV === 'development') {
+          history.push({
+            weekStart: start.toLocaleDateString(),
+            completed: Math.floor(Math.random() * 15) + 5,
+            added: Math.floor(Math.random() * 10) + 2
+          })
+        } else {
+          // In production, call the actual Firebase function
+          const reportFunction = httpsCallable(functions, 'getWeeklyReport')
+          const result = await reportFunction({ 
+            startDate: start.toISOString(), 
+            endDate: end.toISOString() 
+          })
+          
+          const data = result.data as any
+          history.push({
+            weekStart: start.toLocaleDateString(),
+            completed: data.totalCompleted || 0,
+            added: data.totalAdded || 0
+          })
+        }
       } catch (error) {
         console.error(`Error loading week ${i} data:`, error)
       }
@@ -194,6 +257,7 @@ export default function WeeklyProgressPage() {
   const fetchEmailPreview = async () => {
     try {
       const { start, end } = getWeekDateRange()
+      
       const previewFunction = httpsCallable(functions, 'getWeeklyReportEmailPreview')
       const result = await previewFunction({ 
         startDate: start.toISOString(), 
@@ -209,57 +273,6 @@ export default function WeeklyProgressPage() {
     }
   }
 
-  const chartData = {
-    labels: weeklyHistory.map(w => w.weekStart),
-    datasets: [
-      {
-        label: 'Objectives Completed',
-        data: weeklyHistory.map(w => w.completed),
-        borderColor: 'rgb(147, 51, 234)',
-        backgroundColor: 'rgba(147, 51, 234, 0.1)',
-        tension: 0.4,
-        fill: true
-      },
-      {
-        label: 'Objectives Added',
-        data: weeklyHistory.map(w => w.added),
-        borderColor: 'rgb(59, 130, 246)',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-        tension: 0.4,
-        fill: true
-      }
-    ]
-  }
-
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'top' as const,
-      },
-      title: {
-        display: false
-      },
-      tooltip: {
-        mode: 'index' as const,
-        intersect: false,
-      }
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        grid: {
-          color: 'rgba(0, 0, 0, 0.05)'
-        }
-      },
-      x: {
-        grid: {
-          display: false
-        }
-      }
-    }
-  }
 
   if (!user) return null
 
@@ -316,151 +329,147 @@ export default function WeeklyProgressPage() {
           </div>
         )}
         
-        {/* Current Week Overview */}
-        {currentWeekData && (
+        {/* Current Week Content */}
+        {!loading_ && !error && (
           <>
-            {/* This Week's Collective Progress */}
+            {/* This Week's Summary */}
             <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl shadow-lg p-8 mb-8 text-white">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h2 className="text-2xl font-bold mb-1">This Week's Progress</h2>
-                  <p className="text-purple-100">{currentWeekData.period}</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm text-purple-100">Weekly Growth</p>
-                  <p className="text-3xl font-bold">
-                    {currentWeekData.weeklyGrowth > 0 ? '+' : ''}{currentWeekData.weeklyGrowth}%
-                  </p>
-                </div>
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold mb-2">This Week's Progress</h2>
+                <p className="text-purple-100">
+                  {new Date(getWeekDateRange().start).toLocaleDateString('en-US', { month: 'long', day: 'numeric' })} - 
+                  {new Date(getWeekDateRange().end).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                </p>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-white/20 rounded-xl p-6 backdrop-blur-sm text-center">
-                  <p className="text-5xl font-bold mb-2">{currentWeekData.totalCompleted}</p>
+                  <p className="text-5xl font-bold mb-2">{totalStats.completed}</p>
                   <p className="text-purple-100">Objectives Completed</p>
                 </div>
                 <div className="bg-white/20 rounded-xl p-6 backdrop-blur-sm text-center">
-                  <p className="text-5xl font-bold mb-2">{currentWeekData.totalAdded}</p>
+                  <p className="text-5xl font-bold mb-2">{totalStats.added}</p>
                   <p className="text-purple-100">New Objectives</p>
                 </div>
                 <div className="bg-white/20 rounded-xl p-6 backdrop-blur-sm text-center">
-                  <p className="text-5xl font-bold mb-2">{currentWeekData.activeUsers}</p>
+                  <p className="text-5xl font-bold mb-2">{totalStats.activeMembers}</p>
                   <p className="text-purple-100">Active Team Members</p>
                 </div>
               </div>
             </div>
 
-            {/* Team Member Cards */}
+            {/* Completed Objectives */}
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Team Performance</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {teamMembers.map((member) => {
-                  const progress = member.completedLastWeek > 0 
-                    ? Math.round(((member.completedThisWeek - member.completedLastWeek) / member.completedLastWeek) * 100)
-                    : 0
-                  
-                  return (
-                    <div key={member.email} className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-6">
-                      <div className="flex items-start justify-between mb-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                            <span className="text-lg font-semibold text-purple-600">
-                              {member.name.split(' ').map(n => n[0]).join('')}
-                            </span>
-                          </div>
-                          <div>
-                            <h3 className="font-semibold text-gray-900">{member.name}</h3>
-                            <p className="text-sm text-gray-500">{member.email.split('@')[0]}</p>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="grid grid-cols-2 gap-4 mb-4">
-                        <div>
-                          <p className="text-3xl font-bold text-green-600">{member.completedThisWeek}</p>
-                          <p className="text-sm text-gray-600">Completed</p>
-                        </div>
-                        <div>
-                          <p className="text-3xl font-bold text-blue-600">{member.addedThisWeek}</p>
-                          <p className="text-sm text-gray-600">Added</p>
-                        </div>
-                      </div>
-                      
-                      {/* Progress Indicator */}
-                      <div className="border-t pt-4">
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="text-gray-600">vs Last Week</span>
-                          <span className={`font-semibold ${progress >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                            {progress > 0 ? '+' : ''}{progress}%
-                          </span>
-                        </div>
-                        <div className="mt-2 w-full bg-gray-200 rounded-full h-2">
-                          <div 
-                            className={`h-2 rounded-full transition-all duration-500 ${
-                              progress >= 0 ? 'bg-green-500' : 'bg-red-500'
-                            }`}
-                            style={{ width: `${Math.min(Math.abs(progress), 100)}%` }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-
-            {/* Progress Charts */}
-            <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">12-Week Trend</h2>
-              <div className="h-80">
-                <Line data={chartData} options={chartOptions} />
-              </div>
-            </div>
-
-            {/* Previous Weeks Accordion */}
-            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <button
-                onClick={() => setPreviousWeeksExpanded(!previousWeeksExpanded)}
-                className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
-              >
-                <h2 className="text-lg font-semibold text-gray-900">Previous Weeks</h2>
-                <svg 
-                  className={`w-5 h-5 text-gray-500 transition-transform ${previousWeeksExpanded ? 'rotate-180' : ''}`}
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              
-              {previousWeeksExpanded && (
-                <div className="border-t border-gray-200 p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Objectives Completed This Week</h2>
+              {completedObjectives.length > 0 ? (
+                <div className="bg-white rounded-xl shadow-sm p-6">
                   <div className="space-y-4">
-                    {weeklyHistory.slice(-5, -1).reverse().map((week, index) => (
-                      <div key={week.weekStart} className="border border-gray-200 rounded-lg p-4">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="font-medium text-gray-900">Week of {week.weekStart}</p>
-                            <p className="text-sm text-gray-500">{index + 1} week{index !== 0 ? 's' : ''} ago</p>
+                    {completedObjectives.map((obj, index) => (
+                      <div key={index} className="border-b last:border-0 pb-4 last:pb-0">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <h3 className="font-medium text-gray-900">{obj.title}</h3>
+                            <div className="flex items-center gap-4 mt-1 text-sm text-gray-600">
+                              <span className="flex items-center gap-1">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                                {obj.completedBy}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                </svg>
+                                {obj.division ? obj.division.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : obj.type}
+                              </span>
+                            </div>
                           </div>
-                          <div className="flex gap-8 text-center">
-                            <div>
-                              <p className="text-2xl font-bold text-green-600">{week.completed}</p>
-                              <p className="text-sm text-gray-500">Completed</p>
-                            </div>
-                            <div>
-                              <p className="text-2xl font-bold text-blue-600">{week.added}</p>
-                              <p className="text-sm text-gray-500">Added</p>
-                            </div>
+                          <div className="text-sm text-gray-500">
+                            {new Date(obj.completedAt.seconds ? obj.completedAt.seconds * 1000 : obj.completedAt).toLocaleDateString()}
                           </div>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
+              ) : (
+                <p className="text-gray-500 italic">No objectives completed this week yet.</p>
               )}
             </div>
+
+            {/* Newly Added Objectives */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">New Objectives Added This Week</h2>
+              {addedObjectives.length > 0 ? (
+                <div className="bg-white rounded-xl shadow-sm p-6">
+                  <div className="space-y-4">
+                    {addedObjectives.map((obj, index) => (
+                      <div key={index} className="border-b last:border-0 pb-4 last:pb-0">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <h3 className="font-medium text-gray-900">{obj.title}</h3>
+                            <div className="flex items-center gap-4 mt-1 text-sm text-gray-600">
+                              <span className="flex items-center gap-1">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                </svg>
+                                {obj.division ? obj.division.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : obj.type}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {new Date(obj.createdAt.seconds ? obj.createdAt.seconds * 1000 : obj.createdAt).toLocaleDateString()}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <p className="text-gray-500 italic">No new objectives added this week.</p>
+              )}
+            </div>
+
+            {/* Team Recognition */}
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Team Recognition</h2>
+              {teamMembers.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {teamMembers.map((member) => (
+                    <div key={member.email} className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-6">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                          <span className="text-lg font-semibold text-purple-600">
+                            {member.name.split(' ').map(n => n[0]).join('')}
+                          </span>
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-gray-900">{member.name}</h3>
+                          <p className="text-sm text-gray-500">{member.email.split('@')[0]}</p>
+                        </div>
+                      </div>
+                      <div className="text-center mb-4">
+                        <p className="text-3xl font-bold text-purple-600">{member.completedCount}</p>
+                        <p className="text-sm text-gray-600">Objectives Completed</p>
+                      </div>
+                      {member.objectives.length > 0 && (
+                        <div className="border-t pt-4">
+                          <p className="text-xs font-medium text-gray-500 uppercase mb-2">Recent Achievements</p>
+                          <ul className="space-y-1">
+                            {member.objectives.slice(0, 3).map((obj, idx) => (
+                              <li key={idx} className="text-sm text-gray-600 truncate">• {obj.title}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-500 italic">No team activity this week yet.</p>
+              )}
+            </div>
+
           </>
         )}
         

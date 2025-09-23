@@ -46,25 +46,23 @@
   - [x] Updated all references from "Reports" to "Weekly Progress"
   - [x] Made "Weekly Progress" in nav clickable and route to `/weekly-progress`
   - [x] Updated dashboard tile link
-- [x] **Weekly Progress Dashboard Redesign**: TESTED - New design implemented
-  - [x] **Focus on Current Week**: Main view shows this week's progress prominently
-  - [x] **Team Member Cards**: Individual cards for each team member showing:
-    - [x] Profile photo/avatar placeholder with initials
+- [x] **Weekly Progress Dashboard Redesign**: TESTED - Redesigned to show actual objectives
+  - [x] **Focus on Current Week**: Shows this week's actual completed objectives
+  - [x] **Completed Objectives List**: Shows each objective with:
+    - [x] Objective title
+    - [x] Team member who completed it
+    - [x] Division/category
+    - [x] Completion date
+  - [x] **New Objectives Added**: Shows objectives created this week with:
+    - [x] Objective title
+    - [x] Division/category
+    - [x] Creation date
+  - [x] **Team Recognition Section**: Cards for each active team member showing:
+    - [x] Profile avatar with initials
     - [x] Name and email
-    - [x] This week's completed objectives count
-    - [x] Progress bar comparing to last week
-    - [x] Completed and added objectives breakdown
-  - [x] **Collective Progress Section**:
-    - [x] Team total objectives completed this week
-    - [x] Comparison to last week (% change)
-    - [x] Active team members count
-  - [x] **Time-Series Charts** (Chart.js):
-    - [x] Weekly objectives completed (12-week rolling)
-    - [x] New objectives added trend
-    - [x] Interactive tooltips with details
-  - [x] **Previous Weeks**: Expandable accordion for historical data
-    - [x] Week-by-week cards with summary stats
-    - [x] Click to expand full details
+    - [x] Number of objectives completed
+    - [x] List of their achievements
+  - [x] **Summary Stats**: Overview showing total completed, added, and active members
 - [x] **World-Class Email Design**: TESTED - Apple-inspired design
   - [x] **Apple-Inspired Template**:
     - [x] Clean, minimal header with TGM logo
@@ -74,8 +72,9 @@
     - [x] Gradient accents matching brand
   - [x] **Email Content Structure**:
     - [x] Weekly summary stats in large, bold numbers
-    - [x] Top performers section
-    - [x] Progress by category breakdown
+    - [x] Actual objectives completed list with team member names
+    - [x] New objectives added this week
+    - [x] Team recognition section with top performers
     - [x] Motivational quote when 10+ objectives completed
     - [x] Quick links to dashboard
   - [x] **SendGrid Integration**:
@@ -138,6 +137,19 @@
 - [ ] **Annually**: Penetration testing, compliance audit
 
 ---
+
+## ✅ Dashboard Enhancement: Custom Asset Management Cards (Completed - December 2024)
+- [x] **Custom Card System for Asset Management**: TESTED - Team can create custom objective cards
+  - [x] Plus button to add new cards (matching Ventures style)
+  - [x] Drag-and-drop card reordering functionality
+  - [x] Edit card titles inline by clicking
+  - [x] Delete custom cards (default card protected)
+  - [x] Add/edit/delete objectives within each card
+  - [x] Real-time Firestore sync across all users
+  - [x] Progress tracking per card with visual indicators
+  - [x] Default "Asset Management Monthly Tasks" card created on init
+  - [x] Weekly progress tracking integration for all cards
+  - [x] Consistent UI matching Ventures card system
 
 **Last Updated**: December 22, 2024
 **Next Review**: Start of each phase

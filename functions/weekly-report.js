@@ -57,9 +57,9 @@ async function getWeeklyCompletedObjectives(start, end) {
   
   for (const cardDoc of ventureCards.docs) {
     const data = cardDoc.data();
-    const objectives = data.objectives || [];
+    const cardObjectives = data.objectives || [];
     
-    objectives.forEach(obj => {
+    cardObjectives.forEach(obj => {
       if (obj.isChecked && obj.completedAt && 
           obj.completedAt.toDate() >= start && 
           obj.completedAt.toDate() <= end) {
@@ -100,8 +100,32 @@ async function getWeeklyAddedObjectives(start, end) {
         type: 'Division Objective',
         division: divDoc.id,
         title: data.title,
-        createdAt: data.createdAt
+        createdAt: data.createdAt,
+        createdBy: data.createdBy || data.createdByName || ''
       });
+    });
+  }
+  
+  // Get venture objectives added this week
+  const ventureCardsRef = db.collection('organizations/tgm-ventures/ventures-objective-cards');
+  const ventureCards = await ventureCardsRef.get();
+  
+  for (const cardDoc of ventureCards.docs) {
+    const data = cardDoc.data();
+    const cardObjectives = data.objectives || [];
+    
+    cardObjectives.forEach(obj => {
+      if (obj.createdAt && 
+          obj.createdAt.toDate() >= start && 
+          obj.createdAt.toDate() <= end) {
+        objectives.push({
+          type: 'Venture Objective',
+          card: data.title,
+          title: obj.text,
+          createdAt: obj.createdAt,
+          createdBy: obj.createdBy || obj.createdByName || ''
+        });
+      }
     });
   }
   
@@ -413,62 +437,64 @@ function generateEmailHTML(completedObjectives, addedObjectives, dateRange) {
             </tr>
           </table>
           
-          ${sortedUsers.length > 0 ? `
-            <h2 class="section-title">Team Achievements</h2>
-            ${sortedUsers.slice(0, 5).map(([email, data]) => `
-              <div class="team-member">
-                <table class="team-member-header">
-                  <tr>
-                    <td class="team-member-info">
-                      <div class="member-name">${data.name}</div>
-                      <div class="member-email">${email}</div>
-                    </td>
-                    <td class="team-member-stats">
-                      <div class="achievement-count">${data.count}</div>
-                      <div class="achievement-label">Objectives</div>
-                    </td>
-                  </tr>
-                </table>
-                ${data.objectives.length > 0 ? `
-                  <ul class="objective-list">
-                    ${data.objectives.slice(0, 3).map(objective => `
-                      <li class="objective-item">
-                        ${objective.title} 
-                        <span class="objective-type">${objective.type}</span>
-                      </li>
-                    `).join('')}
-                    ${data.objectives.length > 3 ? `
-                      <li class="objective-item">
-                        <em>...and ${data.objectives.length - 3} more achievements</em>
-                      </li>
-                    ` : ''}
-                  </ul>
-                ` : ''}
-              </div>
-            `).join('')}
+          ${completedObjectives.length > 0 ? `
+            <h2 class="section-title">Objectives Completed This Week</h2>
+            <div style="background: #f5f5f7; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+              ${completedObjectives.map(objective => `
+                <div style="border-bottom: 1px solid #e5e5e7; padding: 16px 0; ${objective === completedObjectives[completedObjectives.length - 1] ? 'border-bottom: none;' : ''}">
+                  <table width="100%">
+                    <tr>
+                      <td style="vertical-align: top; width: 70%;">
+                        <div style="font-size: 16px; font-weight: 600; color: #1d1d1f; margin-bottom: 4px;">${objective.title}</div>
+                        <div style="font-size: 14px; color: #86868b;">
+                          ${objective.division ? objective.division.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : objective.type}
+                        </div>
+                      </td>
+                      <td style="vertical-align: top; text-align: right; width: 30%;">
+                        <div style="font-size: 14px; font-weight: 500; color: #1d1d1f;">${objective.completedBy}</div>
+                        <div style="font-size: 12px; color: #86868b;">${new Date(objective.completedAt.seconds ? objective.completedAt.seconds * 1000 : objective.completedAt).toLocaleDateString()}</div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              `).join('')}
+            </div>
           ` : ''}
           
-          <h2 class="section-title">Progress by Category</h2>
-          <table class="category-grid">
-            <tr>
-              <td class="category-item">
-                <div class="category-count">${completedByCategory['asset-management']}</div>
-                <div class="category-name">Asset Mgmt</div>
-              </td>
-              <td class="category-item">
-                <div class="category-count">${completedByCategory['real-estate-development']}</div>
-                <div class="category-name">Real Estate</div>
-              </td>
-              <td class="category-item">
-                <div class="category-count">${completedByCategory['ventures']}</div>
-                <div class="category-name">Ventures</div>
-              </td>
-              <td class="category-item">
-                <div class="category-count">${completedByCategory['taxes']}</div>
-                <div class="category-name">Taxes</div>
-              </td>
-            </tr>
-          </table>
+          ${addedObjectives.length > 0 ? `
+            <h2 class="section-title">New Objectives Added</h2>
+            <div style="background: #f5f5f7; border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+              ${addedObjectives.map(objective => `
+                <div style="border-bottom: 1px solid #e5e5e7; padding: 16px 0; ${objective === addedObjectives[addedObjectives.length - 1] ? 'border-bottom: none;' : ''}">
+                  <div style="font-size: 16px; font-weight: 600; color: #1d1d1f; margin-bottom: 4px;">${objective.title}</div>
+                  <div style="font-size: 14px; color: #86868b;">
+                    ${objective.division ? objective.division.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : objective.type}
+                    • Added ${new Date(objective.createdAt.seconds ? objective.createdAt.seconds * 1000 : objective.createdAt).toLocaleDateString()}
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          ` : ''}
+          
+          ${sortedUsers.length > 0 ? `
+            <h2 class="section-title">Team Recognition</h2>
+            <table width="100%" style="margin-bottom: 24px;">
+              <tr>
+                ${sortedUsers.slice(0, 3).map(([email, data]) => `
+                  <td style="text-align: center; padding: 0 8px;">
+                    <div style="background: #f5f5f7; border-radius: 12px; padding: 20px;">
+                      <div style="width: 60px; height: 60px; background: #9333ea; color: white; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; font-size: 24px; margin-bottom: 12px;">
+                        ${data.name.split(' ').map(n => n[0]).join('')}
+                      </div>
+                      <div style="font-size: 16px; font-weight: 600; color: #1d1d1f;">${data.name}</div>
+                      <div style="font-size: 32px; font-weight: 700; color: #9333ea; margin: 8px 0;">${data.count}</div>
+                      <div style="font-size: 14px; color: #86868b;">Objectives</div>
+                    </div>
+                  </td>
+                `).join('')}
+              </tr>
+            </table>
+          ` : ''}
           
           ${completedObjectives.length > 10 ? `
             <div class="motivational">
@@ -498,7 +524,13 @@ function generateEmailHTML(completedObjectives, addedObjectives, dateRange) {
 // Callable function to get report data
 exports.getWeeklyReport = functions.https.onCall(async (data, context) => {
   // Check authentication
-  if (!context.auth || !context.auth.token.email?.endsWith('@tgmventures.com')) {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'Must be authenticated');
+  }
+  
+  // Domain check - allow in development
+  const isDevelopment = process.env.FUNCTIONS_EMULATOR === 'true';
+  if (!isDevelopment && !context.auth.token.email?.endsWith('@tgmventures.com')) {
     throw new functions.https.HttpsError('unauthenticated', 'Must be authenticated with @tgmventures.com email');
   }
   
@@ -565,10 +597,47 @@ exports.getWeeklyReport = functions.https.onCall(async (data, context) => {
   };
 });
 
+// New function that returns actual objectives data
+exports.getWeeklyReportData = functions.https.onCall(async (data, context) => {
+  // Check authentication
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'Must be authenticated');
+  }
+  
+  // Domain check - allow in development
+  const isDevelopment = process.env.FUNCTIONS_EMULATOR === 'true';
+  if (!isDevelopment && !context.auth.token.email?.endsWith('@tgmventures.com')) {
+    throw new functions.https.HttpsError('unauthenticated', 'Must be authenticated with @tgmventures.com email');
+  }
+  
+  const { startDate, endDate } = data;
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  
+  // Get completed and added objectives with full details
+  const completedObjectives = await getWeeklyCompletedObjectives(start, end);
+  const addedObjectives = await getWeeklyAddedObjectives(start, end);
+  
+  return {
+    completedObjectives,
+    addedObjectives,
+    dateRange: {
+      start: start.toISOString(),
+      end: end.toISOString()
+    }
+  };
+});
+
 // Callable function to get email preview
 exports.getWeeklyReportEmailPreview = functions.https.onCall(async (data, context) => {
   // Check authentication
-  if (!context.auth || !context.auth.token.email?.endsWith('@tgmventures.com')) {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'Must be authenticated');
+  }
+  
+  // Domain check - allow in development
+  const isDevelopment = process.env.FUNCTIONS_EMULATOR === 'true';
+  if (!isDevelopment && !context.auth.token.email?.endsWith('@tgmventures.com')) {
     throw new functions.https.HttpsError('unauthenticated', 'Must be authenticated with @tgmventures.com email');
   }
   
@@ -610,10 +679,15 @@ async function getWeeklyTrainingModules(start, end) {
 }
 
 // Scheduled function to run every Saturday at 11 AM PST
-exports.weeklyReportEmail = functions.pubsub
-  .schedule('0 11 * * 6')
-  .timeZone('America/Los_Angeles')
-  .onRun(async (context) => {
+// In v6, scheduled functions use onSchedule
+const { onSchedule } = require('firebase-functions/v2/scheduler');
+
+exports.weeklyReportEmail = onSchedule({
+  schedule: '0 11 * * 6',
+  timeZone: 'America/Los_Angeles',
+  memory: '512MiB',
+  timeoutSeconds: 300
+}, async (event) => {
     try {
       // Get SendGrid API key
       const apiKey = await getSendGridApiKey();

@@ -21,7 +21,7 @@ import {
   subscribeToDivisionTasksCompat
 } from '@/lib/firebase/compat-service'
 import { getTaxFilingsData, updateTaxReturnStatus, updatePropertyTaxStatus, getPriorTaxYear } from '@/lib/firebase/taxes'
-import { initializeAssetManagementTasks } from '@/lib/firebase/asset-management-init'
+import { initializeAssetManagementTasks, initializeAssetManagementCards } from '@/lib/firebase/asset-management-init'
 import { getUserPreferences, updateBusinessUnit, initializeUserData, BusinessUnit } from '@/lib/firebase/user-preferences'
 
 // Lazy load dashboard components for better performance
@@ -33,6 +33,7 @@ const TaxFilingsCard = lazy(() => import('@/components/dashboard/TaxFilingsCard'
 // Import loading skeleton
 import { CardSkeleton } from '@/components/dashboard/CardSkeleton'
 import { VentureCardSystem } from '@/components/dashboard/VentureCardSystem'
+import { AssetManagementCardSystem } from '@/components/dashboard/AssetManagementCardSystem'
 import { getVentureCards, subscribeToVentureCards } from '@/lib/firebase/ventures-cards'
 import type { VentureCard } from '@/lib/firebase/ventures-cards'
 import { shouldShowTask, shouldShowAssetTask, getVisibleTaskCounts } from '@/lib/utils/task-visibility'
@@ -160,6 +161,9 @@ export default function DashboardPage() {
       try {
         // Initialize Asset Management tasks for current month if needed
         await initializeAssetManagementTasks()
+        
+        // Initialize Asset Management custom cards if needed
+        await initializeAssetManagementCards()
         
         const status = await getAssetManagementStatusCompat()
         setAssetStatus(status)
@@ -1077,36 +1081,47 @@ export default function DashboardPage() {
         {/* Business Division Status - First Row */}
         <div className="max-w-[85rem] mx-auto">
         {businessUnit === 'asset-management' ? (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-          {/* Asset Management */}
-          <Suspense fallback={<CardSkeleton />}>
-            <AssetManagementCard
-              assetStatus={assetStatus}
-              handleAssetStatusChange={handleAssetStatusChange}
-              justCompletedTask={justCompletedTask}
-              assetChecklistComplete={assetChecklistComplete}
-              priorMonth={priorMonth}
-              currentMonth={currentMonth}
-            />
-          </Suspense>
+        <>
+          {/* Asset Management Cards System */}
+          <AssetManagementCardSystem
+            userEmail={user.email || undefined}
+            userName={user.displayName || undefined}
+            setShowSuccessToast={setShowSuccessToast}
+            setWeeklyCompletedCount={setWeeklyCompletedCount}
+            incrementWeeklyCount={incrementWeeklyCompletionCount}
+            decrementWeeklyCount={decrementWeeklyCompletionCount}
+          />
+          
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            {/* Default Asset Management Card */}
+            <Suspense fallback={<CardSkeleton />}>
+              <AssetManagementCard
+                assetStatus={assetStatus}
+                handleAssetStatusChange={handleAssetStatusChange}
+                justCompletedTask={justCompletedTask}
+                assetChecklistComplete={assetChecklistComplete}
+                priorMonth={priorMonth}
+                currentMonth={currentMonth}
+              />
+            </Suspense>
 
-          {/* Real Estate */}
-          <Suspense fallback={<CardSkeleton />}>
-            <RealEstateCard
-              realEstateTasks={realEstateTasks}
-              realEstateTasksComplete={realEstateVisibleCounts.completed}
-              handleTaskCheck={handleTaskCheck}
-              handleDeleteTask={handleDeleteTask}
-              handleAddTask={handleAddTask}
-              handleEditTask={handleEditTask}
-              startEditingTask={startEditingTask}
-              handleDragStart={handleDragStart}
-              handleDragOver={handleDragOver}
-              handleDragEnd={handleDragEnd}
-              handleDrop={handleDrop}
-              justCompletedTask={justCompletedTask}
-              editingTaskId={editingTaskId}
-              editText={editText}
+            {/* Real Estate */}
+            <Suspense fallback={<CardSkeleton />}>
+              <RealEstateCard
+                realEstateTasks={realEstateTasks}
+                realEstateTasksComplete={realEstateVisibleCounts.completed}
+                handleTaskCheck={handleTaskCheck}
+                handleDeleteTask={handleDeleteTask}
+                handleAddTask={handleAddTask}
+                handleEditTask={handleEditTask}
+                startEditingTask={startEditingTask}
+                handleDragStart={handleDragStart}
+                handleDragOver={handleDragOver}
+                handleDragEnd={handleDragEnd}
+                handleDrop={handleDrop}
+                justCompletedTask={justCompletedTask}
+                editingTaskId={editingTaskId}
+                editText={editText}
               setEditText={setEditText}
               setEditingTaskId={setEditingTaskId}
               draggedTask={draggedTask}
@@ -1130,8 +1145,9 @@ export default function DashboardPage() {
               currentDate={currentDate}
             />
           </Suspense>
-            </div>
-      ) : (
+          </div>
+        </>
+        ) : (
         /* Ventures View - Dynamic Cards */
         <div className="mb-8">
           {user && <VentureCardSystem 

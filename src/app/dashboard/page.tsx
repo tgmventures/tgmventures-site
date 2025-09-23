@@ -33,9 +33,11 @@ const TaxFilingsCard = lazy(() => import('@/components/dashboard/TaxFilingsCard'
 // Import loading skeleton
 import { CardSkeleton } from '@/components/dashboard/CardSkeleton'
 import { VentureCardSystem } from '@/components/dashboard/VentureCardSystem'
-import { AssetManagementCardSystem } from '@/components/dashboard/AssetManagementCardSystem'
+import { AssetManagementIntegratedView } from '@/components/dashboard/AssetManagementIntegratedView'
 import { getVentureCards, subscribeToVentureCards } from '@/lib/firebase/ventures-cards'
 import type { VentureCard } from '@/lib/firebase/ventures-cards'
+import { getAssetManagementCards, subscribeToAssetManagementCards } from '@/lib/firebase/asset-management-cards'
+import type { AssetManagementCard as AssetCard } from '@/lib/firebase/asset-management-cards'
 import { shouldShowTask, shouldShowAssetTask, getVisibleTaskCounts } from '@/lib/utils/task-visibility'
 import { getWeeklyCompletionCount, incrementWeeklyCompletionCount, decrementWeeklyCompletionCount } from '@/lib/firebase/weekly-progress'
 
@@ -62,6 +64,7 @@ export default function DashboardPage() {
   const [realEstateTasks, setRealEstateTasks] = useState<DivisionTask[]>([])
   const [venturesTasks, setVenturesTasks] = useState<DivisionTask[]>([])
   const [ventureCards, setVentureCards] = useState<VentureCard[]>([])
+  const [assetCards, setAssetCards] = useState<AssetCard[]>([])
   const [realEstateProjects, setRealEstateProjects] = useState<Project[]>([
     { id: '1', name: 'Finca El Tablazo', division: 'real-estate-development' }
   ])
@@ -177,6 +180,9 @@ export default function DashboardPage() {
         const ventureCards = await getVentureCards()
         setVentureCards(ventureCards)
         
+        const assetCards = await getAssetManagementCards()
+        setAssetCards(assetCards)
+        
         const taxFilingsData = await getTaxFilingsData()
         setTaxReturns(taxFilingsData.returns)
         setPropertyTaxH1Paid(taxFilingsData.propertyTaxH1Paid)
@@ -193,12 +199,14 @@ export default function DashboardPage() {
       const unsubRealEstateTasks = subscribeToDivisionTasksCompat('real-estate-development', setRealEstateTasks)
       const unsubVenturesTasks = subscribeToDivisionTasksCompat('ventures', setVenturesTasks)
       const unsubVentureCards = subscribeToVentureCards(setVentureCards)
+      const unsubAssetCards = subscribeToAssetManagementCards(setAssetCards)
       
       return () => {
         unsubAssetStatus()
         unsubRealEstateTasks()
         unsubVenturesTasks()
         unsubVentureCards()
+        unsubAssetCards()
       }
     }
   }, [user])
@@ -1081,72 +1089,48 @@ export default function DashboardPage() {
         {/* Business Division Status - First Row */}
         <div className="max-w-[85rem] mx-auto">
         {businessUnit === 'asset-management' ? (
-        <>
-          {/* Asset Management Cards System */}
-          <AssetManagementCardSystem
+          <AssetManagementIntegratedView
+            assetStatus={assetStatus}
+            handleAssetStatusChange={handleAssetStatusChange}
+            realEstateTasks={realEstateTasks}
+            realEstateTasksComplete={realEstateVisibleCounts.completed}
+            handleTaskCheck={handleTaskCheck}
+            handleDeleteTask={handleDeleteTask}
+            handleAddTask={handleAddTask}
+            handleEditTask={handleEditTask}
+            startEditingTask={startEditingTask}
+            handleDragStart={handleDragStart}
+            handleDragOver={handleDragOver}
+            handleDragEnd={handleDragEnd}
+            handleDrop={handleDrop}
+            taxReturns={taxReturns}
+            propertyTaxH1Paid={propertyTaxH1Paid}
+            propertyTaxH2Paid={propertyTaxH2Paid}
+            handleTaxReturnChange={handleTaxReturnChange}
+            handlePropertyTaxChange={handlePropertyTaxChange}
+            justCompletedTask={justCompletedTask}
+            assetChecklistComplete={assetChecklistComplete}
+            priorMonth={priorMonth}
+            currentMonth={currentMonth}
+            editingTaskId={editingTaskId}
+            editText={editText}
+            setEditText={setEditText}
+            setEditingTaskId={setEditingTaskId}
+            draggedTask={draggedTask}
+            dragOverIndex={dragOverIndex}
+            addingTask={addingTask}
+            setAddingTask={setAddingTask}
+            newText={newText}
+            setNewText={setNewText}
+            currentDate={currentDate}
+            assetCards={assetCards}
             userEmail={user.email || undefined}
             userName={user.displayName || undefined}
             setShowSuccessToast={setShowSuccessToast}
             setWeeklyCompletedCount={setWeeklyCompletedCount}
-            incrementWeeklyCount={incrementWeeklyCompletionCount}
-            decrementWeeklyCount={decrementWeeklyCompletionCount}
+            incrementWeeklyCount={user ? () => incrementWeeklyCompletionCount(user.uid) : undefined}
+            decrementWeeklyCount={user ? () => decrementWeeklyCompletionCount(user.uid) : undefined}
           />
-          
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            {/* Default Asset Management Card */}
-            <Suspense fallback={<CardSkeleton />}>
-              <AssetManagementCard
-                assetStatus={assetStatus}
-                handleAssetStatusChange={handleAssetStatusChange}
-                justCompletedTask={justCompletedTask}
-                assetChecklistComplete={assetChecklistComplete}
-                priorMonth={priorMonth}
-                currentMonth={currentMonth}
-              />
-            </Suspense>
-
-            {/* Real Estate */}
-            <Suspense fallback={<CardSkeleton />}>
-              <RealEstateCard
-                realEstateTasks={realEstateTasks}
-                realEstateTasksComplete={realEstateVisibleCounts.completed}
-                handleTaskCheck={handleTaskCheck}
-                handleDeleteTask={handleDeleteTask}
-                handleAddTask={handleAddTask}
-                handleEditTask={handleEditTask}
-                startEditingTask={startEditingTask}
-                handleDragStart={handleDragStart}
-                handleDragOver={handleDragOver}
-                handleDragEnd={handleDragEnd}
-                handleDrop={handleDrop}
-                justCompletedTask={justCompletedTask}
-                editingTaskId={editingTaskId}
-                editText={editText}
-              setEditText={setEditText}
-              setEditingTaskId={setEditingTaskId}
-              draggedTask={draggedTask}
-              dragOverIndex={dragOverIndex}
-              addingTask={addingTask}
-              setAddingTask={setAddingTask}
-              newText={newText}
-              setNewText={setNewText}
-            />
-          </Suspense>
-            
-          {/* Tax Filings */}
-          <Suspense fallback={<CardSkeleton />}>
-            <TaxFilingsCard
-              taxReturns={taxReturns}
-              propertyTaxH1Paid={propertyTaxH1Paid}
-              propertyTaxH2Paid={propertyTaxH2Paid}
-              handleTaxReturnChange={handleTaxReturnChange}
-              handlePropertyTaxChange={handlePropertyTaxChange}
-              justCompletedTask={justCompletedTask}
-              currentDate={currentDate}
-            />
-          </Suspense>
-          </div>
-        </>
         ) : (
         /* Ventures View - Dynamic Cards */
         <div className="mb-8">

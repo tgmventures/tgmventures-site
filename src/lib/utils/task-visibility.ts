@@ -32,11 +32,11 @@ export function shouldShowTask(completedAt?: Date | null, isChecked: boolean = f
  * @returns true if the task should be shown
  */
 export function shouldShowAssetTask(
-  fieldName: keyof Omit<import('@/types/goal').AssetManagementStatus, 'lastUpdated' | 'completedDates'>,
+  fieldName: keyof Omit<import('@/types/goal').AssetManagementStatus, 'lastUpdated' | 'completedDates' | 'completedBy'>,
   status: import('@/types/goal').AssetManagementStatus
 ): boolean {
-  const isChecked = status[fieldName];
-  const completedAt = status.completedDates?.[fieldName];
+  const isChecked = status[fieldName] as boolean;
+  const completedAt = status.completedDates?.[fieldName as keyof typeof status.completedDates];
   return shouldShowTask(completedAt, isChecked);
 }
 

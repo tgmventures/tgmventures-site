@@ -361,7 +361,7 @@ export function AssetManagementIntegratedView({
         <Suspense fallback={<CardSkeleton />}>
           <AssetManagementCard
             assetStatus={assetStatus}
-            handleAssetStatusChange={handleAssetStatusChange}
+            handleAssetStatusChange={(field) => handleAssetStatusChange(field, !assetStatus[field as keyof AssetManagementStatus])}
             justCompletedTask={justCompletedTask}
             assetChecklistComplete={assetChecklistComplete}
             priorMonth={priorMonth}
@@ -379,7 +379,7 @@ export function AssetManagementIntegratedView({
             propertyTaxH1Paid={propertyTaxH1Paid}
             propertyTaxH2Paid={propertyTaxH2Paid}
             handleTaxReturnChange={handleTaxReturnChange}
-            handlePropertyTaxChange={handlePropertyTaxChange}
+            handlePropertyTaxChange={(period) => handlePropertyTaxChange(period, period === 'H1' ? !propertyTaxH1Paid : !propertyTaxH2Paid)}
             justCompletedTask={justCompletedTask}
             currentDate={currentDate}
           />

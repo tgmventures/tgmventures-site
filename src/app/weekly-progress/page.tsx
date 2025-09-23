@@ -118,25 +118,24 @@ export default function WeeklyProgressPage() {
         setAddedObjectives(data.addedObjectives || [])
         
         // Process team member summaries
-        const memberMap = new Map<string, TeamMemberSummary>()
+        const membersByEmail = {} as { [email: string]: TeamMemberSummary }
         
         // Group completed objectives by team member
-        (data.completedObjectives || []).forEach((obj: CompletedObjective) => {
+        ;(data.completedObjectives || []).forEach((obj: CompletedObjective) => {
           const email = obj.completedByEmail
-          if (!memberMap.has(email)) {
-            memberMap.set(email, {
+          if (!membersByEmail[email]) {
+            membersByEmail[email] = {
               email,
               name: obj.completedBy,
               completedCount: 0,
               objectives: []
-            })
+            }
           }
-          const member = memberMap.get(email)!
-          member.completedCount++
-          member.objectives.push(obj)
+          membersByEmail[email].completedCount++
+          membersByEmail[email].objectives.push(obj)
         })
         
-        const membersList = Array.from(memberMap.values()).sort((a, b) => b.completedCount - a.completedCount)
+        const membersList = Object.values(membersByEmail).sort((a, b) => b.completedCount - a.completedCount)
         setTeamMembers(membersList)
         
         // Set total stats

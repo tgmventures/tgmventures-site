@@ -238,10 +238,10 @@ export default function DashboardPage() {
     }
   }
 
-  const handleAssetStatusChange = async (field: keyof Omit<AssetManagementStatus, 'lastUpdated' | 'completedDates' | 'completedBy'>) => {
+  const handleAssetStatusChange = async (field: string, value: boolean) => {
     try {
-      await updateAssetManagementStatusCompat(field, !assetStatus[field], user?.email || '', user?.displayName || '')
-      if (!assetStatus[field]) {
+      await updateAssetManagementStatusCompat(field, value, user?.email || '', user?.displayName || '')
+      if (value) {
         setJustCompletedTask(`asset-${field}`)
         setShowSuccessToast(true)
         setWeeklyCompletedCount(prev => prev + 1)

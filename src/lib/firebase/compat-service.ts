@@ -319,7 +319,7 @@ export async function getAssetManagementStatusCompat(): Promise<AssetManagementS
           const convertedDates: any = {};
           for (const [key, value] of Object.entries(data.completedDates)) {
             convertedDates[key] = value && typeof value === 'object' && 'toDate' in value 
-              ? value.toDate() 
+              ? (value as any).toDate() 
               : value;
           }
           data.completedDates = convertedDates;
@@ -537,7 +537,7 @@ export function subscribeToAssetStatusCompat(
         const convertedDates: any = {};
         for (const [key, value] of Object.entries(data.completedDates)) {
           convertedDates[key] = value && typeof value === 'object' && 'toDate' in value 
-            ? value.toDate() 
+            ? (value as any).toDate() 
             : value;
         }
         data.completedDates = convertedDates;

@@ -43,7 +43,7 @@ export async function updateBusinessUnit(userId: string, businessUnit: BusinessU
 /**
  * Initialize user data if it doesn't exist
  */
-export async function initializeUserData(userId: string, email: string, name: string): Promise<void> {
+export async function initializeUserData(userId: string, email: string, name: string, photoURL?: string): Promise<void> {
   try {
     const userRef = doc(db, DB_PATHS.user(userId))
     const userSnap = await getDoc(userRef)
@@ -56,16 +56,27 @@ export async function initializeUserData(userId: string, email: string, name: st
         id: userId,
         email,
         name,
+        photoURL: photoURL || undefined,
         role: 'member', // Default role
         businessUnit: defaultUnit,
         createdAt: new Date(),
         lastLogin: new Date()
       } as User)
     } else {
-      // Update last login
-      await updateDoc(userRef, {
+      // Update last login and photoURL if changed
+      const updates: any = {
         lastLogin: new Date()
-      })
+      }
+      
+      // Update photoURL if provided and different
+      if (photoURL) {
+        const userData = userSnap.data()
+        if (userData.photoURL !== photoURL) {
+          updates.photoURL = photoURL
+        }
+      }
+      
+      await updateDoc(userRef, updates)
     }
   } catch (error) {
     console.error('Error initializing user data:', error)

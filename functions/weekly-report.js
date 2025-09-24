@@ -604,9 +604,33 @@ exports.getWeeklyReportData = functions.https.onCall(async (data, context) => {
     throw new functions.https.HttpsError('unauthenticated', 'Must be authenticated');
   }
   
+  // Get user email - try multiple sources
+  let userEmail = context.auth.token.email;
+  
+  // If email not in token, fetch from users collection
+  if (!userEmail && context.auth.uid) {
+    const db = admin.firestore();
+    const userDoc = await db.collection('users').doc(context.auth.uid).get();
+    if (userDoc.exists) {
+      userEmail = userDoc.data().email;
+    }
+  }
+  
+  // Log for debugging
+  console.log('Auth context:', {
+    uid: context.auth.uid,
+    email: userEmail || 'not found',
+    tokenEmail: context.auth.token.email || 'not in token'
+  });
+  
   // Domain check - allow in development
   const isDevelopment = process.env.FUNCTIONS_EMULATOR === 'true';
-  if (!isDevelopment && !context.auth.token.email?.endsWith('@tgmventures.com')) {
+  if (!isDevelopment && (!userEmail || !userEmail.endsWith('@tgmventures.com'))) {
+    console.log('Authentication failed:', {
+      uid: context.auth.uid,
+      email: userEmail || 'not found',
+      tokenEmail: context.auth.token.email || 'not in token'
+    });
     throw new functions.https.HttpsError('unauthenticated', 'Must be authenticated with @tgmventures.com email');
   }
   

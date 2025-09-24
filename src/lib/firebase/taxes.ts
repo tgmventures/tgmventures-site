@@ -1,5 +1,5 @@
 import { db } from '../firebase';
-import { collection, doc, getDoc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, doc, getDoc, setDoc, updateDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { TaxReturn } from '@/types/goal';
 
 const TAX_COLLECTION = 'taxes';
@@ -112,9 +112,9 @@ export async function updateTaxReturnStatus(
     const returns = data.returns || [];
     const updatedReturns = returns.map((tr: TaxReturn) => {
       if (tr.id === taxReturnId) {
-        const updated: any = { ...tr, isFiled, lastUpdated: new Date() };
+        const updated: any = { ...tr, isFiled, lastUpdated: Timestamp.now() };
         if (isFiled) {
-          updated.completedAt = new Date();
+          updated.completedAt = Timestamp.now();
           if (userEmail) {
             updated.completedBy = userEmail;
             updated.completedByName = userName || userEmail;

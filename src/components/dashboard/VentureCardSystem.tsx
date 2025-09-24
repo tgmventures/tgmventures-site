@@ -110,6 +110,14 @@ export function VentureCardSystem({ userEmail, userName, setShowSuccessToast, se
 
   const handleObjectiveCheck = async (cardId: string, objective: VentureObjective) => {
     try {
+      console.log('Checking objective:', {
+        cardId,
+        objectiveId: objective.id,
+        currentChecked: objective.isChecked,
+        newChecked: !objective.isChecked,
+        userEmail,
+        userName
+      })
       await updateObjectiveStatus(cardId, objective.id, !objective.isChecked, userEmail, userName)
       if (!objective.isChecked) {
         setJustCompletedObjective(`${cardId}-${objective.id}`)
@@ -290,19 +298,19 @@ export function VentureCardSystem({ userEmail, userName, setShowSuccessToast, se
             </div>
 
             {/* Objectives */}
-            <div className="space-y-2 mb-4">
+            <div className="space-y-3 mb-4">
               {card.objectives.map((objective) => (
                 <div
                   key={objective.id}
-                  className={`flex items-center gap-2 group ${
-                    justCompletedObjective === `${card.id}-${objective.id}` ? 'bg-purple-50 rounded-lg' : ''
+                  className={`flex items-center gap-3 p-2 rounded-lg group transition-colors duration-200 hover:bg-gray-50 ${
+                    justCompletedObjective === `${card.id}-${objective.id}` ? 'bg-purple-50' : ''
                   }`}
                 >
                   <input
                     type="checkbox"
                     checked={objective.isChecked}
                     onChange={() => handleObjectiveCheck(card.id, objective)}
-                    className="h-4 w-4 text-purple-600 rounded focus:ring-2 focus:ring-purple-500"
+                    className="h-5 w-5 text-purple-600 rounded focus:ring-2 focus:ring-purple-500 flex-shrink-0"
                   />
                   {editingObjective?.cardId === card.id && editingObjective?.objectiveId === objective.id ? (
                     <form 

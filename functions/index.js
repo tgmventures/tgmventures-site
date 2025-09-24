@@ -355,3 +355,8 @@ exports.sendWeeklyReportNow = weeklyReport.sendWeeklyReportNow;
 exports.getWeeklyReport = weeklyReport.getWeeklyReport;
 exports.getWeeklyReportData = weeklyReport.getWeeklyReportData;
 exports.getWeeklyReportEmailPreview = weeklyReport.getWeeklyReportEmailPreview;
+
+// Export enhanced weekly report functions
+const weeklyReportEnhanced = require('./weekly-report-enhanced');
+exports.weeklyReportEmailEnhanced = weeklyReportEnhanced.weeklyReportEmailEnhanced;
+exports.sendWeeklyReportNowEnhanced = weeklyReportEnhanced.sendWeeklyReportNowEnhanced;

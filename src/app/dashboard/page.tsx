@@ -115,7 +115,7 @@ export default function DashboardPage() {
           // Only initialize user data for @tgmventures.com users
           if (user.email?.endsWith('@tgmventures.com')) {
             // Initialize user data if needed
-            await initializeUserData(user.uid, user.email || '', user.displayName || '')
+            await initializeUserData(user.uid, user.email || '', user.displayName || '', user.photoURL || undefined)
             
             // Get user preferences
             const preferences = await getUserPreferences(user.uid)

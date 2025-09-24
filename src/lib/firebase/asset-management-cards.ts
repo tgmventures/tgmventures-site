@@ -19,6 +19,7 @@ export interface AssetObjective {
   text: string
   isChecked: boolean
   order: number
+  createdAt?: any
   completedAt?: Date
   completedBy?: string
   completedByName?: string
@@ -156,7 +157,8 @@ export async function addObjectiveToAssetCard(cardId: string, text: string): Pro
       id: Date.now().toString(),
       text,
       isChecked: false,
-      order: currentObjectives.length
+      order: currentObjectives.length,
+      createdAt: Timestamp.now()
     }
     
     await updateDoc(cardRef, {
@@ -213,6 +215,7 @@ export async function updateAssetObjectiveStatus(
   userName?: string
 ): Promise<void> {
   try {
+    console.log('updateAssetObjectiveStatus called:', { cardId, objectiveId, isChecked, userEmail, userName })
     const cardRef = doc(db, ASSET_CARDS_COLLECTION, cardId)
     const cardDoc = await getDoc(cardRef)
     
@@ -227,7 +230,7 @@ export async function updateAssetObjectiveStatus(
       if (obj.id === objectiveId) {
         const updated: any = { ...obj, isChecked };
         if (isChecked) {
-          updated.completedAt = new Date();
+          updated.completedAt = Timestamp.now();
           if (userEmail) {
             updated.completedBy = userEmail;
             updated.completedByName = userName || userEmail;

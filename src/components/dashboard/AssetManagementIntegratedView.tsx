@@ -243,19 +243,19 @@ export function AssetManagementIntegratedView({
       </div>
 
       {/* Objectives */}
-      <div className="space-y-2 mb-4">
+      <div className="space-y-3 mb-4">
         {card.objectives.map((objective) => (
           <div
             key={objective.id}
-            className={`flex items-center gap-2 group ${
-              justCompletedObjective === `${card.id}-${objective.id}` ? 'bg-green-50 rounded-lg' : ''
+            className={`flex items-center gap-3 p-2 rounded-lg group transition-colors duration-200 hover:bg-gray-50 ${
+              justCompletedObjective === `${card.id}-${objective.id}` ? 'bg-purple-50' : ''
             }`}
           >
             <input
               type="checkbox"
               checked={objective.isChecked}
               onChange={() => handleObjectiveCheck(card.id, objective)}
-              className="h-4 w-4 text-green-600 rounded focus:ring-2 focus:ring-green-500"
+              className="h-5 w-5 text-purple-600 rounded focus:ring-2 focus:ring-purple-500 flex-shrink-0"
             />
             {editingObjective?.cardId === card.id && editingObjective?.objectiveId === objective.id ? (
               <form 
@@ -269,7 +269,7 @@ export function AssetManagementIntegratedView({
                   type="text"
                   value={editingObjectiveText}
                   onChange={(e) => setEditingObjectiveText(e.target.value)}
-                  className="flex-1 text-sm px-1 py-0.5 border-b-2 border-green-500 focus:outline-none"
+                  className="flex-1 text-sm px-1 py-0.5 border-b-2 border-purple-500 focus:outline-none"
                   autoFocus
                   onBlur={() => handleUpdateObjectiveText(card.id, objective.id)}
                 />
@@ -280,7 +280,7 @@ export function AssetManagementIntegratedView({
                   setEditingObjective({ cardId: card.id, objectiveId: objective.id })
                   setEditingObjectiveText(objective.text)
                 }}
-                className={`flex-1 text-sm cursor-pointer hover:text-green-600 ${objective.isChecked ? 'text-gray-400 line-through' : 'text-gray-700'}`}
+                className={`flex-1 text-sm cursor-pointer hover:text-purple-600 ${objective.isChecked ? 'text-gray-400 line-through' : 'text-gray-700'}`}
                 title="Click to edit"
               >
                 {objective.text}

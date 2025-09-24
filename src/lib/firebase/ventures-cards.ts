@@ -20,6 +20,7 @@ export interface VentureObjective {
   text: string
   isChecked: boolean
   order: number
+  createdAt?: any
   completedAt?: Date
   completedBy?: string
   completedByName?: string
@@ -144,7 +145,8 @@ export async function addObjectiveToCard(cardId: string, text: string): Promise<
       id: Date.now().toString(),
       text,
       isChecked: false,
-      order: currentObjectives.length
+      order: currentObjectives.length,
+      createdAt: Timestamp.now()
     }
     
     await updateDoc(cardRef, {
@@ -201,6 +203,14 @@ export async function updateObjectiveStatus(
   userName?: string
 ): Promise<void> {
   try {
+    console.log('updateObjectiveStatus called:', {
+      collection: VENTURES_CARDS_COLLECTION,
+      cardId,
+      objectiveId,
+      isChecked,
+      userEmail,
+      userName
+    })
     const cardRef = doc(db, VENTURES_CARDS_COLLECTION, cardId)
     const cardDoc = await getDoc(cardRef)
     
@@ -215,7 +225,7 @@ export async function updateObjectiveStatus(
       if (obj.id === objectiveId) {
         const updated: any = { ...obj, isChecked };
         if (isChecked) {
-          updated.completedAt = new Date();
+          updated.completedAt = Timestamp.now();
           if (userEmail) {
             updated.completedBy = userEmail;
             updated.completedByName = userName || userEmail;
@@ -225,15 +235,32 @@ export async function updateObjectiveStatus(
           updated.completedBy = null;
           updated.completedByName = null;
         }
+        console.log('Updated objective:', {
+          id: updated.id,
+          text: updated.text,
+          isChecked: updated.isChecked,
+          completedAt: updated.completedAt,
+          completedBy: updated.completedBy,
+          completedByName: updated.completedByName,
+          userEmail,
+          userName
+        })
         return updated;
       }
       return obj;
     })
     
+    console.log('Updating Firestore with objectives:', updatedObjectives.map(o => ({
+      id: o.id,
+      text: o.text,
+      isChecked: o.isChecked,
+      completedAt: o.completedAt
+    })))
     await updateDoc(cardRef, {
       objectives: updatedObjectives,
       updatedAt: Timestamp.now()
     })
+    console.log('Firestore update completed')
   } catch (error) {
     console.error('Error updating objective status:', error)
     throw error

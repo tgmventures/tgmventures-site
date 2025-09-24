@@ -24,20 +24,21 @@ export const db = getFirestore(app)
 export const functions = getFunctions(app)
 
 // Connect to Firebase Functions emulator in development
-if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
-  try {
-    // Import connectFunctionsEmulator dynamically to avoid issues
-    import('firebase/functions').then(({ connectFunctionsEmulator }) => {
-      // Only connect if not already connected
-      if (!(functions as any)._delegate?._customHost) {
-        console.log('Connecting to Firebase Functions emulator at localhost:5001')
-        connectFunctionsEmulator(functions, 'localhost', 5001)
-      }
-    })
-  } catch (error) {
-    console.warn('Failed to connect to Functions emulator:', error)
-  }
-}
+// TEMPORARILY DISABLED - Testing against production functions
+// if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
+//   try {
+//     // Import connectFunctionsEmulator dynamically to avoid issues
+//     import('firebase/functions').then(({ connectFunctionsEmulator }) => {
+//       // Only connect if not already connected
+//       if (!(functions as any)._delegate?._customHost) {
+//         console.log('Connecting to Firebase Functions emulator at localhost:5001')
+//         connectFunctionsEmulator(functions, 'localhost', 5001)
+//       }
+//     })
+//   } catch (error) {
+//     console.warn('Failed to connect to Functions emulator:', error)
+//   }
+// }
 
 // Configure Google Auth Provider
 export const googleProvider = new GoogleAuthProvider()

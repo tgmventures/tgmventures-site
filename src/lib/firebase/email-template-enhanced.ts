@@ -1,4 +1,3 @@
-import { format } from 'date-fns'
 
 interface TeamMember {
   name: string

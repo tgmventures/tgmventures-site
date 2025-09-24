@@ -88,7 +88,7 @@ export async function getWeeklyReportDataDirect(startDate: Date, endDate: Date):
       
       if (completedTasks.length > 0) {
         reportData.divisions[division.id] = {
-          name: division.name || division.id,
+          name: (division as any).name || division.id,
           completedTasks,
           totalTasks: completedTasks.length
         }
@@ -679,7 +679,7 @@ export function generateEmailPreviewHTML(data: WeeklyReportData): string {
         tasksHtml += `
           <li style="margin-bottom: 10px; padding-left: 20px; position: relative;">
             <span style="position: absolute; left: 0; color: #10B981;">✓</span>
-            <span style="color: #374151;">${task.task}</span>
+            <span style="color: #374151;">${task.title || (task as any).task || 'Untitled'}</span>
           </li>
         `
       })

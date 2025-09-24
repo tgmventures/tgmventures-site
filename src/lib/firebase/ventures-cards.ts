@@ -250,7 +250,7 @@ export async function updateObjectiveStatus(
       return obj;
     })
     
-    console.log('Updating Firestore with objectives:', updatedObjectives.map(o => ({
+    console.log('Updating Firestore with objectives:', updatedObjectives.map((o: any) => ({
       id: o.id,
       text: o.text,
       isChecked: o.isChecked,

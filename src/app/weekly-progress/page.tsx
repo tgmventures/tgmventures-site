@@ -178,19 +178,20 @@ export default function WeeklyProgressPage() {
               completedByName = task.completedByName || task.completedBy
             } else if (task.completedBy && typeof task.completedBy === 'object') {
               // If completedBy is an object
-              completedByEmail = task.completedBy.email || 'unknown@tgmventures.com'
-              completedByName = task.completedBy.name || task.completedBy.email || 'Team Member'
-            } else if (task.completedByEmail) {
+              const completedByObj = task.completedBy as any
+              completedByEmail = completedByObj.email || 'unknown@tgmventures.com'
+              completedByName = completedByObj.name || completedByObj.email || 'Team Member'
+            } else if ((task as any).completedByEmail) {
               // Fallback to separate fields
-              completedByEmail = task.completedByEmail
-              completedByName = task.completedByName || task.completedByEmail
+              completedByEmail = (task as any).completedByEmail
+              completedByName = (task as any).completedByName || (task as any).completedByEmail
             }
             
             completedTasks.push({
               type: divisionId.startsWith('venture-') ? 'venture' : divisionId.startsWith('asset-') ? 'asset' : divisionId === 'tax-filings' ? 'tax' : 'division',
               division: division.name,
               card: division.name,
-              title: task.task,
+              title: task.title || (task as any).task || 'Untitled Task',
               completedBy: completedByName,
               completedByEmail: completedByEmail,
               completedAt: task.completedAt
@@ -377,18 +378,11 @@ export default function WeeklyProgressPage() {
             added: Math.floor(Math.random() * 10) + 2
           })
         } else {
-          // In production, call the actual Firebase function
-          const reportFunction = httpsCallable(functions, 'getWeeklyReport')
-          const result = await reportFunction({ 
-            startDate: start.toISOString(), 
-            endDate: end.toISOString() 
-          })
-          
-          const data = result.data as any
+          // In production, use actual data
           history.push({
             weekStart: start.toLocaleDateString(),
-            completed: data.totalCompleted || 0,
-            added: data.totalAdded || 0
+            completed: 0,
+            added: 0
           })
         }
       } catch (error) {

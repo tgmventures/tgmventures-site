@@ -325,6 +325,67 @@ export async function reorderVentureCards(
 }
 
 /**
+ * Reorder objectives within a venture card
+ */
+export async function reorderObjectivesInCard(
+  cardId: string,
+  objectiveIds: string[],
+  newOrders: number[]
+): Promise<void> {
+  try {
+    const cardRef = doc(db, VENTURES_CARDS_COLLECTION, cardId)
+    const cardDoc = await getDoc(cardRef)
+    
+    if (!cardDoc.exists()) {
+      throw new Error('Card not found')
+    }
+    
+    const cardData = cardDoc.data()
+    const currentObjectives = cardData?.objectives || []
+    
+    // Create a map of objectiveId to objective for quick lookup
+    const objectiveMap = new Map<string, VentureObjective>()
+    currentObjectives.forEach((obj: VentureObjective) => {
+      objectiveMap.set(obj.id, obj)
+    })
+    
+    // Reorder the objectives based on the provided order
+    const reorderedObjectives: VentureObjective[] = []
+    objectiveIds.forEach((id, index) => {
+      const objective = objectiveMap.get(id)
+      if (objective) {
+        reorderedObjectives.push({
+          ...objective,
+          order: newOrders[index]
+        })
+        objectiveMap.delete(id)
+      }
+    })
+    
+    // Add any remaining objectives (that weren't in the reorder list) at the end
+    const remainingObjectives = Array.from(objectiveMap.values())
+    const maxOrder = Math.max(...newOrders, -1)
+    remainingObjectives.forEach((obj, index) => {
+      reorderedObjectives.push({
+        ...obj,
+        order: maxOrder + index + 1
+      })
+    })
+    
+    // Sort by order
+    reorderedObjectives.sort((a, b) => a.order - b.order)
+    
+    await updateDoc(cardRef, {
+      objectives: reorderedObjectives,
+      updatedAt: Timestamp.now()
+    })
+  } catch (error) {
+    console.error('Error reordering objectives in card:', error)
+    throw error
+  }
+}
+
+/**
  * Subscribe to venture cards changes
  */
 export function subscribeToVentureCards(

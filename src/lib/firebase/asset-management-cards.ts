@@ -313,6 +313,67 @@ export async function reorderAssetManagementCards(
 }
 
 /**
+ * Reorder objectives within an asset management card
+ */
+export async function reorderObjectivesInAssetCard(
+  cardId: string,
+  objectiveIds: string[],
+  newOrders: number[]
+): Promise<void> {
+  try {
+    const cardRef = doc(db, ASSET_CARDS_COLLECTION, cardId)
+    const cardDoc = await getDoc(cardRef)
+    
+    if (!cardDoc.exists()) {
+      throw new Error('Card not found')
+    }
+    
+    const cardData = cardDoc.data()
+    const currentObjectives = cardData?.objectives || []
+    
+    // Create a map of objectiveId to objective for quick lookup
+    const objectiveMap = new Map<string, AssetObjective>()
+    currentObjectives.forEach((obj: AssetObjective) => {
+      objectiveMap.set(obj.id, obj)
+    })
+    
+    // Reorder the objectives based on the provided order
+    const reorderedObjectives: AssetObjective[] = []
+    objectiveIds.forEach((id, index) => {
+      const objective = objectiveMap.get(id)
+      if (objective) {
+        reorderedObjectives.push({
+          ...objective,
+          order: newOrders[index]
+        })
+        objectiveMap.delete(id)
+      }
+    })
+    
+    // Add any remaining objectives (that weren't in the reorder list) at the end
+    const remainingObjectives = Array.from(objectiveMap.values())
+    const maxOrder = Math.max(...newOrders, -1)
+    remainingObjectives.forEach((obj, index) => {
+      reorderedObjectives.push({
+        ...obj,
+        order: maxOrder + index + 1
+      })
+    })
+    
+    // Sort by order
+    reorderedObjectives.sort((a, b) => a.order - b.order)
+    
+    await updateDoc(cardRef, {
+      objectives: reorderedObjectives,
+      updatedAt: Timestamp.now()
+    })
+  } catch (error) {
+    console.error('Error reordering objectives in asset card:', error)
+    throw error
+  }
+}
+
+/**
  * Subscribe to asset management cards changes
  */
 export function subscribeToAssetManagementCards(

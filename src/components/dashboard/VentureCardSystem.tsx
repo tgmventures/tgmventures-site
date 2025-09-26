@@ -12,6 +12,7 @@ import {
   updateObjectiveText,
   deleteObjectiveFromCard,
   reorderVentureCards,
+  reorderObjectivesInCard,
   subscribeToVentureCards
 } from '@/lib/firebase/ventures-cards'
 import { ConfirmDialog } from '@/components/ui/ConfirmDialog'
@@ -37,6 +38,8 @@ export function VentureCardSystem({ userEmail, userName, setShowSuccessToast, se
   const [editingObjectiveText, setEditingObjectiveText] = useState('')
   const [draggedCard, setDraggedCard] = useState<VentureCard | null>(null)
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
+  const [draggedObjective, setDraggedObjective] = useState<{ cardId: string; objective: VentureObjective } | null>(null)
+  const [dragOverObjectiveIndex, setDragOverObjectiveIndex] = useState<number | null>(null)
   const [justCompletedObjective, setJustCompletedObjective] = useState<string | null>(null)
   const [deleteConfirm, setDeleteConfirm] = useState<{ isOpen: boolean; cardId: string | null }>({ isOpen: false, cardId: null })
 
@@ -159,7 +162,7 @@ export function VentureCardSystem({ userEmail, userName, setShowSuccessToast, se
     }
   }
 
-  // Drag and drop handlers
+  // Card drag and drop handlers
   const handleDragStart = (e: React.DragEvent, card: VentureCard) => {
     setDraggedCard(card)
     e.dataTransfer.effectAllowed = 'move'
@@ -174,6 +177,117 @@ export function VentureCardSystem({ userEmail, userName, setShowSuccessToast, se
   const handleDragEnd = () => {
     setDraggedCard(null)
     setDragOverIndex(null)
+  }
+
+  // Objective drag and drop handlers
+  const handleObjectiveDragStart = (e: React.DragEvent, cardId: string, objective: VentureObjective) => {
+    e.stopPropagation() // Prevent card from being dragged
+    setDraggedObjective({ cardId, objective })
+    e.dataTransfer.effectAllowed = 'move'
+  }
+
+  const handleObjectiveDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault()
+    e.stopPropagation()
+    e.dataTransfer.dropEffect = 'move'
+    
+    // Only update if we're actually dragging an objective
+    if (!draggedObjective) return
+    
+    // Get the bounding rectangle of the current element
+    const rect = e.currentTarget.getBoundingClientRect()
+    const y = e.clientY - rect.top
+    const height = rect.height
+    
+    // If mouse is in top half of the element, show indicator above (at current index)
+    // If mouse is in bottom half, show indicator below (at next index)
+    const newIndex = y < height / 2 ? index : index + 1
+    
+    // Only update if the index actually changed to reduce re-renders
+    if (dragOverObjectiveIndex !== newIndex) {
+      setDragOverObjectiveIndex(newIndex)
+    }
+  }
+  
+  const handleObjectiveDragLeave = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
+    // Check if we're leaving the entire objectives container
+    const relatedTarget = e.relatedTarget as HTMLElement
+    if (!relatedTarget || !e.currentTarget.contains(relatedTarget)) {
+      // Only clear if we're not entering another objective
+      const isEnteringAnotherObjective = relatedTarget?.closest('[data-objective-item]')
+      if (!isEnteringAnotherObjective) {
+        setDragOverObjectiveIndex(null)
+      }
+    }
+  }
+
+  const handleObjectiveDragEnd = () => {
+    // Add a small delay before clearing to ensure drop events complete
+    setTimeout(() => {
+      setDraggedObjective(null)
+      setDragOverObjectiveIndex(null)
+    }, 50)
+  }
+
+  const handleObjectiveDrop = async (e: React.DragEvent, cardId: string, objectives: VentureObjective[]) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
+    if (!draggedObjective || draggedObjective.cardId !== cardId || dragOverObjectiveIndex === null) {
+      handleObjectiveDragEnd()
+      return
+    }
+
+    const draggedIndex = objectives.findIndex(o => o.id === draggedObjective.objective.id)
+    let dropIndex = dragOverObjectiveIndex
+    
+    // Adjust drop index if dragging from a position before the drop position
+    if (draggedIndex < dropIndex) {
+      dropIndex = dropIndex - 1
+    }
+    
+    if (draggedIndex === dropIndex) {
+      handleObjectiveDragEnd()
+      return
+    }
+
+    // Create a new array with the reordered objectives
+    const reorderedObjectives = [...objectives]
+    reorderedObjectives.splice(draggedIndex, 1)
+    reorderedObjectives.splice(dropIndex, 0, draggedObjective.objective)
+    
+    // Assign new order values
+    const objectiveIds = reorderedObjectives.map(o => o.id)
+    const newOrders = reorderedObjectives.map((_, index) => index)
+    
+    // Update local state immediately for responsive UI
+    const updatedCards = cards.map(card => {
+      if (card.id === cardId) {
+        return {
+          ...card,
+          objectives: reorderedObjectives.map((obj, index) => ({ ...obj, order: index }))
+        }
+      }
+      return card
+    })
+    setCards(updatedCards)
+    
+    // Update in Firestore
+    try {
+      await reorderObjectivesInCard(cardId, objectiveIds, newOrders)
+    } catch (error) {
+      console.error('Error reordering objectives:', error)
+      // Reload cards on error
+      const freshCards = await getVentureCards()
+      setCards(freshCards)
+    }
+    
+    // Clear immediately after drop to avoid race conditions
+    setDraggedObjective(null)
+    setDragOverObjectiveIndex(null)
   }
 
   const handleDrop = async (e: React.DragEvent, dropIndex: number) => {
@@ -227,13 +341,10 @@ export function VentureCardSystem({ userEmail, userName, setShowSuccessToast, se
         {cards.map((card, index) => (
           <div
             key={card.id}
-            className={`bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-all duration-300 cursor-move ${
+            className={`bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-all duration-300 ${
               dragOverIndex === index && draggedCard?.id !== card.id ? 'border-2 border-purple-500' : ''
             } ${draggedCard?.id === card.id ? 'opacity-50' : ''}`}
-            draggable
-            onDragStart={(e) => handleDragStart(e, card)}
             onDragOver={(e) => handleDragOver(e, index)}
-            onDragEnd={handleDragEnd}
             onDrop={(e) => handleDrop(e, index)}
           >
             {/* Card Header */}
@@ -257,12 +368,15 @@ export function VentureCardSystem({ userEmail, userName, setShowSuccessToast, se
                 </form>
               ) : (
                 <h3 
-                  onClick={() => {
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, card)}
+                  onDragEnd={handleDragEnd}
+                  onDoubleClick={() => {
                     setEditingCardId(card.id)
                     setEditingTitle(card.title)
                   }}
-                  className="text-lg font-semibold text-gray-900 cursor-pointer hover:text-purple-600 flex-1"
-                  title="Click to edit title"
+                  className="text-lg font-semibold text-gray-900 cursor-move hover:text-purple-600 flex-1"
+                  title="Drag to reorder, double-click to edit"
                 >
                   {card.title}
                 </h3>
@@ -298,13 +412,66 @@ export function VentureCardSystem({ userEmail, userName, setShowSuccessToast, se
             </div>
 
             {/* Objectives */}
-            <div className="space-y-3 mb-4">
-              {card.objectives.map((objective) => (
+            <div 
+              className="space-y-3 mb-4 min-h-[50px]"
+              onDragOver={(e) => {
+                // Handle drag over empty space at the end of the list
+                if (draggedObjective && draggedObjective.cardId === card.id) {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  
+                  if (card.objectives.length === 0) {
+                    // Empty list - drop at index 0
+                    setDragOverObjectiveIndex(0)
+                  } else {
+                    // Check if we're below all items
+                    const children = Array.from(e.currentTarget.children).filter(child => 
+                      child.hasAttribute('data-objective-wrapper')
+                    )
+                    
+                    if (children.length > 0) {
+                      const lastChild = children[children.length - 1] as HTMLElement
+                      const lastChildRect = lastChild.getBoundingClientRect()
+                      
+                      if (e.clientY > lastChildRect.bottom - 10) {
+                        setDragOverObjectiveIndex(card.objectives.length)
+                      }
+                    }
+                  }
+                }
+              }}
+              onDrop={(e) => {
+                if (dragOverObjectiveIndex !== null && draggedObjective?.cardId === card.id) {
+                  handleObjectiveDrop(e, card.id, card.objectives)
+                }
+              }}
+              onDragLeave={(e) => {
+                // Only clear if we're leaving the entire container
+                const relatedTarget = e.relatedTarget as HTMLElement
+                if (!e.currentTarget.contains(relatedTarget)) {
+                  setDragOverObjectiveIndex(null)
+                }
+              }}
+            >
+              {card.objectives.map((objective, objIndex) => (
+                <div key={objective.id} data-objective-wrapper className="relative">
+                  {/* Drop indicator line */}
+                  {dragOverObjectiveIndex === objIndex && draggedObjective?.cardId === card.id && draggedObjective?.objective.id !== objective.id && (
+                    <div className="absolute -top-1.5 left-0 right-0 h-0.5 bg-purple-500 z-10 pointer-events-none"></div>
+                  )}
                 <div
-                  key={objective.id}
-                  className={`flex items-center gap-3 p-2 rounded-lg group transition-colors duration-200 hover:bg-gray-50 ${
+                  data-objective-item
+                  className={`flex items-center gap-3 p-2 rounded-lg group transition-colors duration-200 hover:bg-gray-50 cursor-grab active:cursor-grabbing ${
                     justCompletedObjective === `${card.id}-${objective.id}` ? 'bg-purple-50' : ''
+                  } ${
+                    draggedObjective?.objective.id === objective.id ? 'opacity-50' : ''
                   }`}
+                  draggable
+                  onDragStart={(e) => handleObjectiveDragStart(e, card.id, objective)}
+                  onDragOver={(e) => handleObjectiveDragOver(e, objIndex)}
+                  onDragLeave={handleObjectiveDragLeave}
+                  onDragEnd={handleObjectiveDragEnd}
+                  onDrop={(e) => handleObjectiveDrop(e, card.id, card.objectives)}
                 >
                   <input
                     type="checkbox"
@@ -331,12 +498,12 @@ export function VentureCardSystem({ userEmail, userName, setShowSuccessToast, se
                     </form>
                   ) : (
                     <span 
-                      onClick={() => {
+                      onDoubleClick={() => {
                         setEditingObjective({ cardId: card.id, objectiveId: objective.id })
                         setEditingObjectiveText(objective.text)
                       }}
-                      className={`flex-1 text-sm cursor-pointer hover:text-purple-600 ${objective.isChecked ? 'text-gray-400 line-through' : 'text-gray-700'}`}
-                      title="Click to edit"
+                      className={`flex-1 text-sm select-none ${objective.isChecked ? 'text-gray-400 line-through' : 'text-gray-700'}`}
+                      title="Double-click to edit"
                     >
                       {objective.text}
                     </span>
@@ -353,7 +520,12 @@ export function VentureCardSystem({ userEmail, userName, setShowSuccessToast, se
                     </svg>
                   </button>
                 </div>
+                </div>
               ))}
+              {/* Drop indicator for end of list */}
+              {dragOverObjectiveIndex === card.objectives.length && draggedObjective?.cardId === card.id && (
+                <div className="h-0.5 bg-purple-500 mt-1 pointer-events-none"></div>
+              )}
             </div>
 
             {/* Add Objective */}

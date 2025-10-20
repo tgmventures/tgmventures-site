@@ -33,10 +33,13 @@ gcloud auth login
 gcloud config set project tgm-ventures-site
 gcloud auth application-default login
 
-# 3. Start Firebase emulators (in one terminal)
+# 3. Setup reCAPTCHA (one-time)
+echo "NEXT_PUBLIC_RECAPTCHA_V2_SITE_KEY=your_site_key" >> .env.local
+
+# 4. Start Firebase emulators (in one terminal)
 firebase emulators:start --only firestore,auth,functions
 
-# 4. Start development server (in another terminal)
+# 5. Start development server (in another terminal)
 ./scripts/start-local.sh
 
 # Access points:
@@ -56,10 +59,14 @@ firebase emulators:start --only firestore,auth,functions
 
 ```bash
 # Full deployment (hosting + functions)
-NEXT_PUBLIC_FIREBASE_API_KEY=$(gcloud secrets versions access latest --secret="FIREBASE_API_KEY") firebase deploy
+NEXT_PUBLIC_FIREBASE_API_KEY=$(gcloud secrets versions access latest --secret="FIREBASE_API_KEY") \
+NEXT_PUBLIC_RECAPTCHA_V2_SITE_KEY=your_recaptcha_site_key \
+firebase deploy
 
 # Deploy only hosting (for UI changes)
-NEXT_PUBLIC_FIREBASE_API_KEY=$(gcloud secrets versions access latest --secret="FIREBASE_API_KEY") firebase deploy --only hosting
+NEXT_PUBLIC_FIREBASE_API_KEY=$(gcloud secrets versions access latest --secret="FIREBASE_API_KEY") \
+NEXT_PUBLIC_RECAPTCHA_V2_SITE_KEY=your_recaptcha_site_key \
+firebase deploy --only hosting
 
 # Deploy only functions (for backend changes)
 firebase deploy --only functions
@@ -122,6 +129,73 @@ This project uses **Google Secret Manager** for all sensitive credentials:
 - Automatic monthly/annual resets
 - Tax filing tracker
 - Real-time Firestore sync
+
+## 📧 Weekly Email System
+
+### Automatic Weekly Reports
+The system automatically sends a weekly progress report every **Saturday at 11:00 AM Pacific Time** to all team members with @tgmventures.com email addresses.
+
+**What's included in the email:**
+- Team member accomplishments with profile photos
+- **Complete list of ALL objectives completed** by each member (no limits)
+- Outstanding objectives for the upcoming week
+- Professional TGM Ventures branding
+
+### Manual Testing
+To test the email system before Saturday:
+1. Navigate to `/weekly-progress` in the dashboard
+2. Click **"Preview Email"** to see the email content in-browser
+3. Click **"Send Test Email"** to send a test to your email address
+4. Check your inbox within 1-2 minutes (arrives from `noreply@tgmventures.com`)
+
+### Email System Architecture
+- **Scheduler**: Firebase Functions v2 Cloud Scheduler (runs every Saturday 11 AM PT)
+- **Email Service**: SendGrid (API key stored in Google Secret Manager)
+- **Data Source**: Firestore collections
+  - `organizations/tgm-ventures/ventures-objective-cards` - Ventures objectives
+  - `organizations/tgm-ventures/asset-management-cards` - Asset management objectives
+  - `organizations/tgm-ventures/divisions/{divisionId}/tasks` - Division tasks
+  - `taxes/taxes-{year}` - Tax filing data
+- **Recipients**: All users in `organizations/tgm-ventures/users` with @tgmventures.com emails
+
+### Key Features
+- **No Achievement Limits**: Displays ALL completed objectives (previously limited to 3)
+- **Automatic Weekly Cadence**: Sends every Saturday without manual intervention
+- **Team Member Photos**: Pulls profile photos from Firestore user data
+- **Outstanding Tasks**: Shows what's pending for next week
+- **Mobile Responsive**: Email renders perfectly on desktop and mobile devices
+
+### Troubleshooting
+If emails aren't sending:
+1. **Check Firebase Console**: Functions > Logs for errors
+2. **Verify SendGrid API Key**: 
+   ```bash
+   gcloud secrets versions access latest --secret="SENDGRID_API_KEY"
+   ```
+3. **Check Cloud Scheduler**: Google Cloud Console > Cloud Scheduler
+   - Job: `firebase-schedule-weeklyReportEmailEnhanced-us-central1`
+   - Should show as "ENABLED"
+4. **Verify Sender Authentication**: SendGrid dashboard > Settings > Sender Authentication
+   - `noreply@tgmventures.com` must be verified
+5. **Check Email Logs**: Firestore collection `email_logs` for execution history
+6. **Manual Trigger Test**:
+   ```bash
+   gcloud scheduler jobs run firebase-schedule-weeklyReportEmailEnhanced-us-central1 \
+     --location=us-central1 \
+     --project=tgm-ventures-site
+   ```
+
+### Adding Team Members
+To ensure someone receives weekly emails:
+1. Go to Firebase Console > Firestore
+2. Navigate to: `organizations/tgm-ventures/users`
+3. Add user document with fields:
+   - `email`: user@tgmventures.com (must end in @tgmventures.com)
+   - `name`: "First Last"
+   - `photoURL`: "https://..." (optional)
+   - `role`: "member" (or "admin"/"ceo")
+
+For detailed deployment and verification steps, see [DEPLOYMENT-VERIFICATION.md](DEPLOYMENT-VERIFICATION.md).
 
 ## 🛠️ Technology Stack
 

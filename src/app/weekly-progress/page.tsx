@@ -11,6 +11,7 @@ import { initializeUserData } from '@/lib/firebase/user-preferences'
 import { getWeeklyReportDataDirect, generateEnhancedEmailHTML, getNewObjectivesThisWeek } from '@/lib/firebase/weekly-report-direct'
 import { doc, getDoc, collection, getDocs } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
+import { getFunctions, httpsCallable } from 'firebase/functions'
 
 interface WeeklyData {
   weekStart: string
@@ -59,6 +60,8 @@ export default function WeeklyProgressPage() {
   const [weeklyHistory, setWeeklyHistory] = useState<WeeklyData[]>([])
   const [currentWeekOffset, setCurrentWeekOffset] = useState(0) // 0 = current week, 1 = last week, etc.
   const [showWeekNavigation, setShowWeekNavigation] = useState(false)
+  const [sendingTestEmail, setSendingTestEmail] = useState(false)
+  const [testEmailResult, setTestEmailResult] = useState<string | null>(null)
 
   // Check if we're in development mode
   const isDevelopment = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || process.env.NODE_ENV === 'development')
@@ -422,6 +425,52 @@ export default function WeeklyProgressPage() {
     }
   }
 
+  const sendTestEmailNow = async () => {
+    if (!user) {
+      setError('You must be logged in to send test emails')
+      return
+    }
+    
+    // Verify user email is @tgmventures.com
+    if (!user.email?.endsWith('@tgmventures.com')) {
+      setError('Test emails can only be sent by @tgmventures.com users')
+      return
+    }
+    
+    setSendingTestEmail(true)
+    setTestEmailResult(null)
+    setError(null)
+    
+    try {
+      // Make sure auth token is fresh
+      const token = await user.getIdToken(true)
+      console.log('User authenticated:', user.email)
+      console.log('Auth token obtained successfully')
+      
+      const functions = getFunctions()
+      const sendTestEmail = httpsCallable(functions, 'sendWeeklyReportNowEnhanced')
+      
+      console.log('Calling sendWeeklyReportNowEnhanced function...')
+      const result = await sendTestEmail({ email: user.email })
+      const data = result.data as any
+      
+      console.log('Function response:', data)
+      setTestEmailResult(`Test email sent successfully! Check your inbox at ${user.email}`)
+    } catch (error: any) {
+      console.error('Error sending test email:', error)
+      console.error('Error code:', error.code)
+      console.error('Error details:', error.details)
+      
+      if (error.code === 'unauthenticated' || error.code === 'permission-denied') {
+        setError(`Authentication error: ${error.message}. Please sign out and sign back in with your @tgmventures.com email.`)
+      } else {
+        setError(`Failed to send test email: ${error.message}`)
+      }
+    } finally {
+      setSendingTestEmail(false)
+    }
+  }
+
 
   if (!user) return null
 
@@ -452,6 +501,13 @@ export default function WeeklyProgressPage() {
               >
                 Preview Email
               </button>
+              <button
+                onClick={sendTestEmailNow}
+                disabled={sendingTestEmail}
+                className="text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {sendingTestEmail ? 'Sending...' : 'Send Test Email'}
+              </button>
             </div>
           </div>
         </div>
@@ -478,6 +534,14 @@ export default function WeeklyProgressPage() {
                 Sign Out and Try Again
               </button>
             )}
+          </div>
+        )}
+
+        {/* Success Message Display */}
+        {testEmailResult && (
+          <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg mb-6">
+            <p className="font-medium">{testEmailResult}</p>
+            <p className="text-sm mt-1">The email should arrive within 1-2 minutes. Check your spam folder if you don't see it.</p>
           </div>
         )}
         

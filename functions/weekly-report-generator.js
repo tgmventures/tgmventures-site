@@ -562,7 +562,7 @@ async function generateEnhancedEmailHTML(data) {
                         </p>
                       </td>
                     </tr>
-                    ${member.objectives.slice(0, 3).map(obj => `
+                    ${member.objectives.map(obj => `
                       <tr>
                         <td style="padding-bottom: 12px;">
                           <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f9fafb; border-radius: 8px;">
@@ -588,15 +588,6 @@ async function generateEnhancedEmailHTML(data) {
                         </td>
                       </tr>
                     `).join('')}
-                    ${member.objectives.length > 3 ? `
-                      <tr>
-                        <td align="center" style="padding-top: 8px;">
-                          <p style="margin: 0; color: #6b7280; font-size: 12px;">
-                            +${member.objectives.length - 3} more achievement${member.objectives.length - 3 !== 1 ? 's' : ''}
-                          </p>
-                        </td>
-                      </tr>
-                    ` : ''}
                   </table>
                 ` : ''}
               </td>

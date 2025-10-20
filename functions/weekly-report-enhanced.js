@@ -13,28 +13,17 @@ async function getSendGridApiKey() {
   return version.payload.data.toString('utf8');
 }
 
-// Import the enhanced email generation function
+// Import the email generation functions from weekly-report-generator
+const { getWeeklyReportDataDirect, generateEnhancedEmailHTML: generateEmailFromData } = require('./weekly-report-generator');
+
+// Wrapper function for email generation
 async function generateEnhancedEmailHTML(weekRange) {
   try {
-    // Import the functions from the web app
-    const path = require('path');
-    const fs = require('fs');
-    
-    // Read the template file
-    const templatePath = path.join(__dirname, '../src/lib/firebase/email-template-enhanced.ts');
-    let templateContent = fs.readFileSync(templatePath, 'utf8');
-    
-    // Extract just the generateEmailHTML function (simplified version)
-    // For production, we'll need to properly compile TypeScript
-    // For now, let's use the existing data fetching logic
-    
-    const { getWeeklyReportDataDirect, generateEnhancedEmailHTML: generateEmail } = require('./weekly-report-generator');
-    
-    // Get the data
+    // Get the data for the week
     const reportData = await getWeeklyReportDataDirect(weekRange.start, weekRange.end);
     
-    // Generate the HTML
-    const html = await generateEmail(reportData);
+    // Generate the HTML email
+    const html = await generateEmailFromData(reportData);
     
     return html;
   } catch (error) {

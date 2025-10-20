@@ -103,36 +103,67 @@ async function getCompletedObjectives(startDate, endDate) {
   // Get tax filings
   const currentYear = new Date().getFullYear();
   const priorYear = currentYear - 1;
-  const taxRef = db.collection(`taxes/taxes-${priorYear}`);
-  const taxSnapshot = await taxRef.get();
+  const taxDocRef = db.collection('taxes').doc(`taxes-${priorYear}`);
+  const taxDoc = await taxDocRef.get();
   
-  taxSnapshot.forEach(doc => {
-    const entity = doc.data();
-    const tasks = [
-      { field: 'federalReturn', label: 'Federal Tax Return' },
-      { field: 'stateReturn', label: 'State Tax Return' },
-      { field: 'extensionFiled', label: 'Extension Filed' }
-    ];
+  if (taxDoc.exists) {
+    const taxData = taxDoc.data();
     
-    tasks.forEach(task => {
-      const taskData = entity[task.field];
-      if (taskData?.completed && taskData.completedAt) {
-        const completedDate = taskData.completedAt.toDate();
-        if (completedDate >= startDate && completedDate <= endDate) {
-          completedTasks.push({
-            id: `${doc.id}_${task.field}`,
-            title: `${task.label} - ${entity.name}`,
-            category: 'Tax Filings',
-            completedAt: completedDate,
-            completedBy: taskData.completedBy || '',
-            completedByName: taskData.completedByName || taskData.completedBy || 'Unknown',
-            completedByEmail: taskData.completedBy || '',
-            type: 'tax'
-          });
+    // Check tax returns
+    if (taxData.returns && Array.isArray(taxData.returns)) {
+      taxData.returns.forEach(taxReturn => {
+        if (taxReturn.isFiled && taxReturn.completedAt) {
+          const completedDate = taxReturn.completedAt.toDate();
+          if (completedDate >= startDate && completedDate <= endDate) {
+            completedTasks.push({
+              id: `tax_${taxReturn.id}`,
+              title: `${taxReturn.entity} ${taxReturn.country} Tax Return`,
+              category: 'Tax Filings',
+              completedAt: completedDate,
+              completedBy: taxReturn.completedBy || '',
+              completedByName: taxReturn.completedByName || taxReturn.completedBy || 'Unknown',
+              completedByEmail: taxReturn.completedBy || '',
+              type: 'tax'
+            });
+          }
         }
+      });
+    }
+    
+    // Check property tax H1
+    if (taxData.propertyTaxH1Paid && taxData.propertyTaxH1CompletedAt) {
+      const completedDate = taxData.propertyTaxH1CompletedAt.toDate();
+      if (completedDate >= startDate && completedDate <= endDate) {
+        completedTasks.push({
+          id: 'property_tax_h1',
+          title: 'Property Tax H1',
+          category: 'Tax Filings',
+          completedAt: completedDate,
+          completedBy: taxData.propertyTaxH1CompletedBy?.email || '',
+          completedByName: taxData.propertyTaxH1CompletedBy?.name || 'Unknown',
+          completedByEmail: taxData.propertyTaxH1CompletedBy?.email || '',
+          type: 'tax'
+        });
       }
-    });
-  });
+    }
+    
+    // Check property tax H2
+    if (taxData.propertyTaxH2Paid && taxData.propertyTaxH2CompletedAt) {
+      const completedDate = taxData.propertyTaxH2CompletedAt.toDate();
+      if (completedDate >= startDate && completedDate <= endDate) {
+        completedTasks.push({
+          id: 'property_tax_h2',
+          title: 'Property Tax H2',
+          category: 'Tax Filings',
+          completedAt: completedDate,
+          completedBy: taxData.propertyTaxH2CompletedBy?.email || '',
+          completedByName: taxData.propertyTaxH2CompletedBy?.name || 'Unknown',
+          completedByEmail: taxData.propertyTaxH2CompletedBy?.email || '',
+          type: 'tax'
+        });
+      }
+    }
+  }
   
   return completedTasks;
 }
@@ -312,48 +343,41 @@ async function getOutstandingObjectives() {
   
   // Get Tax Filings
   const priorYear = currentYear - 1;
-  const taxSnapshot = await db.collection(`taxes/taxes-${priorYear}`).get();
+  const taxDocRef = db.collection('taxes').doc(`taxes-${priorYear}`);
+  const taxDoc = await taxDocRef.get();
   
   outstanding['Tax Filings'] = [];
   
-  taxSnapshot.forEach(doc => {
-    const entity = doc.data();
+  if (taxDoc.exists) {
+    const taxData = taxDoc.data();
     
-    if (!entity.federalReturn?.completed) {
-      outstanding['Tax Filings'].push({
-        task: `${entity.name} - Federal Return`,
-        assignee: undefined
+    // Check tax returns
+    if (taxData.returns && Array.isArray(taxData.returns)) {
+      taxData.returns.forEach(taxReturn => {
+        if (!taxReturn.isFiled) {
+          outstanding['Tax Filings'].push({
+            task: `${taxReturn.entity} ${taxReturn.country} Tax Return`,
+            assignee: undefined
+          });
+        }
       });
     }
     
-    if (!entity.stateReturn?.completed && entity.requiresStateReturn) {
-      outstanding['Tax Filings'].push({
-        task: `${entity.name} - State Return`,
-        assignee: undefined
-      });
-    }
-    
-    if (!entity.extensionFiled?.completed && !entity.federalReturn?.completed) {
-      outstanding['Tax Filings'].push({
-        task: `${entity.name} - Extension`,
-        assignee: undefined
-      });
-    }
-    
-    if (!entity.propertyTaxH1?.paid) {
+    // Check property taxes
+    if (!taxData.propertyTaxH1Paid) {
       outstanding['Tax Filings'].push({
         task: `All ${currentYear} H1 Property Taxes`,
         assignee: undefined
       });
     }
     
-    if (!entity.propertyTaxH2?.paid) {
+    if (!taxData.propertyTaxH2Paid) {
       outstanding['Tax Filings'].push({
         task: `All ${currentYear} H2 Property Taxes`,
         assignee: undefined
       });
     }
-  });
+  }
   
   // Remove empty categories
   Object.keys(outstanding).forEach(key => {
